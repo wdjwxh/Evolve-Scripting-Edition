@@ -24,7 +24,7 @@ export function arpa(type) {
     }
 }
 
-const arpaProjects = {
+export const arpaProjects = {
     lhc: {
         title: loc('arpa_projects_lhc_title'),
         desc: loc('arpa_projects_lhc_desc'),

@@ -1,6 +1,6 @@
 import { global, vues, save, poppers, resizeGame, messageQueue, modRes, breakdown, keyMultiplier, p_on, moon_on, red_on, belt_on, int_on, set_qlevel, achieve_level, quantum_level } from './vars.js';
 import { loc, locales } from './locale.js';
-import { mainVue, timeCheck, timeFormat, powerModifier } from './functions.js';
+import { mainVue, timeCheck, timeFormat, powerModifier, adjustCosts } from './functions.js';
 import { setupStats, unlockAchieve, checkAchievements } from './achieve.js';
 import { races, racialTrait, randomMinorTrait, biomes, planetTraits } from './races.js';
 import { defineResources, resource_values, spatialReasoning, craftCost, plasmidBonus, tradeRatio, craftingRatio, crateValue, containerValue, tradeSellPrice, tradeBuyPrice, atomic_mass } from './resources.js';
@@ -9,13 +9,11 @@ import { defineGovernment, defineGarrison, garrisonSize, armyRating, buildQueue 
 import { actions, updateDesc, challengeGeneHeader, challengeActionHeader, checkTechRequirements, checkOldTech, addAction, storageMultipler, checkAffordable, drawCity, drawTech, gainTech, removeAction, evoProgress, housingLabel, oldTech, f_rate, setPlanet, resQueue } from './actions.js';
 import { space, deepSpace, fuel_adjust, int_fuel_adjust, zigguratBonus, setUniverse, universe_types } from './space.js';
 import { renderFortress, bloodwar } from './portal.js';
-import { arpa } from './arpa.js';
+import { arpa, arpaProjects } from './arpa.js';
 import { events } from './events.js';
 
 var intervals = {};
-if (global.settings.expose){
-    enableScript();
-}
+enableScript();
 
 if (Object.keys(locales).length > 1){
     $('#localization').append($(`<span>${loc('locale')}: <select @change="lChange()" :v-model="s.locale"></select></span>`));
@@ -2897,12 +2895,8 @@ function fastLoop(){
         }
     });
 
-    if (global.settings.expose){
-        if (!window['evolve']){
-            enableScript();
-        }
-        window.evolve.global = JSON.parse(JSON.stringify(global));
-        window.evolve.breakdown = JSON.parse(JSON.stringify(breakdown));
+    if (!window['evolve']){
+        enableScript();
     }
 }
 
@@ -4821,13 +4815,23 @@ function resourceAlt(){
 
 function enableScript(){
     window.evolve = {
-        actions: JSON.parse(JSON.stringify(actions)),
-        races: JSON.parse(JSON.stringify(races)),
-        tradeRatio: JSON.parse(JSON.stringify(tradeRatio)),
-        craftCost: JSON.parse(JSON.stringify(craftCost)),
-        atomic_mass: JSON.parse(JSON.stringify(craftCost)),
-        global: {},
-        breakdown: {},
+        actions: actions,
+        races: races,
+        tradeRatio: tradeRatio,
+        craftCost: craftCost,
+        atomic_mass: atomic_mass,
+        global: global,
+        breakdown: breakdown,
         checkTechRequirements: checkTechRequirements,
+
+        vues: vues,
+        craftingRatio: craftingRatio,
+        armyRating: armyRating,
+        keyMultiplier: keyMultiplier,
+        checkAffordable: checkAffordable,
+        checkOldTech: checkOldTech,
+        f_rate: f_rate,
+        adjustCosts: adjustCosts,
+        arpaProjects: arpaProjects,
     };
 }
