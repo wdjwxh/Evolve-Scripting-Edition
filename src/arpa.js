@@ -1112,6 +1112,7 @@ function addProject(parent,project){
             data: global.arpa[project],
             methods: {
                 build(pro,num){
+                    let oNum = num;
                     if (num === 100){
                         num = 100 - global.arpa[project].complete;
                     }
@@ -1141,6 +1142,10 @@ function addProject(parent,project){
                                 drawTech();
                             }
                         }
+                    }
+                    if ($(`#popArpa${pro}`).length > 0){
+                        $(`#popArpa${pro}`).empty();
+                        $(`#popArpa${pro}`).append(arpaProjectCosts(oNum,pro));
                     }
                 },
                 srDesc(){
@@ -1201,7 +1206,7 @@ function addProject(parent,project){
             $(`#popArpa${project}`).remove();
         });
 
-        let classes = ['1','10','25','100'];
+        let classes = [1,10,25,100];
         for (let i=0; i<classes.length; i++){
             let id = classes[i];
             $(`#arpa${project} .buy .x${id}`).on('mouseover',function(){
@@ -1224,7 +1229,7 @@ function addProject(parent,project){
 }
 
 function arpaProjectCosts(id,project){
-    let inc = id === '100' ? 100 - global.arpa[project].complete : id;
+    let inc = id === 100 ? 100 - global.arpa[project].complete : id;
     var cost = $('<div></div>');
     var costs = adjustCosts(arpaProjects[project].cost);
     Object.keys(costs).forEach(function (res){
