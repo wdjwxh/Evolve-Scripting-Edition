@@ -124,6 +124,7 @@ $('#morale').on('mouseover',function(){
     }
     let total = 100 + global.city.morale.unemployed + global.city.morale.stress + global.city.morale.entertain + global.city.morale.season + global.city.morale.weather + global.city.morale.tax + global.city.morale.warmonger + global.city.morale.leadership + global.city.morale.shrine;
     if (global.city.morale['frenzy']){
+        total += global.city.morale.frenzy;
         let type = global.city.morale.frenzy > 0 ? 'success' : 'danger';
         moralePopper.append(`<p class="modal_bd"><span>${loc('morale_frenzy')}</span> <span class="has-text-${type}"> ${global.city.morale.frenzy}%</span></p>`);
     }
@@ -4284,7 +4285,10 @@ function longLoop(){
                         }
                         break;
                     case 'tundra':
-                        if (Math.rand(0,2) === 0 && temp > 0){
+                        if (global.city.calendar.season === 3){
+                            temp = 0;
+                        }
+                        else if (Math.rand(0,2) === 0 && temp > 0){
                             temp--;
                         }
                         break;
@@ -4294,7 +4298,10 @@ function longLoop(){
                         }
                         break;
                     case 'volcanic':
-                        if (Math.rand(0,2) === 0 && temp < 2){
+                        if (global.city.calendar.season === 1){
+                            temp = 2;
+                        }
+                        else if (Math.rand(0,2) === 0 && temp < 2){
                             temp++;
                         }
                         break;
@@ -4327,7 +4334,7 @@ function longLoop(){
                         break;
                 }
 
-                if (global.city.ptrait === 'stormy' && wind > 0 && Math.rand(0,3) === 0){
+                if (global.city.ptrait === 'stormy' && wind > 0 && Math.rand(0,2) === 0){
                     wind--;
                 }
 

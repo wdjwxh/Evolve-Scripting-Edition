@@ -2074,7 +2074,8 @@ export const actions = {
                     desc = desc + `<div>${loc('city_s_alter_mine',[15,timeFormat(global.city.s_alter.mine)])}</div>`;
                 }
                 if (global.city.s_alter.harvest > 0){
-                    desc = desc + `<div>${loc('city_s_alter_harvest',[15,timeFormat(global.city.s_alter.harvest)])}</div>`;
+                    let jobType = global.race['evil'] && !global.race['soul_eater'] ? loc('job_reclaimer') : loc('job_lumberjack');
+                    desc = desc + `<div>${loc('city_s_alter_harvest',[15,timeFormat(global.city.s_alter.harvest),jobType])}</div>`;
                 }
                 return desc;
             },
@@ -7796,7 +7797,7 @@ export const actions = {
             }
         },
         ancient_infusion: {
-            id: 'tech-last_rites',
+            id: 'tech-ancient_infusion',
             title: loc('tech_ancient_infusion'),
             desc: loc('tech_ancient_infusion'),
             reqs: { sacrifice: 2, theology: 4 },
@@ -12562,6 +12563,9 @@ function big_bang(){
             break;
     }
 
+    if (global.race.universe === 'evil' && races[global.race.species].type === 'angelic'){
+        unlockFeat('nephilim');
+    }
     if (global.race.species === 'junker'){
         unlockFeat('the_misery');
     }
