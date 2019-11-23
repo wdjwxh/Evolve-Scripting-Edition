@@ -5218,5 +5218,7 @@ function enableScript(){
         f_rate: f_rate,
         adjustCosts: adjustCosts,
         arpaProjects: arpaProjects,
+
+        document: document,
     };
 }
