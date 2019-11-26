@@ -7687,14 +7687,20 @@ export const actions = {
         },
         oil_power: {
             id: 'tech-oil_power',
-            title: loc('tech_oil_power'),
-            desc: loc('tech_oil_power'),
+            title(){
+                return global.race['environmentalist'] ? loc('city_wind_power') : loc('tech_oil_power');
+            },
+            desc(){
+                return global.race['environmentalist'] ? loc('city_wind_power') : loc('tech_oil_power');
+            },
             reqs: { oil: 2 },
             grant: ['oil',3],
             cost: {
                 Knowledge(){ return 44000; }
             },
-            effect: loc('tech_oil_power_effect'),
+            effect(){
+                return global.race['environmentalist'] ? loc('tech_wind_power_effect') : loc('tech_oil_power_effect');
+            },
             action(){
                 if (payCosts($(this)[0].cost)){
                     global.city['oil_power'] = { count: 0 };
@@ -10208,22 +10214,21 @@ export const actions = {
                 if (global.civic.foreign.gov0.occ && global.civic.foreign.gov1.occ && global.civic.foreign.gov2.occ){
                     global.tech['world_control'] = 1;
                     $('#garrison').empty();
+                    $('#c_garrison').empty();
                     buildGarrison($('#garrison'),true);
+                    buildGarrison($('#c_garrison'),false);
                     unlockAchieve(`world_domination`);
                     if (global.stats.attacks === 0){
                         unlockAchieve(`pacifist`);
                     }
-                    if (global.civic.foreign.gov0.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
-                    }
-                    if (global.civic.foreign.gov1.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
-                    }
-                    if (global.civic.foreign.gov2.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
+                    for (let i=0; i<3; i++){
+                        if (global.civic.foreign[`gov${i}`].occ){
+                            global.civic['garrison'].max += 20;
+                            global.civic['garrison'].workers += 20;
+                            global.civic.foreign[`gov${i}`].occ = false;
+                        }
+                        global.civic.foreign[`gov${i}`].sab = 0;
+                        global.civic.foreign[`gov${i}`].act = 'none';
                     }
                     return true;
                 }
@@ -10253,29 +10258,27 @@ export const actions = {
                 return `<div>${loc('tech_wc_morale_effect',[races[global.race.species].home])}</div><div class="has-text-special">${loc('tech_unification_warning')}</div>`;
             }, 
             action(){
-                let morale = global.race['no_plasmid'] ? 140 : 150;
-                if (global.race['no_crispr']){
-                    morale -= 10;
-                }
+                let morale = (global.civic.foreign.gov0.unrest + global.civic.foreign.gov1.unrest + global.civic.foreign.gov2.unrest) / 5;
+                morale += (300 - (global.civic.foreign.gov0.hstl + global.civic.foreign.gov1.hstl + global.civic.foreign.gov2.hstl)) / 7.5;
+                morale = +(200 - morale).toFixed(1);
                 if (global.city.morale.current >= morale){
                     global.tech['world_control'] = 1;
                     $('#garrison').empty();
+                    $('#c_garrison').empty();
                     buildGarrison($('#garrison'),true);
+                    buildGarrison($('#c_garrison'),false);
                     unlockAchieve(`illuminati`);
                     if (global.stats.attacks === 0){
                         unlockAchieve(`pacifist`);
                     }
-                    if (global.civic.foreign.gov0.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
-                    }
-                    if (global.civic.foreign.gov1.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
-                    }
-                    if (global.civic.foreign.gov2.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
+                    for (let i=0; i<3; i++){
+                        if (global.civic.foreign[`gov${i}`].occ){
+                            global.civic['garrison'].max += 20;
+                            global.civic['garrison'].workers += 20;
+                            global.civic.foreign[`gov${i}`].occ = false;
+                        }
+                        global.civic.foreign[`gov${i}`].sab = 0;
+                        global.civic.foreign[`gov${i}`].act = 'none';
                     }
                     return true;
                 }
@@ -10302,30 +10305,27 @@ export const actions = {
             },
             effect(){ return `<div>${loc('tech_wc_money_effect',[races[global.race.species].home])}</div><div class="has-text-special">${loc('tech_unification_warning')}</div>`; },
             action(){
-                let price = global.race['no_plasmid'] ? 3000000 : 5000000;
-                if (global.race['no_crispr']){
-                    price -= 1000000;
-                }
+                let price = global.civic.foreign.gov0.eco + global.civic.foreign.gov1.eco + global.civic.foreign.gov2.eco;
+                price *= 15384;
                 if (global.resource.Money.amount >= price){
                     global.resource.Money.amount -= price;
                     global.tech['world_control'] = 1;
                     $('#garrison').empty();
+                    $('#c_garrison').empty();
                     buildGarrison($('#garrison'),true);
+                    buildGarrison($('#c_garrison'),false);
                     unlockAchieve(`syndicate`);
                     if (global.stats.attacks === 0){
                         unlockAchieve(`pacifist`);
                     }
-                    if (global.civic.foreign.gov0.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
-                    }
-                    if (global.civic.foreign.gov1.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
-                    }
-                    if (global.civic.foreign.gov2.occ){
-                        global.civic['garrison'].max += 20;
-                        global.civic['garrison'].workers += 20;
+                    for (let i=0; i<3; i++){
+                        if (global.civic.foreign[`gov${i}`].occ){
+                            global.civic['garrison'].max += 20;
+                            global.civic['garrison'].workers += 20;
+                            global.civic.foreign[`gov${i}`].occ = false;
+                        }
+                        global.civic.foreign[`gov${i}`].sab = 0;
+                        global.civic.foreign[`gov${i}`].act = 'none';
                     }
                     return true;
                 }
@@ -10994,7 +10994,13 @@ export const actions = {
             cost: {},
             no_queue(){ return true },
             effect(){
-                let pop = global['resource'][global.race.species].amount + global.civic.garrison.workers;
+                let garrisoned = global.civic.garrison.workers;
+                for (let i=0; i<3; i++){
+                    if (global.civic.foreign[`gov${i}`].occ){
+                        garrisoned += 20;
+                    }
+                }
+                let pop = global['resource'][global.race.species].amount + garrisoned;
                 let plasmid = Math.round(pop / 3);
                 let k_base = global.stats.know;
                 let k_inc = 50000;
@@ -11027,7 +11033,13 @@ export const actions = {
             cost: {},
             no_queue(){ return true },
             effect(){
-                let pop = global['resource'][global.race.species].amount + global.civic.garrison.workers;
+                let garrisoned = global.civic.garrison.workers;
+                for (let i=0; i<3; i++){
+                    if (global.civic.foreign[`gov${i}`].occ){
+                        garrisoned += 20;
+                    }
+                }
+                let pop = global['resource'][global.race.species].amount + garrisoned;
                 let plasmid = Math.round(pop / 3);
                 let k_base = global.stats.know;
                 let k_inc = 50000;
@@ -12527,7 +12539,13 @@ function bioseed(){
     let plasmid = global.race.Plasmid.count;
     let antiplasmid = global.race.Plasmid.anti;
     let phage = global.race.Phage.count;
-    let pop = global['resource'][global.race.species].amount + global.civic.garrison.workers;
+    let garrisoned = global.civic.garrison.workers;
+    for (let i=0; i<3; i++){
+        if (global.civic.foreign[`gov${i}`].occ){
+            garrisoned += 20;
+        }
+    }
+    let pop = global['resource'][global.race.species].amount + garrisoned;
     let new_plasmid = Math.round(pop / 3);
     let k_base = global.stats.know;
     let k_inc = 50000;
@@ -12679,7 +12697,13 @@ function big_bang(){
     let antiplasmid = global.race.Plasmid.anti;
     let phage = global.race.Phage.count;
     let dark = global.race.Dark.count;
-    let pop = global['resource'][global.race.species].amount + global.civic.garrison.workers;
+    let garrisoned = global.civic.garrison.workers;
+    for (let i=0; i<3; i++){
+        if (global.civic.foreign[`gov${i}`].occ){
+            garrisoned += 20;
+        }
+    }
+    let pop = global['resource'][global.race.species].amount + garrisoned;
     let new_plasmid = Math.round(pop / 2);
     let k_base = global.stats.know;
     let k_inc = 40000;
