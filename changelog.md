@@ -1,3 +1,19 @@
+#### 0.7.5 - 11/28/2019 ####
+Queueing 2x or more of the same building in a row will now stack them in the queue<br>
+Queue timer now adjusts for cost creep<br>
+ARPA Projects can now be queued<br>
+Fixed a bug that could break the game when Yeti or Wendigo unlocked the genetics lab<br>
+
+#### 0.7.4 - 11/27/2019 ####
+Wendigo can now build hunting lodges<br>
+Trade route prices are now tracked to 1 decimal<br>
+Elusive spies will no longer be killed when they fail a mission<br>
+Disruptor Rifles now require researching Quantum Entanglement<br>
+
+#### 0.7.3 - 11/26/2019 ####
+Night Theme trade volume control made more night theme friendly<br>
+Contrast improvements for Night and R/G Theme<br>
+
 #### 0.7.2 - 11/24/2019 ####
 New market buy/sell volume control<br>
 Large Trade upgrade now raises the buy/sell cap to 5,000<br>
