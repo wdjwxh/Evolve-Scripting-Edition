@@ -864,10 +864,6 @@ if (!global.civic['new']){
 global.settings.animated = true;
 global.settings.disableReset = false;
 
-if (global.lastMsg){
-    messageQueue(global.lastMsg.m, global.lastMsg.c);
-}
-
 if (global['arpa'] && global.arpa['launch_facility'] && global.arpa.launch_facility.rank > 0 && !global.tech['space']){
     global.tech['space'] = 1;
 }
