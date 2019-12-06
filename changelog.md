@@ -1,3 +1,7 @@
+#### 0.7.7 - 12/5/2019 ####
+Super projects now queue in larger batches<br>
+Super projects now only report completion by the queue if actually complete instead of for each segment constructed<br>
+
 #### 0.7.6 - 12/2/2019 ####
 Adjacent queue items of the same type will now combine<br>
 Architect now doubles queue sizes instead of adding a flat +2<br>

@@ -4404,7 +4404,14 @@ function midLoop(){
                     }
                 }
                 else if (c_action.action()){
-                    messageQueue(loc('build_success',[global.queue.queue[idx].label]),'success');
+                    if (c_action['queue_complete']){
+                        if (c_action.queue_complete()){
+                            messageQueue(loc('build_success',[global.queue.queue[idx].label]),'success');
+                        }
+                    }
+                    else {
+                        messageQueue(loc('build_success',[global.queue.queue[idx].label]),'success');
+                    }
                     if (global.queue.queue[idx].q > 1){
                         global.queue.queue[idx].q--;
                     }
@@ -4531,6 +4538,7 @@ let sythMap = {
 };
 
 function longLoop(){
+    const date = new Date();
     if (global.race.species !== 'protoplasm'){
         
         if (global.portal['fortress']){
@@ -5023,6 +5031,14 @@ function longLoop(){
         if (global.arpa.sequence && global.arpa.sequence['auto'] && global.tech['genetics'] && global.tech['genetics'] === 7){
             buildGene();
         }
+    }
+
+    if (date.getMonth() === 11 && date.getDate() >= 17 && date.getDate() <= 24){
+        global['special'] = { gift: true };
+        global.tech['santa'] = 1;
+    }
+    else {
+        delete global.tech['santa'];
     }
 
     // Save game state
