@@ -367,7 +367,7 @@ if (convertVersion(global['version']) < 7007 && global['queue'] && global['queue
     }
 }
 
-global['version'] = '0.7.7';
+global['version'] = '0.7.9';
 delete global['beta'];
 
 if (global.civic['cement_worker'] && global.civic.cement_worker.impact === 0.25){
@@ -872,6 +872,10 @@ if (!global.civic['new']){
     global.civic['new'] = 0;
 }
 
+if (!global.civic['d_job']){
+    global.civic['d_job'] = 'farmer';
+}
+
 global.settings.animated = true;
 global.settings.disableReset = false;
 
@@ -1061,23 +1065,6 @@ export function sizeApproximation(value,precision,fixed){
 $(window).resize(function(){
     resizeGame();
 });
-
-window.exportGame = function exportGame(){
-    $('#importExport').val(LZString.compressToBase64(JSON.stringify(global)));
-    $('#importExport').select();
-    document.execCommand('copy');
-}
-
-window.importGame = function importGame(){
-    if ($('#importExport').val().length > 0){
-        let saveState = JSON.parse(LZString.decompressFromBase64($('#importExport').val()));
-        if (saveState && 'evolution' in saveState && 'settings' in saveState && 'stats' in saveState && 'plasmid' in saveState.stats){
-            global = saveState;
-            save.setItem('evolved',LZString.compressToUTF16(JSON.stringify(global)));
-            window.location.reload();
-        }
-    }
-}
 
 export function srSpeak(text, priority) {
     var el = document.createElement("div");

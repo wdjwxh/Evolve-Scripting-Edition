@@ -664,6 +664,13 @@ function fastLoop(){
             }
             modRes('RNA',global.evolution['organelles'].count * rna_multiplier * global_multiplier * time_multiplier);
         }
+
+        if (global.stats.feat['novice'] && global.race.universe !== 'bigbang' && (!global.race.seeded || (global.race.seeded && global.race['chose']))){
+            modRes('RNA', (global.stats.feat['novice'] / 2) * time_multiplier * global_multiplier);
+            if (global.resource.DNA.display){
+                modRes('DNA', (global.stats.feat['novice'] / 4) * time_multiplier * global_multiplier);
+            }
+        }
         // Detect new unlocks
         if (global['resource']['RNA'].amount >= 2 && !global.evolution['dna']){
             global.evolution['dna'] = 1;
@@ -1367,8 +1374,12 @@ function fastLoop(){
             }
         });
 
-        if (global.civic.new > 0 && !global.race['carnivore'] && !global.race['soul_eater'] && global.civic.farmer.display){
+        if (global.civic.d_job === 'farmer' && global.civic.new > 0 && !global.race['carnivore'] && !global.race['soul_eater'] && global.civic.farmer.display){
             global.civic.farmer.workers += global.civic.new;
+            global.civic.free -= global.civic.new;
+        }
+        else if (global.civic.d_job !== 'unemployed'){
+            global.civic[global.civic.d_job].workers += global.civic.new;
             global.civic.free -= global.civic.new;
         }
         global.civic.new = 0;
