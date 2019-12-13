@@ -207,6 +207,12 @@ if (convertVersion(global['version']) < 4031){
     }
 }
 
+if (convertVersion(global['version']) < 4032){
+    if (global.race.species === 'balorg'){
+        global.race['slaver'] = 1;  
+    }
+}
+
 if (convertVersion(global['version']) < 5000){
     global['portal'] = {};
     if (global['city'] && global.city['factory'] && !global.city.factory['Stanene']){
@@ -367,7 +373,7 @@ if (convertVersion(global['version']) < 7007 && global['queue'] && global['queue
     }
 }
 
-global['version'] = '0.7.9';
+global['version'] = '0.7.10';
 delete global['beta'];
 
 if (global.civic['cement_worker'] && global.civic.cement_worker.impact === 0.25){
@@ -823,10 +829,6 @@ if (!global['arpa']){
     global['arpa'] = {};
 }
 
-if (global.race.species === 'balorg'){
-    global.race['slaver'] = 1;
-}
-
 if (global.city['factory']){
     if (!global.city.factory['Lux']){
         global.city.factory['Lux'] = 0;
@@ -873,7 +875,15 @@ if (!global.civic['new']){
 }
 
 if (!global.civic['d_job']){
-    global.civic['d_job'] = 'farmer';
+    if (global.race['carnivore'] || global.race['soul_eater']){
+        global.civic['d_job'] = 'unemployed';
+    }
+    else if (global.tech['agriculture'] && global.tech['agriculture'] >= 1){
+        global.civic['d_job'] = 'farmer';
+    }
+    else{
+        global.civic['d_job'] = 'unemployed';
+    }
 }
 
 global.settings.animated = true;

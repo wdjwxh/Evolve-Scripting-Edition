@@ -2814,7 +2814,8 @@ export const actions = {
             desc(){ 
                 let bonus = global.tech['agriculture'] >= 5 ? 5 : 3;
                 if (global.tech['agriculture'] >= 6){
-                    return loc('city_mill_desc2',[bonus]);
+                    let power = global.race['environmentalist'] ? 1.5 : 1;
+                    return loc('city_mill_desc2',[bonus,power]);
                 }
                 else {
                     return loc('city_mill_desc1',[bonus]);
@@ -2853,7 +2854,8 @@ export const actions = {
                 return loc('city_mill_title2');
             },
             desc(){
-                return loc('city_windmill_desc');
+                let power = global.race['environmentalist'] ? 1.5 : 1;
+                return loc('city_windmill_desc',[power]);
             },
             category: 'utility',
             reqs: { wind_plant: 1 },
@@ -6358,6 +6360,9 @@ export const actions = {
             effect: loc('tech_freight_effect'),
             action(){
                 if (payCosts($(this)[0].cost)){
+                    if (global.tech['high_tech'] >= 6) {
+                        arpa('Physics');
+                    }
                     return true;
                 }
                 return false;
@@ -11817,26 +11822,27 @@ export function setPlanet(hell){
                 popper.append($(`<div>${planetTraits[trait].desc}</div>`));
             }
 
-            let array = [];
+            let geo = '';
+            let cnt = 0;
+            let end = Object.keys(geology).length;
             for (let key in geology){
                 if (key !== 0){
-                    array.push(geology[key] > 0 ? loc('set_planet_rich') : loc('set_planet_poor'));
-                    array.push(key);
+                    cnt++;
+                    let label = geology[key] > 0 ? loc('set_planet_rich') : loc('set_planet_poor');
+                    if (cnt === 1){
+                        geo = loc('set_planet_extra',[label,key]);
+                    }
+                    else if (cnt === end){
+                        geo = geo + loc('set_planet_extra_frag2',[label,key]);
+                    }
+                    else {
+                        geo = geo + loc('set_planet_extra_frag1',[label,key])
+                    }
                 }
             }
-            
-            switch (array.length){
-                case 2:
-                    popper.append($(`<div>${loc('set_planet_extra1',[array[0],array[1]])}</div>`));
-                    break;
-                case 4:
-                    popper.append($(`<div>${loc('set_planet_extra2',[array[0],array[1],array[2],array[3]])}</div>`));
-                    break;
-                case 6:
-                    popper.append($(`<div>${loc('set_planet_extra3',[array[0],array[1],array[2],array[3],array[4],array[5]])}</div>`));
-                    break;
-                default:
-                    break;
+
+            if (geo.length > 0){
+                popper.append($(`<div>${geo}.</div>`));
             }
 
             popper.show();
