@@ -5400,6 +5400,8 @@ function enableScript(){
         arpaProjects: arpaProjects,
         loc: loc,
         messageQueue: messageQueue,
+        tradeSellPrice: tradeSellPrice,
+        tradeBuyPrice: tradeBuyPrice,
 
         document: document,
     };
