@@ -5383,6 +5383,8 @@ function enableScript(){
         f_rate: f_rate,
         adjustCosts: adjustCosts,
         arpaProjects: arpaProjects,
+        loc: loc,
+        messageQueue: messageQueue,
 
         document: document,
     };
