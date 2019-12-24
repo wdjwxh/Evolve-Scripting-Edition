@@ -1,4 +1,4 @@
-import { global, save, poppers, resizeGame, breakdown, keyMultiplier, p_on, moon_on, red_on, belt_on, int_on, set_qlevel, achieve_level, quantum_level } from './vars.js';
+import { keyMap, global, save, poppers, resizeGame, breakdown, keyMultiplier, p_on, moon_on, red_on, belt_on, int_on, set_qlevel, achieve_level, quantum_level } from './vars.js';
 import { loc, locales } from './locale.js';
 import { mainVue, timeCheck, timeFormat, powerModifier, modRes, messageQueue, adjustCosts } from './functions.js';
 import { setupStats, unlockAchieve, checkAchievements } from './achieve.js';
@@ -5402,6 +5402,7 @@ function enableScript(){
         messageQueue: messageQueue,
         tradeSellPrice: tradeSellPrice,
         tradeBuyPrice: tradeBuyPrice,
+        keyMap: keyMap,
 
         document: document,
     };
