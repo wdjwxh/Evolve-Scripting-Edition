@@ -1,3 +1,18 @@
+#### 0.7.16 - 1/8/2020 ####
+Exploration Missions can be queued again<br>
+The game will now notify the user if the current version is out of date<br>
+
+Changes by Beorseder<br>
+Geology deposit aesthetic changes on planet selection<br>
+Miner's Dream Achievement & Perk<br>
+
+#### 0.7.15 - 1/7/2020 ####
+Queueing the World Collider will no longer lag the game<br>
+Multi-segement projects will now have extra segments cleared from the queue on completion<br>
+Spy and Government related popovers that would sometimes get stuck open will now clear<br>
+Queued projects that will not complete due to lack of production will now display a green [Never] instead of -1 second timer.<br>
+Multi-segment projects no longer block queueing ARPA projects unless they consumed the entire queue space<br>
+
 #### 0.7.14 - 12/31/2019 ####
 Research Categorization option by Naryl<br>
 

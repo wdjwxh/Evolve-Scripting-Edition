@@ -2667,19 +2667,19 @@ function fastLoop(){
         }
 
         // Mars Mining
-        if (red_on['red_mine'] && red_on['red_mine'] > 0){
+        if (red_on['red_mine'] && red_on['red_mine'] > 0) {
             let copper_base = red_on['red_mine'] * 0.25 * global.civic.colonist.workers * zigguratBonus();
             if (global.race['magnificent'] && global.city['shrine'] && global.city.shrine.count > 0){
                 copper_base *= 1 + (global.city.shrine.metal / 100);
             }
-            copper_bd[`${races[global.race.species].solar.red}_Mining`] = (copper_base) + 'v';
+            copper_bd[loc('space_red_mine_desc_bd', [races[global.race.species].solar.red])] = (copper_base) + 'v';
             modRes('Copper', copper_base * time_multiplier * global_multiplier * hunger);
 
             let titanium_base = red_on['red_mine'] * 0.02 * global.civic.colonist.workers * hunger * zigguratBonus();
             if (global.race['magnificent'] && global.city['shrine'] && global.city.shrine.count > 0){
                 titanium_base *= 1 + (global.city.shrine.metal / 100);
             }
-            titanium_bd[`${races[global.race.species].solar.red}_Mining`] = (titanium_base) + 'v';
+            titanium_bd[loc('space_red_mine_desc_bd', [races[global.race.species].solar.red])] = (titanium_base) + 'v';
             modRes('Titanium', titanium_base * time_multiplier * global_multiplier);
         }
         if (global.race['magnificent'] && global.city['shrine'] && global.city.shrine.count > 0){
@@ -4420,6 +4420,11 @@ function midLoop(){
                     }
                 }
 
+                if (t_action && t_action['no_queue'] && t_action.no_queue() && !t_action['grant']){
+                    global.queue.queue.splice(i,1);
+                    break;
+                }
+
                 if (struct.type === 'arpa'){
                     if (!stop){
                         c_action = t_action;
@@ -5411,3 +5416,16 @@ function enableScript(){
         document: document,
     };
 }
+
+intervals['version_check'] = setInterval(function(){
+    $.ajax({
+        url: 'https://tmvictor.github.io/Evolve-Scripting-Edition/package.json',
+        type: 'GET',
+        dataType: 'json',
+        success: function(res){
+            if (res['version'] && res['version'] != global['version'] && !global['beta']){
+                $('#topBar .version > a').html('<span class="has-text-warning">Update Available</span> v'+global.version);
+            }
+        }
+    });
+}, 900000);
