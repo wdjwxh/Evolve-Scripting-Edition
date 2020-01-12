@@ -153,7 +153,8 @@ $('#morale').on('mouseover',function(){
         moralePopper.append(`<p class="modal_bd"><span>${loc('morale_rev')}</span> <span class="has-text-danger"> -${+(global.city.morale.rev).toFixed(1)}%</span></p>`);
     }
     if (global.civic.govern.type === 'corpocracy'){
-        moralePopper.append(`<p class="modal_bd"><span>${loc('govern_corpocracy')}</span> <span class="has-text-danger"> -15%</span></p>`);
+        total -= 10;
+        moralePopper.append(`<p class="modal_bd"><span>${loc('govern_corpocracy')}</span> <span class="has-text-danger"> -10%</span></p>`);
     }
     
     total = +(total).toFixed(1);
@@ -497,7 +498,7 @@ function fastLoop(){
                 temple_bonus *= 1.13;
             }
             if (global.civic.govern.type === 'theocracy'){
-                temple_bonus *= 1.05;
+                temple_bonus *= 1.12;
             }
             let faith = global.city.temple.count * temple_bonus;
             breakdown.p['Global'][loc('faith')] = (faith * 100) + '%';
@@ -740,7 +741,7 @@ function fastLoop(){
         }
 
         if (global.civic.govern.type === 'corpocracy'){
-            morale -= 15;
+            morale -= 10;
         }
 
         if (global.race['frenzy']){
@@ -1898,7 +1899,7 @@ function fastLoop(){
                     delta *= 1.20;
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    delta *= 1.5;
+                    delta *= 2.5;
                 }
                 if (global.civic.govern.type === 'socialist'){
                     delta *= 0.8;
@@ -1949,7 +1950,7 @@ function fastLoop(){
                     factory_output *= 1 + (global.race['metallurgist'] * 0.04);
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.15;
+                    factory_output *= 1.2;
                 }
                 if (global.civic.govern.type === 'socialist'){
                     factory_output *= 1.05;
@@ -2007,7 +2008,7 @@ function fastLoop(){
                     factory_output *= 1.42;
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.15;
+                    factory_output *= 1.2;
                 }
                 if (global.civic.govern.type === 'socialist'){
                     factory_output *= 1.05;
@@ -2065,7 +2066,7 @@ function fastLoop(){
                     factory_output *= 1.42;
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.15;
+                    factory_output *= 1.2;
                 }
                 if (global.civic.govern.type === 'socialist'){
                     factory_output *= 1.05;
@@ -2117,7 +2118,7 @@ function fastLoop(){
 
                 let factory_output = workDone * (assembly ? f_rate.Stanene.output[global.tech['factory']] : f_rate.Stanene.output[0]);
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.15;
+                    factory_output *= 1.2;
                 }
                 if (global.civic.govern.type === 'socialist'){
                     factory_output *= 1.05;
@@ -2999,7 +3000,7 @@ function fastLoop(){
             if (global.tech['gambling'] >= 2){
                 let cash = (Math.log2(global.resource[global.race.species].amount) * (global.race['gambler'] ? 2.5 + (global.race['gambler'] / 10) : 2.5)).toFixed(2);
                 if (global.civic.govern.type === 'corpocracy'){
-                    cash *= 2;
+                    cash *= 3;
                 }
                 if (global.civic.govern.type === 'socialist'){
                     cash *= 0.8;
@@ -3022,7 +3023,7 @@ function fastLoop(){
                 tourism += global.city['tourist_center'].on * global.tech['monuments'] * 2;
             }
             if (global.civic.govern.type === 'corpocracy'){
-                tourism *= 1.5;
+                tourism *= 2;
             }
             if (global.civic.govern.type === 'socialist'){
                 tourism *= 0.8;
@@ -3295,6 +3296,7 @@ function midLoop(){
 
         var bd_Money = { Base: caps['Money']+'v' };
         var bd_Citizen = {};
+        var bd_Slave = {};
         var bd_Knowledge = { Base: caps['Knowledge']+'v' };
         var bd_Food = { Base: caps['Food']+'v' };
         var bd_Lumber = { Base: caps['Lumber']+'v' };
@@ -3323,6 +3325,7 @@ function midLoop(){
         var bd_Stanene = { Base: caps['Stanene']+'v' };
 
         caps[global.race.species] = 0;
+        caps['Slave'] = 0;
         if (global.city['farm']){
             if (global.tech['farm']){
                 caps[global.race.species] += global.city['farm'].count;
@@ -3458,6 +3461,10 @@ function midLoop(){
             }
         }
         
+        if (global.race['slaver'] && global.tech['slaves'] && global.city['slave_pen']) {
+            caps['Slave'] = global.city.slave_pen.count * 5;
+            bd_Slave[loc('city_slave_pen')] = global.city.slave_pen.count * 5 + 'v';
+        }
         if (global.city['basic_housing']){
             caps[global.race.species] += global.city['basic_housing'].count;
             bd_Citizen[housingLabel('small')] = global.city['basic_housing'].count + 'v';
@@ -4028,6 +4035,7 @@ function midLoop(){
         breakdown.c = {
             Money: bd_Money,
             [global.race.species]: bd_Citizen,
+            Slave: bd_Slave,
             Knowledge: bd_Knowledge,
             Food: bd_Food,
             Lumber: bd_Lumber,
