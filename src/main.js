@@ -473,6 +473,7 @@ resourceAlt();
 var gene_sequence = global.arpa['sequence'] && global.arpa['sequence']['on'] ? global.arpa.sequence.on : 0;
 function fastLoop(){
     keyMultiplier();
+    const date = new Date();
     
     breakdown.p['Global'] = {};
     var global_multiplier = 1;
@@ -1718,6 +1719,9 @@ function fastLoop(){
             }
             else {
                 var lowerBound = global.tech['reproduction'] ? global.tech['reproduction'] : 0;
+                if (global.tech['reproduction'] && date.getMonth() === 1 && date.getDate() === 14){
+                    lowerBound += 5;
+                }
                 if (global.race['fast_growth']){
                     lowerBound *= 2;
                     lowerBound += 2;
@@ -2218,6 +2222,10 @@ function fastLoop(){
             let consume_oil = global.race['forge'] ? 0 : global.city['smelter'].Oil * 0.35;
             iron_smelter = global.city['smelter'].Iron;
             let steel_smelter = global.city['smelter'].Steel;
+            if (global.race['steelen']) {
+                iron_smelter += steel_smelter;
+                steel_smelter = 0;
+            }
             let oil_bonus = global.race['forge'] ? global.city['smelter'].Wood + global.city['smelter'].Coal + global.city['smelter'].Oil : global.city['smelter'].Oil;
             while (iron_smelter + steel_smelter > global.city['smelter'].Wood + global.city['smelter'].Coal + global.city['smelter'].Oil ){
                 if (steel_smelter > 0){
