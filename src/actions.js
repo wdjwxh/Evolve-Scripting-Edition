@@ -12783,7 +12783,7 @@ function checkTechQualifications(c_action,type){
     return true;
 }
 
-function checkOldTech(tech){
+export function checkOldTech(tech){
     let tch = actions.tech[tech].grant[0];
     if (global.tech[tch] && global.tech[tch] >= actions.tech[tech].grant[1]){
         if (tech !== 'fanaticism' && tech !== 'anthropology' && tech !== 'deify' && tech !== 'study'){

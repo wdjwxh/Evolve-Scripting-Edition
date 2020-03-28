@@ -17,8 +17,8 @@ export function index(){
             <b-tooltip :label="temp()" :aria-label="temp()" position="is-bottom" size="is-small" multilined animated><i id="temp" class="temp wi"></i></b-tooltip>
             </span>
         </span>
-        <span class="version"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/changelog.md" target="_blank"></a></span>
-        <span class="right has-text-warning"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Why scripting edition?</a></span>
+        <span class="version"><a href="https://github.com/wdjwxh/Evolve-Scripting-Edition/blob/master/changelog.md" target="_blank"></a></span>
+        <span class="right has-text-warning"><a href="https://github.com/wdjwxh/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Why scripting edition?</a></span>
     </div>`);
 
     let main = $(`<div id="main" class="main"></div>`);
@@ -313,5 +313,5 @@ export function index(){
     columns.append(`<div id="queueColumn" class="queueCol column"></div>`);
 
     // Bottom Bar
-    $('body').append(`<div class="promoBar"><span class="left"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Unsupported Scripting Edition</h1></span></a><span class="right"><h2 class="is-sr-only">External Links</h2><a href="https://pmotschmann.github.io/Evolve/" target="_blank">Original Evolve Idle Game</a> | <a href="https://github.com/pmotschmann/Evolve" target="_blank">Demagorddon GitHub</a> | <a href="https://www.patreon.com/demagorddon" target="_blank">Demagorddon Patreon</a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PTRJZBW9J662C&currency_code=USD&source=url" target="_blank">Donate to Demagorddon</a></span></div>`);
+    $('body').append(`<div class="promoBar"><span class="left"><a href="https://github.com/wdjwxh/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Unsupported Scripting Edition</h1></span></a><span class="right"><h2 class="is-sr-only">External Links</h2><a href="https://pmotschmann.github.io/Evolve/" target="_blank">Original Evolve Idle Game</a> | <a href="https://github.com/pmotschmann/Evolve" target="_blank">Demagorddon GitHub</a> | <a href="https://www.patreon.com/demagorddon" target="_blank">Demagorddon Patreon</a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PTRJZBW9J662C&currency_code=USD&source=url" target="_blank">Donate to Demagorddon</a></span></div>`);
 }

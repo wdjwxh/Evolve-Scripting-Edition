@@ -6365,7 +6365,7 @@ function enableScript(){
 
 intervals['version_check'] = setInterval(function(){
     $.ajax({
-        url: 'https://tmvictor.github.io/Evolve-Scripting-Edition/package.json',
+        url: 'https://wdjwxh.github.io/Evolve-Scripting-Edition/package.json',
         type: 'GET',
         dataType: 'json',
         success: function(res){
