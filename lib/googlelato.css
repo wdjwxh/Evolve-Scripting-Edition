@@ -3,5 +3,5 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('Lato Regular'), local('Lato-Regular'), url(/lib/lato.ttf) format('truetype');
+  src: local('Lato Regular'), local('Lato-Regular'), url(lib/lato.ttf) format('truetype');
 }
