@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Evolve
+// @name         Evolve(支持中文)
 // @namespace    http://tampermonkey.net/
-// @version      2.7.6
+// @version      2.7.7
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -12143,6 +12143,9 @@
 
         if (index === -1) {
             // for other language
+            if (typeof window.evolve == "undefined") {
+                return "";
+            }
             index = findArrayIndex(raceAchievementList, "id", window.evolve.global.race.species);
             if (index === -1) {
                 return "";
