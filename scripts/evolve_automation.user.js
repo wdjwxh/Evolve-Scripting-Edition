@@ -3,11 +3,13 @@
 // @namespace    http://tampermonkey.net/
 // @version      2.7.6
 // @description  try to take over the world!
-// @downloadURL  https://gist.github.com/wdjwxh/8c28d615c58b9d5250132abe3de6ba10/raw/evolve_automation.user.js
+// @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
 // @author       TMVictor
+// @author       wdjwxh
 // @match        https://tmvictor.github.io/Evolve-Scripting-Edition/
 // @match        https://wdjwxh.github.io/Evolve-Scripting-Edition/
+// @match        https://wdjwxh.gitee.io/evolve-scripting-edition/
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.4.1.min.js
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
