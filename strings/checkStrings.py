@@ -6,9 +6,9 @@ import re
 print()
 
 check_tokens = True
-check_leading_space = True
-check_periods = True
-check_numbers = True
+check_leading_space = False
+check_periods = False
+check_numbers = False
 
 def led_spaces(str):
     return len(str) - len(str.lstrip(' '))
@@ -25,7 +25,7 @@ else:
     with open('strings.json', encoding='utf-8') as default_file, \
         open('strings.{}.json'.format(locale), encoding='utf-8') as loc_file:
         defstr = json.load(default_file)
-        
+
         json_regex = re.compile(r'"(?P<key>.+)"\s*:\s"(?P<value>.*)"\s*$')
         period_count = re.compile(r'(\.(\D|$))|。')
         tokens_regex = re.compile(r'%\d+(?!\d)')
@@ -38,7 +38,7 @@ else:
 
             if line[-1] == ',':
                 line = line[:-1]
-            
+
             line = re.search(json_regex, line)
 
             if line == None:
@@ -50,7 +50,7 @@ else:
                 continue
             else:
                 defline = defstr[line['key']]
-            
+
             if check_tokens:
                 tcdef = len(tokens_regex.findall(defline))
                 tcloc = len(tokens_regex.findall(line['value']))
@@ -63,14 +63,14 @@ else:
                 ledloc = led_spaces(line['value'])
                 if leddef != ledloc:
                     print("leading spaces differ (def: {} != loc: {}), in key '{}', line {}".format(leddef, ledloc, line['key'], nl+1))
-            
-            if check_periods:            
+
+            if check_periods:
                 pcdef = len(period_count.findall(defline))
                 pcloc = len(period_count.findall(line['value']))
                 if pcdef != pcloc:
                     print("periods number differ (def: {} != loc: {}), in key '{}', line {}" \
                         .format(pcdef, pcloc, line['key'], nl+1))
-            
+
             if check_numbers:
                 pcdef = numbers_regex.findall(defline)
                 pcloc = numbers_regex.findall(line['value'])
