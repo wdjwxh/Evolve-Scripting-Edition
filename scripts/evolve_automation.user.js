@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Evolve(支持中文)
 // @namespace    http://tampermonkey.net/
-// @version      2.7.7
+// @version      2.7.8
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -15,6 +15,8 @@
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
 // ==/UserScript==
 //
+// Update:
+// v2.7.8  增加牧师的autoJob
 // DIRECT LINK FOR GREASEMONKEY / TAMPERMONKEY: https://gist.github.com/TMVictor/3f24e27a21215414ddc68842057482da/raw/evolve_automation.user.js
 // Just navigate to that link with one of the monkeys installed and it will load the script.
 // You can update to latest through the relevent UI for each extension.
@@ -4808,6 +4810,7 @@
             Professor: new Job("professor", "Professor"),
             Scientist: new Job("scientist", "Scientist"),
             Banker: new Job("banker", "Banker"),
+            Priest: new Job("priest", "Priest"),
             Colonist: new Job("colonist", "Colonist"),
             SpaceMiner: new Job("space_miner", "Space Miner"),
             HellSurveyor: new Job("hell_surveyor", "Hell Surveyor"),
@@ -5580,6 +5583,7 @@
         state.jobManager.addJobToPriorityList(state.jobs.Miner);
         state.jobManager.addJobToPriorityList(state.jobs.CoalMiner);
         state.jobManager.addJobToPriorityList(state.jobs.Banker);
+        state.jobManager.addJobToPriorityList(state.jobs.Priest);
         state.jobManager.addJobToPriorityList(state.jobs.Colonist);
         state.jobManager.addJobToPriorityList(state.jobs.SpaceMiner);
         state.jobManager.addJobToPriorityList(state.jobs.HellSurveyor);
@@ -5603,6 +5607,8 @@
         state.jobs.Miner.breakpointMaxs = [3, 5, -1];
         state.jobs.CoalMiner.breakpointMaxs = [2, 4, -1];
         state.jobs.Banker.breakpointMaxs = [3, 5, -1];
+        state.jobs.Priest.breakpointMaxs = [2, 4, -1];
+        //暂不确定
         state.jobs.Colonist.breakpointMaxs = [0, 0, -1];
         state.jobs.SpaceMiner.breakpointMaxs = [0, 0, -1];
         state.jobs.HellSurveyor.breakpointMaxs = [0, 0, -1];
