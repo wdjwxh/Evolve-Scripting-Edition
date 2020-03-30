@@ -7952,6 +7952,16 @@
                }
             }
 
+            building = state.cityBuildings.CementPlant;
+            if(targetBuilding=== null && building.isUnlocked() && state.cityBuildings.Amphitheatre.count > 0 && state.cityBuildings.CementPlant.count < 1){
+                if( building.count < 1 &&  !state.triggerManager.buildingConflicts(building)) {
+                    earlyBuilding += '水泥厂(1)';
+                    building.click(1);
+                    log("autoBuild", "Target building: coal mine");
+                    targetBuilding = building;
+                }
+            }
+
             building = state.cityBuildings.CoalMine;
             if (targetBuilding === null && building.autoBuildEnabled && building.isUnlocked() && building.autoMax >= 5 && state.cityBuildings.Smelter.count > 5) {
                 if (building.count < 5 && !state.triggerManager.buildingConflicts(building)) {
