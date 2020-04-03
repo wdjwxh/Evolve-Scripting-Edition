@@ -601,7 +601,7 @@ export function calcPrestige(type){
     let garrisoned = global.civic.garrison.workers;
     for (let i=0; i<3; i++){
         if (global.civic.foreign[`gov${i}`].occ){
-            garrisoned += 20;
+            garrisoned += global.civic.govern.type === 'federation' ? 15 : 20;
         }
     }
 
@@ -678,7 +678,7 @@ export function calcPrestige(type){
             default:
                 break;
         }
-        gains.harmony = harmony;
+        gains.harmony = parseFloat(harmony.toFixed(2));
     }
 
     return gains;

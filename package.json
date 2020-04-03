@@ -1,13 +1,15 @@
 {
   "name": "evolveidle",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Evolve Idle",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "less": "lessc -x src/evolve.less dist/evolve.css",
-    "dev": "npx webpack src/main.js --mode=development",
-    "build": "npx webpack src/main.js --mode=production"
+    "dev": "npx webpack src/main.js -o dist/main.js --mode=development",
+    "build": "npx webpack src/main.js -o dist/main.js --mode=production",
+    "devwiki": "npx webpack src/wiki/wiki.js -o wiki/wiki.js --mode=development",
+    "wiki": "npx webpack src/wiki/wiki.js -o wiki/wiki.js --mode=production"
   },
   "repository": {
     "type": "git",
