@@ -1,5 +1,6 @@
 import { global } from './vars.js';
 import { loc } from './locale.js';
+import { easterEgg } from './functions.js';
 
 export function index(){
     $('body').empty();
@@ -219,6 +220,7 @@ export function index(){
         {i: 'heart',    f: 'valentine'},
         {i: 'clover',   f: 'leprechaun'},
         {i: 'bunny',    f: 'easter'},
+        {i: 'egg',      f: 'egghunt'},
         {i: 'ghost',    f: 'halloween'},
         {i: 'turkey',   f: 'thanksgiving'},
         {i: 'present',  f: 'xmas'}
@@ -231,6 +233,12 @@ export function index(){
         else if (global.settings.icon === icons[i]['i']){
             global.settings.icon = 'star';
         }
+    }
+
+    let egg = easterEgg(9,14);
+    let hideEgg = '';
+    if (egg.length > 0){
+        hideEgg = `<b-dropdown-item>${egg}</b-dropdown-item>`;
     }
 
     // Settings Tab
@@ -249,6 +257,7 @@ export function index(){
                 <b-dropdown-item v-on:click="light">{{ 'theme_light' | label }}</b-dropdown-item>
                 <b-dropdown-item v-on:click="night">{{ 'theme_night' | label }}</b-dropdown-item>
                 <b-dropdown-item v-on:click="redgreen">{{ 'theme_redgreen' | label }}</b-dropdown-item>
+                ${hideEgg}
             </b-dropdown>
             <span>{{ 'units' | label }} </span>
             <b-dropdown hoverable>
@@ -308,6 +317,7 @@ export function index(){
             </b-collapse>
         </div>
     </b-tab-item>`);
+
     tabs.append(settings);
     
     // Right Column
