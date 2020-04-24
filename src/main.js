@@ -6589,6 +6589,7 @@ function enableScript(){
         tradeSellPrice: tradeSellPrice,
         tradeBuyPrice: tradeBuyPrice,
         keyMap: keyMap,
+        traits: traits,
 
         document: document,
     };
