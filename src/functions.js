@@ -3,13 +3,15 @@ import { loc } from './locale.js';
 import { races, traits, genus_traits } from './races.js';
 import { actions } from './actions.js';
 import { arpaAdjustCosts } from './arpa.js';
+import { playFabStats } from './playfab.js';
 
 export function mainVue(){
     vBind({
         el: '#mainColumn div:first-child',
         data: { 
             s: global.settings,
-            rq: global.r_queue
+            rq: global.r_queue,
+            playFabStats: playFabStats,
         },
         methods: {
             saveImport(){
@@ -186,6 +188,7 @@ window.importGame = function importGame(data){
         }
         window.location.reload();
     }
+    return false;
 }
 
 export function messageQueue(msg,color){

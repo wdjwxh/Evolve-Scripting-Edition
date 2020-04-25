@@ -30,6 +30,8 @@
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
+    "moment": "^2.24.0",
+    "playfab-web-sdk": "^1.64.200421",
     "vue": "^2.6.10"
   }
 }

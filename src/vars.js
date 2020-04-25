@@ -447,6 +447,7 @@ if (!global['settings']){
         showAchieve: false,
         animated: true,
         disableReset: false,
+        onlineSave: false,
         cLabels: true,
         theme: 'dark',
         locale: 'en-US',

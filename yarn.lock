@@ -1612,6 +1612,11 @@ mkdirp@^0.5.1, mkdirp@^0.5.3:
   dependencies:
     minimist "^1.2.5"
 
+moment@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.npm.taobao.org/moment/download/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
@@ -1875,6 +1880,11 @@ pkg-dir@^3.0.0:
   integrity sha512-/E57AYkoeQ25qkxMj5PBOVgF8Kiu/h7cYS30Z5+R7WaiCCBfLq58ZI/dSeaEKb9WVJV5n/03QwrN3IeWIFllvw==
   dependencies:
     find-up "^3.0.0"
+
+playfab-web-sdk@^1.64.200421:
+  version "1.64.200421"
+  resolved "https://registry.npm.taobao.org/playfab-web-sdk/download/playfab-web-sdk-1.64.200421.tgz#1c567045d1b571493c57baeede5f01dcc2a18065"
+  integrity sha1-HFZwRdG1cUk8V7ru3l8B3MKhgGU=
 
 posix-character-classes@^0.1.0:
   version "0.1.1"

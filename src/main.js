@@ -14,6 +14,7 @@ import { arpa, arpaProjects, buildArpa } from './arpa.js';
 import { events } from './events.js';
 import { index } from './index.js';
 import { getTopChange } from './wiki/change.js';
+import { tryPlayFabAutoLogin} from './playfab.js';
 
 var intervals = {};
 enableScript();
@@ -6602,3 +6603,5 @@ intervals['version_check'] = setInterval(function(){
 
 let changeLog = $(`<div class="infoBox"></div>`);
 popover('versionLog',getTopChange(changeLog),true);
+
+tryPlayFabAutoLogin();
