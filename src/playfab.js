@@ -42,7 +42,10 @@ window.loginPlayFab =  function(username, pass) {
     }
     try {
         storeTempPlayFabInfo(username, pass);
-        PlayFab.ClientApi.LoginWithPlayFab(requestData, playFabLoginCallback);
+        PlayFab.ClientApi.LoginWithPlayFab(requestData, playFabLoginCallback).catch(function (error) { 
+            var err = Object.values(error.errorDetails).join('<br>');
+            $('#playfab-error').html(err);
+        });
     }
     catch (e) {
         console.log(e);
@@ -69,14 +72,11 @@ window.registerPlayFabUser = function () {
         Password: passElem.val(),
         RequireBothUsernameAndEmail: false
     }
-    try {
-        storeTempPlayFabInfo(nameElem.val(), passElem.val());
-        PlayFab.ClientApi.RegisterPlayFabUser(requestData, playFabLoginCallback);
-    }
-    catch (e) {
-        console.log(e);
-        error.html("注册失败...请注意密码需要大于6位");
-    }
+    storeTempPlayFabInfo(nameElem.val(), passElem.val());
+    PlayFab.ClientApi.RegisterPlayFabUser(requestData, playFabLoginCallback).catch(function (error) { 
+        var err = Object.values(error.errorDetails).join('<br>');
+        $('#playfab-reg-error').html(err);
+    });
 }
 
 

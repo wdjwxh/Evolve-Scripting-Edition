@@ -310,10 +310,10 @@ export function index(){
                         <b-tab-item label="登录">
                             <div class="login-form">
                                 <div class="error" id="playfab-error"></div>
-                                <b-field label="用户名">
+                                <b-field label="用户名(英文数字)">
                                     <b-input id="playfab-username"></b-input>
                                 </b-field>
-                                <b-field label="密码">
+                                <b-field label="密码(6-30位)">
                                     <b-input id="playfab-password" type="password"></b-input>
                                 </b-field>
                                 <button class="button" :disabled="false" @click="loginPlayFab()">登录</button>
@@ -322,10 +322,10 @@ export function index(){
                         <b-tab-item label="注册">
                             <div class="login-form">
                                 <div class="error" id="playfab-reg-error"></div>
-                                <b-field label="用户名">
+                                <b-field label="用户名(英文数字)">
                                     <b-input id="playfab-reg-username"></b-input>
                                 </b-field>
-                                <b-field label="密码">
+                                <b-field label="密码(6-30位)">
                                     <b-input id="playfab-reg-password" type="password"></b-input>
                                 </b-field>
                                 <b-field label="确认密码">
@@ -343,6 +343,10 @@ export function index(){
                             云端存档时间: {{ playFabStats.playFabSaveTime | dateFormat}} <br>
                             <button class="button" :disabled="false" @click="importFromPlayFab()">从云端导入存档(注意提前备份本地存档)</button>
                             <button class="button" :disabled="false" @click="syncNow()">立即备份到云端</button>
+                            <br>
+                            请注意: 30天不活动的存档会被清理. <br>
+                            为避免错误覆盖,程序不会自动从云端拉取存档,请在登录账号后点击从云端导入即可。注意在30分钟内操作，否则到30分钟时，新的本地存档会覆盖云端存档。<br>
+
                         </p>
                     </div>
                 </div>
