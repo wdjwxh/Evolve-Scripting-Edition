@@ -7905,9 +7905,9 @@
 
     function autoGatherResources() {
         // Don't spam click once we've got a bit of population going
-        if (state.cityBuildings.RockQuarry.count > 0 && resources.Population.currentQuantity > 15 && game.global.race.species != 'junker') {
-            return;
-        }
+        //if (state.cityBuildings.RockQuarry.count > 0 && resources.Population.currentQuantity > 15 && game.global.race.species != 'junker') {
+        //    return;
+        //}
 
         state.cityBuildings.Food.click(500);
         state.cityBuildings.Lumber.click(50);
