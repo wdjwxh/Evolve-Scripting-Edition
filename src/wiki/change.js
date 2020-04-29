@@ -3,6 +3,16 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.8.13`,
+        date: `4/29/2020`,
+        changes: [
+            `New research is now sorted by knowledge cost.`,
+            `Added popover descriptions for prestige resources.`,
+            `Harmony Crystals now boost standard Dark Energy by 0.1% instead of 0.01%.`,
+            `Lots of minor bug fixes.`,
+        ]
+    },
+    {
         version: `0.8.12`,
         date: `4/24/2020`,
         changes: [
@@ -64,7 +74,7 @@ const changeList = [
         version: `0.8.10`,
         date: `4/13/2020`,
         changes: [
-            `Added EM Field Challenge.`,
+            `Added EM (Electromagentic) Field Challenge.`,
         ]
     },
     {
