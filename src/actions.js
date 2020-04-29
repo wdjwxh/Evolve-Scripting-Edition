@@ -13392,10 +13392,10 @@ export function drawTech(){
     });
 
     new_techs.sort(function(a, b) {
-        if(actions.tech[a].cost.Knowledge == 'undefined'){
+        if(actions.tech[a].cost.Knowledge == undefined){
             return -1;
         }
-        if(actions.tech[b].cost.Knowledge == 'undefined'){
+        if(actions.tech[b].cost.Knowledge == undefined){
             return 1;
         }
         return actions.tech[a].cost.Knowledge() > actions.tech[b].cost.Knowledge() ? 1 : -1;
