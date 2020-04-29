@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Evolve(支持中文)
 // @namespace    http://tampermonkey.net/
-// @version      2.7.8
+// @version      2.7.9
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -16,6 +16,7 @@
 // ==/UserScript==
 //
 // Update:
+// v2.7.9  修复黑洞数据报错
 // v2.7.8  增加牧师的autoJob
 // DIRECT LINK FOR GREASEMONKEY / TAMPERMONKEY: https://gist.github.com/TMVictor/3f24e27a21215414ddc68842057482da/raw/evolve_automation.user.js
 // Just navigate to that link with one of the monkeys installed and it will load the script.
@@ -7698,7 +7699,7 @@
     }
 
     function getBlackholeMass() {
-        if (game.global.interstellar.stellar_engine.mass === undefined || game.global.interstellar.stellar_engine.exotic === undefined) { return 0; }
+        if (!game.global.interstellar.hasOwnProperty('stellar_engine') || game.global.interstellar.stellar_engine.mass === undefined || game.global.interstellar.stellar_engine.exotic === undefined) { return 0; }
         return +(game.global.interstellar.stellar_engine.mass + game.global.interstellar.stellar_engine.exotic).toFixed(10);
     }
 
