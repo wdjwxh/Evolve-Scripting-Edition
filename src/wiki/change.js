@@ -8,28 +8,28 @@ const changeList = [
         changes: [
             `Farming has been redesigned. Farms no longer directly generate food, Farmers now generate food in combination with Farms.`,
             `农业系统重新设计，农场不再直接产生食物，需要分配农民。`,
-            ` `,
+            `&nbsp;`,
             `Added Energizer Feat for ascending without building any Thermal Collectors.`,
             `添加一个新壮举，不建造任何集热器完成飞升。`,
-            ` `,
+            `&nbsp;`,
             `Bad traits no longer count for Ascension Species Creator complexity.`,
             `负面特质不纳入基因奢侈税的计算。`,
-            ` `,
+            `&nbsp;`,
             `Dreaded Achievement will now unlock if you never researched dreadnoughts.`,
             `不研究无畏舰也能正确触发畏惧成就了。`,
-            ` `,
+            `&nbsp;`,
             `Fixed issue with some feats spamming the log due to micro achievements.`,
             `修正了微型宇宙成就造成的日志文件堆积问题。`,
-
+            `&nbsp;`,
             `Fixed base training rate of soldiers.`,
             `修正了士兵的基础训练速度。`,
-
+            `&nbsp;`,
             `Fixed bug with diverse trait that made it do the opposite of what it was suppose to do.`,
             `修正了 [多样性] 特质起反作用的问题，现在恢复正常了。`,
-
+            `&nbsp;`,
             `Adjusted color of "purple" text on Night theme.`,
             `夜晚主题的紫色文字变得更亮了。`,
-
+            `&nbsp;`,
             `Kilowatts are now Megawatts.`,
             `游戏中所有的千瓦（kW）全部改成兆瓦（MW）`
         ]
@@ -39,12 +39,25 @@ const changeList = [
         date: `4/16/2020`,
         changes: [
             `Ascension reset no longer offers planet choices, instead your next race is created on the old planet with bonuses added to that planet.`,
+            `飞升重置后不再选择星球，而是在原星球上重新选择种族进化，另外，该星球会获取一些基础加成。`,
+            `&nbsp;`,
             `Ascended planets now gain +2% to all geology deposits, +5% production, +10% storage, and +2 Sundial base Knowledge gain.`,
+            `飞升后的星球基础加成：所有地质加成 +2%，所有物资产量 +5%，仓储上限 +10%，日诡异知识产量 +2 。`,
+            `&nbsp;`,
             `Unspent gene points in the Ascension Lab will be converted into Untapped Potential.`,
+            `创建自定义种族时，未使用的基因点数将被转化为 [无限潜能] 特质。`,
+            `&nbsp;`,
             `Ascension lab now has a complexity gene tax for adding more then 4 traits.`,
+            `飞升实验室里新增了一项设定，创建自定义种族时，超出4项特质将被征收基因奢侈税。`,
+            `&nbsp;`,
             `Technophobe perk now applies an additional bonus to custom race complexity.`,
+            `技术恐惧症特权将放宽自定义种族时基因奢侈税的起征点。`,
+            `&nbsp;`,
             `Paranoid and Hoarder can now be combined.`,
+            ` [多疑] 特质和 [囤积者特质] 特质现在和同时起作用了。`,
+            `&nbsp;`,
             `Over capped slaves will now be released.`,
+            `修正了奴隶数量显示过多的问题。`,
         ]
     },
     {
