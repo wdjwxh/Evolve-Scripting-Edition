@@ -3,10 +3,21 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.8.13`,
+        date: `4/29/2020`,
+        changes: [
+            `New research is now sorted by knowledge cost.`,
+            `Added popover descriptions for prestige resources.`,
+            `Harmony Crystals now boost standard Dark Energy by 0.1% instead of 0.01%.`,
+            `Lots of minor bug fixes.`,
+        ]
+    },
+    {
         version: `0.8.12`,
         date: `4/24/2020`,
         changes: [
             `Farming has been redesigned. Farms no longer directly generate food, Farmers now generate food in combination with Farms.`,
+            `Added Energizer Feat for ascending without building any Thermal Collectors.`,
             `Bad traits no longer count for Ascension Species Creator complexity.`,
             `Dreaded Achievement will now unlock if you never researched dreadnoughts.`,
             `Fixed issue with some feats spamming the log due to micro achievements.`,
@@ -33,7 +44,7 @@ const changeList = [
         version: `0.8.10`,
         date: `4/13/2020`,
         changes: [
-            `Added EM Field Challenge.`,
+            `Added EM (Electromagentic) Field Challenge.`,
         ]
     },
     {
