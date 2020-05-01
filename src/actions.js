@@ -3971,7 +3971,7 @@ export const actions = {
                         faith *= 1 + (traits.spiritual.vars[0] / 100);
                     }
                     if (global.civic.govern.type === 'theocracy'){
-                        faith *= 1.05;
+                        faith *= 1.12;
                     }
                     faith = +(faith).toFixed(3);
                     let temple = 6;
@@ -3994,7 +3994,7 @@ export const actions = {
                         faith *= 1 + (traits.spiritual.vars[0] / 100);
                     }
                     if (global.civic.govern.type === 'theocracy'){
-                        faith *= 1.05;
+                        faith *= 1.12;
                     }
                     faith = +(faith).toFixed(3);
                     desc = `<div>${loc('city_temple_effect1',[faith])}</div>`;
@@ -4012,7 +4012,7 @@ export const actions = {
                         plasmid *= 1 + (traits.spiritual.vars[0] / 100);
                     }
                     if (global.civic.govern.type === 'theocracy'){
-                        plasmid *= 1.05;
+                        plasmid *= 1.12;
                     }
                     plasmid = +(plasmid).toFixed(3);
                     desc = `<div>${loc('city_temple_effect2',[plasmid])}</div>`;
