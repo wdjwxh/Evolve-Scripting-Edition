@@ -158,6 +158,14 @@ $('#morale').on('mouseover',function(){
         total -= 10;
         moralePopper.append(`<p class="modal_bd"><span>${loc('govern_corpocracy')}</span> <span class="has-text-danger"> -10%</span></p>`);
     }
+    if (global.civic.govern.type === 'republic'){
+        total += 20;
+        moralePopper.append(`<p class="modal_bd"><span>${loc('govern_republic')}</span> <span class="has-text-success"> +20%</span></p>`);
+    }
+    if (global.civic.govern.type === 'federation'){
+        total += 10;
+        moralePopper.append(`<p class="modal_bd"><span>${loc('govern_federation')}</span> <span class="has-text-success"> +10%</span></p>`);
+    }
 
     total = +(total).toFixed(1);
     if (total > moraleCap || total < 50){
@@ -560,8 +568,8 @@ function fastLoop(){
         global_multiplier *= 1 + (traits.rainbow.vars[0] / 100);
     }
     if (global.tech['world_control']){
-        breakdown.p['Global'][loc('tech_unification')] = global.civic.govern.type === 'federation' ? '30%' : '25%';
-        global_multiplier *= global.civic.govern.type === 'federation' ? 1.3 : 1.25;
+        breakdown.p['Global'][loc('tech_unification')] = global.civic.govern.type === 'federation' ? '32%' : '25%';
+        global_multiplier *= global.civic.govern.type === 'federation' ? 1.32 : 1.25;
     }
     else {
         let occupy = 0;
@@ -805,6 +813,12 @@ function fastLoop(){
 
         if (global.civic.govern.type === 'corpocracy'){
             morale -= 10;
+        }
+        if (global.civic.govern.type === 'republic'){
+            morale += 20;
+        }
+        if (global.civic.govern.type === 'federation'){
+            morale += 10;
         }
 
         if (global.race['frenzy']){
@@ -1822,7 +1836,7 @@ function fastLoop(){
             morale -= high_tax * 0.5;
         }
 
-        if (!global.race['frenzy'] && global.civic.garrison.protest + global.civic.garrison.fatigue > 2){
+        if (global.civic.govern.type !== 'autocracy' && !global.race['frenzy'] && global.civic.garrison.protest + global.civic.garrison.fatigue > 2){
             let warmonger = Math.round(Math.log2(global.civic.garrison.protest + global.civic.garrison.fatigue));
             global.city.morale.warmonger = global.race['immoral'] ? warmonger : -(warmonger);
             morale += global.city.morale.warmonger;
@@ -2363,6 +2377,11 @@ function fastLoop(){
             if (global.city['library']){
                 know_bd[loc('city_library')] = ((library_mult - 1) * 100) + '%';
             }
+            if (global.civic.govern.type === 'technocracy'){
+                know_bd[loc('govern_technocracy')] = '10%';
+                delta *= 1.1;
+            }
+
             breakdown.p['Knowledge'] = know_bd;
 
             if (gene_consume > 0) {
@@ -2461,10 +2480,10 @@ function fastLoop(){
                     factory_output *= 1 + (global.race['metallurgist'] * 0.04);
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.2;
+                    factory_output *= 1.3;
                 }
                 if (global.civic.govern.type === 'socialist'){
-                    factory_output *= 1.05;
+                    factory_output *= 1.1;
                 }
 
                 let delta = factory_output;
@@ -2529,10 +2548,10 @@ function fastLoop(){
                     factory_output *= 1.42;
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.2;
+                    factory_output *= 1.3;
                 }
                 if (global.civic.govern.type === 'socialist'){
-                    factory_output *= 1.05;
+                    factory_output *= 1.1;
                 }
 
                 let delta = factory_output;
@@ -2602,10 +2621,10 @@ function fastLoop(){
                     factory_output *= 1.42;
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.2;
+                    factory_output *= 1.3;
                 }
                 if (global.civic.govern.type === 'socialist'){
-                    factory_output *= 1.05;
+                    factory_output *= 1.1;
                 }
 
                 let delta = factory_output;
@@ -2666,10 +2685,10 @@ function fastLoop(){
                     factory_output *= 1 + (traits.toxic.vars[1] / 100);
                 }
                 if (global.civic.govern.type === 'corpocracy'){
-                    factory_output *= 1.2;
+                    factory_output *= 1.3;
                 }
                 if (global.civic.govern.type === 'socialist'){
-                    factory_output *= 1.05;
+                    factory_output *= 1.1;
                 }
 
                 let delta = factory_output;
@@ -2714,8 +2733,11 @@ function fastLoop(){
             cement_base *= racialTrait(global.civic.cement_worker.workers,'factory');
 
             let factory_output = workDone * cement_base;
+            if (global.civic.govern.type === 'corpocracy'){
+                factory_output *= 1.3;
+            }
             if (global.civic.govern.type === 'socialist'){
-                factory_output *= 1.05;
+                factory_output *= 1.1;
             }
 
             let powered_mult = 1;
@@ -2991,8 +3013,11 @@ function fastLoop(){
             modRes('Coal', -(consume_coal * time_multiplier));
             modRes('Oil', -(consume_oil * time_multiplier));
 
+            if (global.civic.govern.type === 'corpocracy'){
+                graphene_production *= 1.3;
+            }
             if (global.civic.govern.type === 'socialist'){
-                graphene_production *= 1.05;
+                graphene_production *= 1.1;
             }
 
             let ai = 1;
@@ -3055,8 +3080,11 @@ function fastLoop(){
                 modRes('Bolognium', -(consume_bolognium * time_multiplier));
                 modRes('Stanene', -(consume_stanene * time_multiplier));
 
+                if (global.civic.govern.type === 'corpocracy'){
+                    vitreloy_production *= 1.3;
+                }
                 if (global.civic.govern.type === 'socialist'){
-                    vitreloy_production *= 1.05;
+                    vitreloy_production *= 1.1;
                 }
 
                 let zig = zigguratBonus();
@@ -3124,7 +3152,7 @@ function fastLoop(){
             }
             else {
                 let lumber_base = global.civic.lumberjack.workers;
-                lumber_base *= global.city.biome === 'forest' ? 1.1 : 1;
+                lumber_base *= global.city.biome === 'forest' ? 1.15 : 1;
                 lumber_base *= global.civic.lumberjack.impact;
                 lumber_base *= racialTrait(global.civic.lumberjack.workers,'lumberjack');
                 lumber_base *= (global.tech['axe'] && global.tech['axe'] > 1 ? (global.tech['axe'] - 1) * 0.35 : 0) + 1;
@@ -3162,6 +3190,9 @@ function fastLoop(){
             stone_base *= global.civic.quarry_worker.impact;
             stone_base *= racialTrait(global.civic.quarry_worker.workers,'miner');
             stone_base *= (global.tech['hammer'] && global.tech['hammer'] > 0 ? global.tech['hammer'] * 0.4 : 0) + 1;
+            if (global.city.biome === 'desert'){
+                stone_base *= 1.2;
+            }
             if (global.tech['explosives'] && global.tech['explosives'] >= 2){
                 stone_base *= global.tech['explosives'] >= 3 ? 1.75 : 1.5;
             }
@@ -3272,6 +3303,10 @@ function fastLoop(){
                     copper_base *= global.city.geology['Copper'] + 1;
                 }
 
+                if (global.city.biome === 'volcanic'){
+                    copper_base *= 1.12;
+                }
+
                 let copper_shrine = 1;
                 if (global.race['magnificent'] && global.city['shrine'] && global.city.shrine.count > 0){
                     copper_shrine = 1 + (global.city.shrine.metal / 100);
@@ -3305,6 +3340,10 @@ function fastLoop(){
 
                 if (global.city.geology['Iron']){
                     iron_base *= global.city.geology['Iron'] + 1;
+                }
+
+                if (global.city.biome === 'volcanic'){
+                    iron_base *= 1.08;
                 }
 
                 let space_iron = 0;
@@ -3468,6 +3507,9 @@ function fastLoop(){
                 oil_base *= global.city.geology['Oil'] + 1;
             }
             let oil_well = oil_base * global.city.oil_well.count;
+            if (global.city.biome === 'desert'){
+                oil_well *= 1.1;
+            }
 
             let delta = oil_well + oil_extractor;
             delta *= hunger * global_multiplier;
@@ -3792,7 +3834,7 @@ function fastLoop(){
 
             income_base *= (global.civic.taxes.tax_rate / 20);
             if (global.civic.govern.type === 'oligarchy'){
-                income_base *= 0.9;
+                income_base *= 0.95;
             }
             if (global.civic.govern.type === 'corpocracy'){
                 income_base *= 0.5;
@@ -6166,13 +6208,13 @@ function longLoop(){
 
         {
             let extreme = global.tech['currency'] && global.tech['currency'] >= 5 ? true : false;
-            let tax_cap = global.civic.govern.type === 'oligarchy' ? 40 : 30;
+            let tax_cap = global.civic.govern.type === 'oligarchy' ? 50 : 30;
             if (extreme || global.race['terrifying']){
                 tax_cap += 20;
             }
             if (global.race['noble']){
-                if (global.civic.taxes.tax_rate > 20){
-                    global.civic.taxes.tax_rate = 20;
+                if (global.civic.taxes.tax_rate > global.civic.govern.type === 'oligarchy' ? 40 : 20){
+                    global.civic.taxes.tax_rate = global.civic.govern.type === 'oligarchy' ? 40 : 20;
                 }
             }
             else if (global.civic.taxes.tax_rate > tax_cap){

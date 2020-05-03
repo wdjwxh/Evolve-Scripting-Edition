@@ -3,6 +3,69 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.8.15`,
+        date: `5/2/2020`,
+        changes: [
+            `Grassland biome Food bonus raised to 20%.`,
+            `Forest biome Lumber bonus raised to 15%.`,
+            `Desert biome now applies a 25% Lumber penalty.`,
+            `Desert biome now gives a 20% stone bonus and a 10% Oil bonus.`,
+            `Volcanic biome now applies a 10% Food penalty.`,
+            `Volcanic biome now gives an 8% Iron and 12% Copper bonus.`,
+            `Added partial Korean translation.`,
+            `Achievements in the wiki are now sorted Alphabetically.`,
+            `Some achievements now show completion progress in the wiki.`,
+        ]
+    },
+    {
+        version: `0.8.14`,
+        date: `4/30/2020`,
+        changes: [
+            `Post unification Federation now gives a 32% bonus (raised from 30%).`,
+            `统一后，联邦制的所有物资产量加成从 +30% 提升到 +32% 。`,
+            `&nbsp;`,
+            `Federation now increases morale by 10%.`,
+            `联邦制政府体制新增一项属性：士气 +10% 。`,
+            `&nbsp;`,
+            `Socialist factory bonus is now 10% (raised from 5%).`,
+            `社会主义政府体制下，工厂产量加成从 +5% 提升到 +10% 。`,
+            `&nbsp;`,
+            `Socialist crafting bonus is now 35% (raised from 25%).`,
+            `社会主义政府体制下，工匠制品产量加成从 25% 提升到 35% 。`,
+            `&nbsp;`,
+            `Corpocracy factory bonus is now 30% (raised from 20%).`,
+            `公司官僚主义体制下，工厂产量加成从 +20% 提升到 +30% 。`,
+            `&nbsp;`,
+            `Corpocracy factory bonus now applies to Cement, Graphene, and Vitreloy.`,
+            `公司官僚主义体制下，工厂产量加成现在开始作用于水泥、石墨烯和金属玻璃。`,
+            `&nbsp;`,
+            `Republic now increases morale by 20%.`,
+            `共和制政府体制新增一项属性：士气 +20% 。`,
+            `&nbsp;`,
+            `Oligarchy tax revenue penalty is now 5% (lowered from 10%).`,
+            `寡头政府体制下，税收收入加成从 -10% 提升到 -5% 。`,
+            `&nbsp;`,
+            `Oligarchy can now set taxes 20% higher then other governments (raised from 10%).`,
+            `寡头政府体制可设置税收上限，现在开始比起其他政府体制高 20% （原先为 10%）。`,
+            `&nbsp;`,
+            `Technocracy now adds a 10% Knowledge gain bonus.`,
+            `技术官僚主义新增一项属性：知识产量 +10% 。`,
+            `&nbsp;`,
+            `Autocracy governments are now immune to the warmonger penalty.`,
+            `专治政府体制新增一项属性：不受战争贩子效果影响。`,
+            `&nbsp;`,
+            `Priests now apply a bonus to Ziggurats under Theocracy.`,
+            `神权政府体制新增一项属性：牧师提升通灵塔的效果。`,
+            `&nbsp;`,
+            `Fixed display of Theocracy effect on temples. This gives a 12% bonus but was only displaying as a 5% increase.`,
+            `神权政府体制修正一处显示问题：原先对寺庙效果的 12% 加成显示为 5% 。`,
+            `&nbsp;`,
+            `Nobile Oligarchy can now set their taxes as high as 40%.`,
+            `寡头政府体制现在可以将税率设置到 40% 。`,
+            `&nbsp;`,
+        ]
+    },
+    {
         version: `0.8.13`,
         date: `4/29/2020`,
         changes: [
@@ -324,9 +387,16 @@ const changeList = [
 		date: `3/16/2020`,
 		changes: [
 			`Antimatter Universe now gives a 10% prestige bonus post MAD.`,
+			`反物质宇宙的核弹重置奖励提升 10% 。`,
+			`&nbsp;`,
 			`St. Patricks Day event.`,
+			`圣帕特里克节活动开启。`,
+			`&nbsp;`,
 			`Blood War can no longer be earned by none demonic evil races.`,
+			`非恶魔种族无法再触发血战（Blood War）成就。`,
+			`&nbsp;`,
 			`Build Crate/Container buttons now update create/container values when upgraded by research.`,
+			`构筑板条箱和集装箱的按钮悬浮窗现在会显示容量。`,
 		]
 	},
 	{
@@ -334,6 +404,7 @@ const changeList = [
 		date: `3/10/2020`,
 		changes: [
 			`Memory leak fixes.`,
+			`修复了内存泄露的问题。`,
 		]
 	},
 	{
@@ -341,10 +412,19 @@ const changeList = [
 		date: `3/5/2020`,
 		changes: [
 			`Any race where the associated extinction achievement has been unlocked is now always available during evolution.`,
+			`现在核弹重置后，可以在进化阶段直接选择已完成完成灭绝成就的种族了。`,
+			`&nbsp;`,
 			`Joyless perk changed to +2% Max Morale per star level.`,
+			`无趣特权改动，现在根据无趣成就的等级给予 +2% / +4% / +6% / +8% / +10% 士气奖励。`,
+			`&nbsp;`,
 			`The effects of the Mass Extinction and Creator perks have been swapped.`,
+			`造物主与大灭绝成就的特权效果互换。`,
+			`&nbsp;`,
 			`Creator perk (old mass extinction) changed to 1.5x / 2x / 2.5x / 3x / 3.5x genes gained on mutation.`,
+			`造物主特权（原大灭绝）现在改为突变获取1.5 / 2 / 2.5 / 3 / 3.5 倍基因数量。 `,
+			`&nbsp;`,
 			`Minor traits bought with Phage now count twice when you complete evolution.`,
+			`消耗噬菌体购买的次要特质等级在进化阶段后按双倍计算效果（即噬菌体买了 3 级次要特质，进化完成后实际效果按 6 级计算，当再次购买升到 4 级时，按照 7 级计算，但下周目开局按 8 级计算）。`,
 		]
 	},
 	{
@@ -352,12 +432,25 @@ const changeList = [
 		date: `2/26/2020`,
 		changes: [
 			`Unicorn Shrine bonus is now determined by the moon phase when constructed.`,
+			`现在按照月相决定独角兽圣地的奖励属性。`,
+			`&nbsp;`,
 			`Shrine Knowledge bonus now applies an additional affect to universities.`,
+			`独角兽圣地的知识奖励现在同样作用于大学。`,
+			`&nbsp;`,
 			`Smelters in Evil universe when using Kindling Kindred default to Flesh instead of Coal.`,
+			`在邪恶宇宙中，如激活 [树木亲和] 特质，冶炼厂默认使用肉作为燃料，取代之前的煤。`,
+			`&nbsp;`,
 			`Evil Wendigo Smelters correctly display that they use 1 Flesh/s instead of 3 Souls/s. Also fixed the bug where they end up using 3 Flesh/s instead of 1.`,
+			`邪恶温迪戈的冶炼厂现在能正确显示每秒消耗 1 肉而不是每秒消耗 3 灵魂，并且修复了最终每秒消耗 1 肉却显示 3 肉的BUG。`,
+			`&nbsp;`,
 			`Fixed bug where the Evil Wendigo Reclaimer description would show the Lumberjack description.`,
+			`修复了邪恶温迪戈的回收者描述显示为伐木工的BUG。`,
+			`&nbsp;`,
 			`If Containers have not yet been unlocked as a resource, getting a Wharf will unlock it.`,
+			`在未解锁集装箱的情况下，建造一个码头将自动解锁。`,
+			`&nbsp;`,
 			`Fixed bug where, if Frieght Trains was gotten after ARPA, the Railway project would need a refresh to appear.`,
+			`修复了在A.R.P.A.研究完成后需要刷新页面才能显示铁路研究的BUG。`,
 		]
 	},
 	{
@@ -365,6 +458,7 @@ const changeList = [
 		date: `2/12/2020`,
 		changes: [
 			`Special Prestige icons awarded to players from certain feats can now be set to replace the standard Star icon.`,
+			`完成各种壮举获得的图标现在能用来替代星辰图标。`,
 		]
 	},
 	{
@@ -372,8 +466,13 @@ const changeList = [
 		date: `2/11/2020`,
 		changes: [
 			`Steelen Challenge now requires Bioseed as its win condition.`,
+			`无钢挑战现在需要通过播种重置完成。`,
+			`&nbsp;`,
 			`Added Feat for Blackhole reset with Steelen Challenge.`,
+			`新增一项壮举，激活无钢挑战完成黑洞重置触发。`,
+			`&nbsp;`,
 			`Added V-Day Event stuff.`,
+			`胜利日活动开启。`,
 		]
 	},
 	{
@@ -381,11 +480,22 @@ const changeList = [
 		date: `2/9/2020`,
 		changes: [
 			`Steelen Challenge.`,
+			`新增无钢挑战。`,
+			`&nbsp;`,
 			`Graveyards are now removed upon gaining Kindling Kindred.`,
+			`墓地在获得 [树木亲和] 特质后被正确移除了。`,
+			`&nbsp;`,
 			`If Default job is set to Farmer/Lumberjack for Carnivore/Kindling Kindred, it will be changed to Unemployed upon adding those traits.`,
+			`当默认工作设置为农民/伐木工时获取 [食肉动物] 或 [树木亲和] 特质，默认工作将被自动设置为失业人口。`,
+			`&nbsp;`,
 			`Fixed bug where gaining Carnivore and having no Grain Mills would make Smokehouses unpurchasable until refresh.`,
+			`修复了玩家在尚未购买粮仓时获得 [食肉动物] 特质，需要刷新才能购买烟熏屋的BUG。`,
+			`&nbsp;`,
 			`Cargo Yard now requires the construction of a Transfer Station to be unlocked.`,
+			`建造深空转运站后采坑解锁星际货仓。`,
+			`&nbsp;`,
 			`Mitosis/Metaphase effect now appears on perks list.`,
+			`有丝分裂和分裂中期的效果现在体现在特权列表中。`,
 		]
 	},
 	{
@@ -393,6 +503,7 @@ const changeList = [
 		date: `1/28/2020`,
 		changes: [
 			`More bug fixes.`,
+			`添加了很多BUG。`,
 		]
 	},
 	{
