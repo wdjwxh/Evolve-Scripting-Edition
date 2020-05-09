@@ -3,6 +3,32 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.8.16`,
+        date: `5/8/2020`,
+        changes: [
+            `Oceanic biome now applies a 6% bonus to Titanium from Steel smelting.`,
+            `海洋星球通过炼钢获取的钛产量 +6% 。`,
+            `&nbsp;`,
+            `Oceanic biome now applies a 12% bonus to Titanium from Iron smelting.`,
+            `海洋星球通过炼铁获取的钛产量 +12% 。`,
+            `&nbsp;`,
+            `Oceanic biome now applies a 5% penalty to Fur generation.`,
+            `海洋星球的毛皮产量 -5% 。`,
+            `&nbsp;`,
+            `Tundra biome now applies a 25% bonus to Fur generation.`,
+            `苔原星球的毛皮产量 +25% 。`,
+            `&nbsp;`,
+            `Tundra biome now applies a 10% penalty to Oil generation.`,
+            `苔原星球的石油产量 -10% 。`,
+            `&nbsp;`,
+            `New plantery modifiers: Elliptical, Flare, Dense, and Unstable.`,
+            `新增星球气候类型：椭圆、耀斑、致密，不稳定。`,
+            `&nbsp;`,
+            `Oligarchy tax riot immunity raised from 35% to 45%.`,
+            `寡头政府体制下，税率的暴乱触发值从 35% 提升到 45% 。`,
+        ]
+    },
+    {
         version: `0.8.15`,
         date: `5/2/2020`,
         changes: [
