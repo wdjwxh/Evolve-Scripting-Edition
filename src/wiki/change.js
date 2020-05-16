@@ -22,7 +22,7 @@ const changeList = [
             `苔原星球的石油产量 -10% 。`,
             `&nbsp;`,
             `New plantery modifiers: Elliptical, Flare, Dense, and Unstable.`,
-            `新增星球气候类型：椭圆、耀斑、致密，不稳定。`,
+            `新增星球气候类型：椭圆、耀斑、致密，地震。`,
             `&nbsp;`,
             `Oligarchy tax riot immunity raised from 35% to 45%.`,
             `寡头政府体制下，税率的暴乱触发值从 35% 提升到 45% 。`,
@@ -48,7 +48,7 @@ const changeList = [
             `火山星球的食物产量 -10% 。`,
             `&nbsp;`,
             `Volcanic biome now gives an 8% Iron and 12% Copper bonus.`,
-            `火山星球的铁产量 +8%，煤炭产量 +12% 。`,
+            `火山星球的铁产量 +8%，铜产量 +12% 。`,
             `&nbsp;`,
             `Added partial Korean translation.`,
             `增加了南棒语翻译版本。`,
@@ -165,7 +165,7 @@ const changeList = [
             `飞升重置后不再选择星球，而是在原星球上重新选择种族进化，另外，该星球会获取一些基础加成。`,
             `&nbsp;`,
             `Ascended planets now gain +2% to all geology deposits, +5% production, +10% storage, and +2 Sundial base Knowledge gain.`,
-            `飞升后的星球基础加成：所有地质加成 +2%，所有物资产量 +5%，仓储上限 +10%，日诡异知识产量 +2 。`,
+            `飞升后的星球基础加成：所有地质加成 +2%，所有物资产量 +5%，仓储上限 +10%，日晷仪知识产量 +2 。`,
             `&nbsp;`,
             `Unspent gene points in the Ascension Lab will be converted into Untapped Potential.`,
             `创建自定义种族时，未使用的基因点数将被转化为 [无限潜能] 特质。`,
@@ -515,7 +515,7 @@ const changeList = [
             `新增一项壮举，激活无钢挑战完成黑洞重置触发。`,
             `&nbsp;`,
             `Added V-Day Event stuff.`,
-            `胜利日活动开启。`,
+            `情人节活动开启。`,
         ]
     },
     {
@@ -631,7 +631,7 @@ const changeList = [
             `Beorseder 搞了一堆修改。`,
             `&nbsp;`,
             `Geology deposit aesthetic changes on planet selection.`,
-            `星球选择中，星球地质特性产量将产生波动（石头 +20%，煤炭 -10% 之类）。`,
+            `星球选择中，星球地质特性产量将产生波动（石油 +20%，煤炭 -10% 之类）。`,
             `&nbsp;`,
             `Miner's Dream Achievement & Perk.`,
             `新增矿工之梦成就与特权。`,
@@ -896,19 +896,46 @@ const changeList = [
         date: `11/12/2019`,
         changes: [
             `Tundra planets are now always cold in winter.`,
+            `苔原星球在冬天总是寒冷。`,
+            `&nbsp;`,
             `Volcanic planets are now always hot in summer.`,
+            `火山星球在夏天总是炎热。`,
+            `&nbsp;`,
             `Stormy planets are now more likely to be windy.`,
+            `风暴星球的有风天气出现率更高了。`,
+            `&nbsp;`,
             `Fixed issue with last rites not showing up as affordable.`,
+            `修复了最后仪式可研究时按钮不出现问题。`,
+            `&nbsp;`,
             `2-4x Challenge Multipliers changed:.`,
+            `2-4项基因挑战有数项改动：`,
+            `&nbsp;`,
             `2 Challenges: +12% Prestige.`,
+            `2项基因挑战：重置获得的威望资源 +12% 。`,
+            `&nbsp;`,
             `3 Challenges: +25% Prestige.`,
+            `3项基因挑战：重置获得的威望资源 +25% 。`,
+            `&nbsp;`,
             `4 Challenges: +45% Prestige.`,
+            `4项基因挑战：重置获得的威望资源 +45% 。`,
+            `&nbsp;`,
             `Heavy Universe prestige bonus now scales with challenge level:.`,
+            `高引力宇宙的基因挑战数量与威望资源的额外加成：`,
+            `&nbsp;`,
             `0 Challenges: +5% Prestige.`,
+            `0项基因挑战：重置获得的威望资源 +5% 。`,
+            `&nbsp;`,
             `1 Challenge: +10% Prestige.`,
+            `1项基因挑战：重置获得的威望资源 +10% 。`,
+            `&nbsp;`,
             `2 Challenges: +15% Prestige.`,
+            `2项基因挑战：重置获得的威望资源 +15% 。`,
+            `&nbsp;`,
             `3 Challenges: +20% Prestige.`,
+            `3项基因挑战：重置获得的威望资源 +20% 。`,
+            `&nbsp;`,
             `4 Challenges: +25% Prestige.`,
+            `4项基因挑战：重置获得的威望资源 +25% 。`,
         ]
     },
     {
@@ -916,9 +943,16 @@ const changeList = [
         date: `11/7/2019`,
         changes: [
             `ARPA costs now update without mousing off and back on the buttons.`,
+            `鼠标悬停在高级研究项目按钮上时，项目成本会根据等级实时更新，不必移开鼠标再次悬停。`,
+            `&nbsp;`,
             `Fixed issues with incorrectly powering on newly built structures.`,
+            `修复了新建筑自动供电不正确的问题。.`,
+            `&nbsp;`,
             `None-demonic evil smelters now correctly state they burn 1 flesh/s.`,
+            `非恶魔种族，带邪恶特质的种族的冶炼厂燃料现在能正确显示每秒1肉了。`,
+            `&nbsp;`,
             `Added whitehole perk to stats page.`,
+            `白洞特权加入特权列表。`,
         ]
     },
     {
@@ -926,7 +960,10 @@ const changeList = [
         date: `11/2/2019`,
         changes: [
             `Geology bonus is now preserved on MAD reset.`,
+            `核弹重置后，星球地质奖励依然保留。`,
+            `&nbsp;`,
             `Key Mappings are now configurable for multiplier and queue keys.`,
+            `现在可以为乘数键和队列键配置键映射。（汉化组不确定，存疑）`,
         ]
     },
     {
@@ -934,6 +971,7 @@ const changeList = [
         date: `10/31/2019`,
         changes: [
             `The Halloween feat will now unlock inside a micro universe.`,
+            `在微型宇宙可以触发万圣节壮举了。`,
         ]
     },
     {
@@ -941,8 +979,13 @@ const changeList = [
         date: `10/28/2019`,
         changes: [
             `Exotic mass now counts towards Galactic Landfill and Supermassive.`,
+            `奇异物质的质量现在计入垃圾填埋场成就和超大质量的壮举。`,
+            `&nbsp;`,
             `Fixed issues with queue timers and kindling kindred trait.`,
+            `修复了队列时间和树木亲和特质的问题。`,
+            `&nbsp;`,
             `Dark Energy now applies to windmills in antimatter universe.`,
+            `暗能量现在对反物质宇宙中的风车起作用了。`,
         ]
     },
     {
@@ -950,8 +993,13 @@ const changeList = [
         date: `10/26/2019`,
         changes: [
             `Game optimizations.`,
+            `游戏优化。`,
+            `&nbsp;`,
             `Bug fixes for queues.`,
+            `修复了队列中的BUG。`,
+            `&nbsp;`,
             `Fixed bug with war droids.`,
+            `修复了战争机器人的BUG。`,
         ]
     },
     {
@@ -959,8 +1007,13 @@ const changeList = [
         date: `10/24/2019`,
         changes: [
             `Freight Train upgrade now adds a trade route to freight yards instead of trade posts.`,
+            `铁路增加的贸易路线现在取决于货场数量，而不是贸易站数量。`,
+            `&nbsp;`,
             `Toxic troll achievement.`,
+            `新增一项成就：高德温法则（巨魔狂热崇拜蘑菇人并研发互联网科技触发）。`,
+            `&nbsp;`,
             `Spatial reasoning rounding fix.`,
+            `空间推理的取整方式修复。.`,
         ]
     },
     {
@@ -968,9 +1021,16 @@ const changeList = [
         date: `10/21/2019`,
         changes: [
             `Fixed application of plasmids with antiplasmids.`,
+            `修复了本来应该是反质粒生效的部分仍然是质粒生效的问题。`,
+            `&nbsp;`,
             `Updated description of bleeding effect.`,
+            `引流措施的描述升级。`,
+            `&nbsp;`,
             `Added achievement for synthesizing an anti-plasmid.`,
+            `增加了一项通过突变获取反质粒的成就。`,
+            `&nbsp;`,
             `More readable achievement page.`,
+            `成就页面更具有可读性了。`,
         ]
     },
     {
@@ -978,9 +1038,16 @@ const changeList = [
         date: `10/20/2019`,
         changes: [
             `Fixed power errors with hell dimension turrets.`,
+            `修复了地狱维度炮塔的电力错误。`,
+            `&nbsp;`,
             `Crate/Container rounding is now applied after spatial reasoning.`,
+            `升级空间推理后，板条箱和集装箱的容量重新计算。`,
+            `&nbsp;`,
             `Added extra text to the asteroid belt description to call out the necessity of assigning space miners.`,
+            `在小行星带的文本描述中添加额外的文字，用以说明指派太空矿工的必要性。`,
+            `&nbsp;`,
             `Evil Ents can now burn flesh in the smelter.`,
+            `邪恶树人现在在冶炼厂烧肉作为燃料了。`,
         ]
     },
     {
@@ -988,10 +1055,19 @@ const changeList = [
         date: `10/16/2019`,
         changes: [
             `Swarm Satellite redesign.`,
+            `蜂群卫星重新设计。`,
+            `&nbsp;`,
             `Swarm Satellites cost and output decreased.`,
+            `蜂群卫星的成本和电力输出减少了。`,
+            `&nbsp;`,
             `Control Stations can now control 10/18 swarm satellites.`,
+            `蜂群卫星控制站现在能控制 10/18 颗蜂群卫星。`,
+            `&nbsp;`,
             `Iron mining ship swarm plant discount now applies to all swarm plant costs.`,
+            `铁采矿船现在能降低蜂群卫星工厂的所有材料成本。`,
+            `&nbsp;`,
             `New upgrades to increase output of swarm satellites.`,
+            `新增科技用于提升蜂群卫星的电力输出。`,
         ]
     },
     {
@@ -999,15 +1075,34 @@ const changeList = [
         date: `10/14/2019`,
         changes: [
             `"Q" key now works with research queue.`,
+            `Q键可以作用于研究队列了。`,
+            `&nbsp;`,
             `Added settings option to not enforce queue order.`,
+            `新增乱序队列的选项。`,
+            `&nbsp;`,
             `Decay challenge no longer shows the star level for Joyless.`,
+            `衰变挑战按钮上不再显示无趣挑战的星级。`,
+            `&nbsp;`,
             `All universe types can now be seen on achievements.`,
+            `成就页面里能显示所有宇宙的图标了。`,
+            `&nbsp;`,
             `Genus completion is now marked on sentience.`,
+            `感知按钮上现在显示种群了。`,
+            `&nbsp;`,
             `Challenges can now be toggled during evolution.`,
+            `现在可以在进化过程中随意切换挑战了。`,
+            `&nbsp;`,
             `Inspiration event now gives a temporary buff to all science production.`,
+            `灵感事件现在给知识产量一个增益效果。`,
+            `&nbsp;`,
             `Added Slave Market for slaver races to buy slaves as an alternative to catching them.`,
+            `增加奴隶市场，这样可以通过购买获取奴隶，抓捕不再是唯一补充奴隶的手段。`,
+            `&nbsp;`,
             `Added Crate/Container storage amount to the build crate/container tooltip.`,
+            `在构筑板条箱/集装箱的工具提示中增加了板条箱/集装箱仓储容量的显示。`,
+            `&nbsp;`,
             `Added a button to cancel all trade routes for each resource.`,
+            `每项资源后面都增加一个清除贸易路线数量的按钮。`,
         ]
     },
     {
@@ -1015,10 +1110,19 @@ const changeList = [
         date: `10/13/2019`,
         changes: [
             `Employment is now color coded depending on staffing levels.`,
+            `每项工作根据人员配置比例（满员，非满员，0等）以不同颜色显示。`,
+            `&nbsp;`,
             `GPS satellites now add additional trade routes.`,
+            `GPS卫星现在能增加贸易路线了。`,
+            `&nbsp;`,
             `Added stats tracking on reset mechanics used.`,
+            `增加了对重置次数的统计。`,
+            `&nbsp;`,
             `Added a message when completing the launch facility.`,
+            `完成发射设施时添加了一条消息。`,
+            `&nbsp;`,
             `Added icons to challenges and races in evolution stage to indicate level of challenge completion.`,
+            `在进化阶段的种族按钮和挑战按钮上添加已完成星级的提示（金星，银星等）。`,
         ]
     },
     {
@@ -1026,7 +1130,10 @@ const changeList = [
         date: `10/11/2019`,
         changes: [
             `Added a settings option to disable the queue hot key.`,
+            `添加一个启用/禁用队列按钮的设定。`,
+            `&nbsp;`,
             `The queue hot key is now disabled by default because it breaks the game for some users.`,
+            `队列按钮现在默认为禁用状态，因为直接启用会把某些非洲玩家的游戏搞崩溃。`,
         ]
     },
     {
@@ -1034,9 +1141,16 @@ const changeList = [
         date: `10/9/2019`,
         changes: [
             `Fixed several bugs with celestial races.`,
+            `修复了天堂种族的一些BUG。`,
+            `&nbsp;`,
             `Only one demonic invasion event is now required to reach a hellscape planet.`,
+            `现在只需要触发一次恶魔入侵事件就可以找到地狱星球了。`,
+            `&nbsp;`,
             `New city categorization can now be switched off in the settings tab.`,
+            `现在可以在选项页面里设置启用/关闭建筑分类了。`,
+            `&nbsp;`,
             `Holding Q while clicking a building will now queue it instead of constructing it.`,
+            `现在可以按Q键把一个建筑加入队列而不是直接建造。`,
         ]
     },
     {
@@ -1044,6 +1158,7 @@ const changeList = [
         date: `10/7/2019`,
         changes: [
             `Fixed bioseed reset bug when seeding from a planet without a special property.`,
+            `修正了从一个没有特殊属性的星球播种重置导致的BUG。`,
         ]
     },
     {
@@ -1051,9 +1166,16 @@ const changeList = [
         date: `10/6/2019`,
         changes: [
             `Added a hire merc option to fortress, mercs hired here go directly to the fortress.`,
+            `在堡垒页面增加了一个雇佣兵按钮，该雇佣兵直接成为堡垒驻扎士兵。`,
+            `&nbsp;`,
             `Default patrol size is now 10 instead of 4.`,
+            `默认巡逻队规模现在由 4 人提升至 10 人。`,
+            `&nbsp;`,
             `Adjuted margins in city tab/space tabs to slightly reduce vertical scrolling.`,
+            `在城市/太空页面按钮之间调整间距减少滚动。`,
+            `&nbsp;`,
             `New Tower of Babel flair.`,
+            `通天塔添加了一条新吐槽。`,
         ]
     },
     {
@@ -1061,8 +1183,13 @@ const changeList = [
         date: `10/5/2019`,
         changes: [
             `New planetary modifiers: Toxic, Mellow, Rage, Stormy, Ozone, Magnetic, and Trashed.`,
+            `新增星球属性：有毒，温和，怒火，风暴，臭氧，磁性，垃圾场。`,
+            `&nbsp;`,
             `City Categorization by NotOats.`,
+            `城市名按规模而定。.`,
+            `&nbsp;`,
             `Chinese Translation.`,
+            `新增中文翻译`,
         ]
     },
     {
@@ -1070,8 +1197,13 @@ const changeList = [
         date: `10/1/2019`,
         changes: [
             `Fixed issue with gene editing costing the wrong type of Plasmid.`,
+            `修复了基因修改成本导致质粒类型错误的问题。`,
+            `&nbsp;`,
             `Fixed Bone label in Graphene plant.`,
+            `修复了石墨烯厂的骨头标签。`,
+            `&nbsp;`,
             `Fixed issue with Plywood not unlocking when removing Kindling Kindred trait.`,
+            `修复了移出树木亲和特质时未能解锁胶合板的问题。`,
         ]
     },
     {
@@ -1079,9 +1211,16 @@ const changeList = [
         date: `9/30/2019`,
         changes: [
             `Antimatter Universe.`,
+            `反物质宇宙。`,
+            `&nbsp;`,
             `Bleeding Effect line of CRISPR upgrades, requires Anti-Plasmids to unlock.`,
+            `CRISPR中的引流措施需要反质粒来解锁。`,
+            `&nbsp;`,
             `Balorg can now unlock queues.`,
+            `炎魔现在能解锁队列了。`,
+            `&nbsp;`,
             `Fixed aria labels in mass ejector.`,
+            `修复了质量喷射器的标签。`,
         ]
     },
     {
@@ -1089,8 +1228,13 @@ const changeList = [
         date: `9/24/2019`,
         changes: [
             `Queue reordering no longer swaps the dragged item with the one in the target spot.`,
+            `队伍重新排序时，不会再将拖拽中的项目与目标项目互换。`,
+            `&nbsp;`,
             `Added timers to research queue.`,
+            `研究队列里新增剩余时间显示。`,
+            `&nbsp;`,
             `Cost adjustments are now applied to queue timers increasing their accuracy.`,
+            `成本变化后，队列中剩余时间也相应变化。`,
         ]
     },
     {
@@ -1098,7 +1242,10 @@ const changeList = [
         date: `9/24/2019`,
         changes: [
             `Cath windmills now generate power instead of just looking pretty.`,
+            `猫族的风车现在可以用来发电，而不是仅仅看起来漂亮。`,
+            `&nbsp;`,
             `Fixed Spanish strings file, language now loads again.`,
+            `西班牙语文件现在又能用了！`,
         ]
     },
     {
@@ -1106,10 +1253,19 @@ const changeList = [
         date: `9/23/2019`,
         changes: [
             `Added special tech tree to sacrifical altar to boost its effectiveness per sacrifice.`,
+            `新增一项技能树，用于提升献祭的效果。`,
+            `&nbsp;`,
             `Restored windmills to cath.`,
+            `把风车还给猫族了。`,
+            `&nbsp;`,
             `Challenge Multiplier Dark Energy rounding calculation fixed.`,
+            `修复了挑战模式获取暗能量的取整方式。`,
+            `&nbsp;`,
             `Added extra information to blackhole description when it reaches destabilization point.`,
+            `当黑洞读数开始不稳定时，描述文字里添加额外信息。`,
+            `&nbsp;`,
             `Added a warning to stabilize option that it will reset your exotic matter.`,
+            `稳定黑洞重置奇异物质时增加一条警告。`,
         ]
     },
     {
@@ -1117,8 +1273,13 @@ const changeList = [
         date: `9/21/2019`,
         changes: [
             `Fixed display issue with frenzy appearing to never drop below 1%.`,
+            `修复了发狂效果总是不低于 1% 的显示问题。`,
+            `&nbsp;`,
             `Updated the tooltip values on farms and farmers to include the hellscape penalty.`,
+            `地狱星球的产量减益效果现在包含在农场和农民的工具提示里。`,
+            `&nbsp;`,
             `Fixed Evil Ents so they start with Gather Stone option.`,
+            `修复了邪恶树人的一些问题，现在他们从采集石头开始游戏了。`,
         ]
     },
     {
@@ -1126,8 +1287,13 @@ const changeList = [
         date: `9/19/2019`,
         changes: [
             `Fixed double windmill issue with evil universe races.`,
+            `修复了邪恶宇宙种族的双风车问题。`,
+            `&nbsp;`,
             `Spanish language updates.`,
+            `添加西班牙语翻译。.`,
+            `&nbsp;`,
             `Added warnings to challenge modes in micro universe that you will not receive credit.`,
+            `添加一条警告，告知玩家在微型宇宙无法触发成就或壮举（不挂星）。`,
         ]
     },
     {
@@ -1135,6 +1301,7 @@ const changeList = [
         date: `9/17/2019`,
         changes: [
             `Restored broken perks.`,
+            `修复了崩坏的特权页面。`,
         ]
     },
     {
@@ -1142,6 +1309,7 @@ const changeList = [
         date: `9/17/2019`,
         changes: [
             `Bug Fixes.`,
+            `添加了BUG。`,
         ]
     },
     {
@@ -1149,15 +1317,34 @@ const changeList = [
         date: `9/17/2019`,
         changes: [
             `Universe Update, explore ~~ 4 ~~ 3 new universe types:.`,
+            `宇宙系统大升级！新增4……哦不3个新宇宙。`,
+            `&nbsp;`,
             `Heavy Gravity Universe.`,
+            `高引力宇宙！`,
+            `&nbsp;`,
             `Micro Universe.`,
+            `微型宇宙！`,
+            `&nbsp;`,
             `Evil Universe.`,
+            `邪恶宇宙！`,
+            `&nbsp;`,
             `New Decay Challenge.`,
+            `新增衰变挑战！`,
+            `&nbsp;`,
             `Antimatter universe is still forming, coming soon.`,
+            `反物质宇宙在做了在做了……`,
+            `&nbsp;`,
             `Dark Energy effects added, unique per universe type.`,
+            `每个宇宙增加了独特的暗能量效果。`,
+            `&nbsp;`,
             `New Plasmid scaling formula.`,
+            `新的质粒换算公式。`,
+            `&nbsp;`,
             `Blackhole mass added to Stellar Engine.`,
+            `黑洞质量加入恒星引擎。`,
+            `&nbsp;`,
             `Stuff I probably forgot about.`,
+            `还有一些其他修改，但作者忘记了，这里皮了一条。`,
         ]
     },
     {
