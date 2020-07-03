@@ -10,7 +10,6 @@ Play the UNSUPPORTED, use at your own risk, scripting edition of the game at htt
 ## About
 
 The original is still actively being developed by Demagorddon and I would recommend that you run the original version of the game for at least several prestiges so that you have a good feel for the game. He's put an incredible amount of effort into both creating the game and regularly releasing new content.
-
 If it's so great, then why have I forked a separate, unsupported version of the game? Let me explain...
 
 Just as mods change the way that a regular game is played, scripting / automation changes the way that an idle game is played. Scripting can be as small as an auto-clicker clicking a single button to a script that can play an entire game without human intervention. Usually they change the gameplay from being micro-focused to being macro-focused. Instead of specifically controlling every individual aspect you get to focus on the grand plan of what you are trying to accomplish.
