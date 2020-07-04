@@ -3,6 +3,15 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.9.4`,
+        date: `7/3/2020`,
+        changes: [
+            `Failed History perk raised from +1 Geothermal to +2 Geothermal energy.`,
+            `Fixed Oligarchy tax riot immunity between 36%-45%.`,
+            `Infiltrator can now steal Graphene Processing, Nanoweave, and Orichalcum Analysis techs.`
+        ]
+    },
+    {
         version: `0.9.3`,
         date: `7/1/2020`,
         changes: [
