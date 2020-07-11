@@ -435,7 +435,7 @@ if (convertVersion(global['version']) < 9005){
     }
 }
 
-global['version'] = '0.9.5';
+global['version'] = '0.9.6';
 delete global['beta'];
 
 if (global.civic['cement_worker'] && global.civic.cement_worker.impact === 0.25){
@@ -1043,6 +1043,15 @@ if (global.tech['unify']){
         delete global.tech['m_boost'];
         delete global.tech['world_control'];
     }
+}
+
+if (global.city.hasOwnProperty('spc_casino')){
+    global.space['spc_casino'] = { count: 0, on: 0 };
+    delete global.city['spc_casino'];
+}
+
+if (global.tech.hasOwnProperty('nanoweave')){
+    global.resource.Nanoweave.display = true;
 }
 
 if (!global.civic['new']){
