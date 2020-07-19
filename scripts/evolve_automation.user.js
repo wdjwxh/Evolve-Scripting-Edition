@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Evolve
+// @name         Evolve(支持中文 by wdjwxh)
 // @namespace    http://tampermonkey.net/
-// @version      2.9.1
+// @version      2.9.2
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -630,7 +630,7 @@
             this.autoBuildEnabled = defaultAllOptionsEnabled;
             this.autoStateEnabled = true;
 
-            if (this._elementId === "spcdock-probes") { // Can't use buildings in the constructor as we are still creating them!
+            if (this._elementId === "starDock-probes") { // Can't use buildings in the constructor as we are still creating them!
                 this._autoMax = 4; // Max of 4 Probes by default
             } else {
                 this._autoMax = -1;
@@ -5208,10 +5208,10 @@
             GasMining: new Action("Gas Helium-3 Collector", "space", "gas_mining", "spc_gas"),
             GasStorage: new Action("Gas Fuel Depot", "space", "gas_storage", "spc_gas"),
             GasSpaceDock: new SpaceDock(), // has options
-            GasSpaceDockProbe: new ModalAction("Gas Space Probe", "spcdock", "probes", "", "starDock"),
-            GasSpaceDockShipSegment: new ModalAction("Gas Bioseeder Ship Segment", "spcdock", "seeder", "", "starDock"),
-            GasSpaceDockPrepForLaunch: new ModalAction("Gas Prep Ship", "spcdock", "prep_ship", "", "starDock"),
-            GasSpaceDockLaunch: new ModalAction("Gas Launch Ship", "spcdock", "launch_ship", "", "starDock"),
+            GasSpaceDockProbe: new ModalAction("Gas Space Probe", "starDock", "probes", "", "starDock"),
+            GasSpaceDockShipSegment: new ModalAction("Gas Bioseeder Ship Segment", "starDock", "seeder", "", "starDock"),
+            GasSpaceDockPrepForLaunch: new ModalAction("Gas Prep Ship", "starDock", "prep_ship", "", "starDock"),
+            GasSpaceDockLaunch: new ModalAction("Gas Launch Ship", "starDock", "launch_ship", "", "starDock"),
             
             // Gas moon
             GasMoonMission: new Action("Gas Moon Mission", "space", "gas_moon_mission", "spc_gas_moon"),
@@ -6125,7 +6125,7 @@
         for (let i = 0; i < state.buildingManager.priorityList.length; i++) {
             const building = state.buildingManager.priorityList[i];
             
-            if (building.settingId === "spcdock-probes") {
+            if (building.settingId === "starDock-probes") {
                 building._autoMax = 4;
             } else {
                 building._autoMax = -1;
