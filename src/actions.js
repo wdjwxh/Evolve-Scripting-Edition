@@ -2986,7 +2986,7 @@ export const actions = {
             flair(){ return global.tech.agriculture >= 7 ? loc('city_farm_flair2') : loc('city_farm_flair1'); }
         },
         compost: {
-            id: 'city-compost_heap',
+            id: 'city-compost',
             title: loc('city_compost_heap'),
             desc: loc('city_compost_heap_desc'),
             category: 'residential',
