@@ -3,6 +3,17 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.9.10`,
+        date: `7/30/2020`,
+        changes: [
+            `Expanded list of potential enemy city names.`,
+            `Added Synthetic Fur option to Factories.`,
+            `Restoring a backup after a Cataclysm will now allow you to Cataclysm again.`,
+            `Fixed Lumber penalty on Desert worlds.`,
+            `Many minor bug fixes.`
+        ]
+    },
+    {
         version: `0.9.9`,
         date: `7/21/2020`,
         changes: [

@@ -3,12 +3,19 @@ import { loc } from './../locale.js';
 import { clearElement, adjustCosts } from './../functions.js';
 import { actions } from './../actions.js';
 
-export function infoBoxBuilder(parent,name,template,paragraphs,h_level){
+export function headerBoxBuilder(parent,name,template,paragraphs,h_level,full){
+    if (!h_level){
+        h_level = 2;
+    }
+    infoBoxBuilder(parent,name,template,paragraphs,h_level,true,full);
+}
+
+export function infoBoxBuilder(parent,name,template,paragraphs,h_level,header,full){
     if (!h_level){
         h_level = 3;
     }
-    let info = $(`<div class="infoBox"></div>`);
-    info.append(`<h${h_level} id="${name}" class="header has-text-warning">${loc(`wiki_${template}_${name}`)}</h${h_level}>`);
+    let info = $(`<div class="infoBox${full ? ` wide` : ``}"></div>`);
+    info.append(`<h${h_level} id="${name}" class="header has-text-${header ? 'caution' : 'warning'}">${loc(`wiki_${template}_${name}`)}</h${h_level}>`);
     let para = $(`<div class="para"></div>`);
     for (let i=1; i<=paragraphs; i++){
         para.append(`<span>${loc(`wiki_${template}_${name}_para${i}`)}</span>`);
@@ -55,8 +62,10 @@ export function actionDesc(info, c_action, extended){
     let hasEffect = false;
     if (c_action.hasOwnProperty('effect')){
         let effect = typeof c_action.effect === 'string' ? c_action.effect : c_action.effect();
-        stats.append(`<div class="effect">${effect}</div>`);
-        hasEffect = true;
+        if (effect !== false){
+            stats.append(`<div class="effect">${effect}</div>`);
+            hasEffect = true;
+        }
         info.append(stats);
     }
 
@@ -89,6 +98,9 @@ export function actionDesc(info, c_action, extended){
             else if (res === 'Plasmid' || res === 'Phage'){
                 let res_cost = costs[res]();
                 if (res_cost > 0){
+                    if (res === 'Plasmid' && global.race.universe === 'antimatter'){
+                        res = 'AntiPlasmid';
+                    }
                     let label = loc(`resource_${res}_name`);
                     cost.append($(`<div data-${res}="${res_cost}">${label}: ${res_cost}</div>`));
                     render = true;
