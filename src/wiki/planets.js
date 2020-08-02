@@ -6,7 +6,8 @@ import { headerBoxBuilder } from './functions.js';
 export function planetsPage(content) {
     let info = $('<div class="duelList"/>');
 
-    headerBoxBuilder(content,'planet','planet',4,2,true);
+    let intro = headerBoxBuilder(content,{ name: 'planet', template: 'planet', paragraphs: 4, full: true });
+    intro.append($(`<div>${loc('wiki_planet_geology')}</div>`));
 
     let planetInfo = infoForFeature(biomes, $(`<div class="listSide"><h3 class="header has-text-caution">${loc('wiki_planet_biome')}</h3></div>`));
     let planetTraitsInfo = infoForFeature(planetTraits, $(`<div class="listSide"><h3 class="header has-text-caution">${loc('wiki_planet_trait')}</h3></div>`));
@@ -16,15 +17,18 @@ export function planetsPage(content) {
 }
 
 const extraInfo = {
-    oceanic: ['genus'],
+    oceanic: ['trait','genus'],
     forest: ['genus'],
-    desert: ['genus'],
+    desert: ['trait','genus'],
     volcanic: ['weather','genus'],
     tundra: ['weather','genus'],
-    hellscape: ['weather','genus'],
-    eden: ['genus'],
+    hellscape: ['weather','genus','universe'],
+    eden: ['genus','universe'],
     stormy: ['trait'],
-    ozone: ['trait']
+    ozone: ['trait'],
+    trashed: ['trait'],
+    elliptical: ['trait'],
+    unstable: ['trait']
 };
 
 function infoForFeature(planetFeatures, content) {
@@ -33,7 +37,7 @@ function infoForFeature(planetFeatures, content) {
         let info = $(`<div id="${planetFeatureName}" class="infoBox"></div>`);
         content.append(info);
 
-        info.append(`<div class="type"><h4 class="has-text-warning">${planetFeature.label}</h4></div>`);
+        info.append(`<div class="type"><h4 class="has-text-caution">${planetFeature.label}</h4></div>`);
         info.append(`<div class="desc">${planetFeature.desc}</div>`);
 
         let modifiers = $(`<div class="propList"></div>`);
@@ -47,7 +51,7 @@ function infoForFeature(planetFeatures, content) {
 
         if (extraInfo[planetFeatureName]){
             extraInfo[planetFeatureName].forEach(function (label){
-                info.append($(`<div class="has-text-advanced">${loc(`wiki_planet_${planetFeatureName}_${label}`)}</div>`));
+                info.append($(`<div class="has-text-warning">${loc(`wiki_planet_${planetFeatureName}_${label}`)}</div>`));
             });
         }
     });

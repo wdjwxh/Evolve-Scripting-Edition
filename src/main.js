@@ -1855,7 +1855,7 @@ function fastLoop(){
                     stress_level += global.race['content'] * effectiveness;
                 }
                 if (global.city.ptrait === 'dense' && job === 'miner'){
-                    stress_level -= 1;
+                    stress_level -= planetTraits.dense.vars[1];
                 }
 
                 stress -= global.civic[job].workers / stress_level;
@@ -2070,7 +2070,7 @@ function fastLoop(){
                     food_base *= global.city.biome === 'grassland' ? biomes.grassland.vars[0] : 1;
                     food_base *= global.city.biome === 'volcanic' ? biomes.volcanic.vars[0] : 1;
                     food_base *= global.city.biome === 'hellscape' ? biomes.hellscape.vars[0] : 1;
-                    food_base *= global.city.ptrait === 'trashed' ? 0.75 : 1;
+                    food_base *= global.city.ptrait === 'trashed' ? planetTraits.trashed.vars[0] : 1;
                     food_bd[loc('city_compost_heap')] = food_base + 'v';
                 }
             }
@@ -2612,7 +2612,7 @@ function fastLoop(){
                 breakdown.p.consume.Money[loc('city_factory')] = -(money_cost);
                 breakdown.p.consume.Polymer[loc('city_factory')] = -(polymer_cost);
                 modRes('Money', -(money_cost * time_multiplier));
-                modRes('Polymer', -(money_cost * time_multiplier));
+                modRes('Polymer', -(polymer_cost * time_multiplier));
 
                 let factory_output = workDone * (assembly ? f_rate.Furs.output[global.tech['factory']] : f_rate.Furs.output[0]);
                 if (global.race['toxic']) {
@@ -3552,7 +3552,7 @@ function fastLoop(){
                 miner_base *= bonus;
             }
             if (global.city.ptrait === 'dense'){
-                miner_base *= 1.2;
+                miner_base *= planetTraits.dense.vars[0];
             }
             miner_base *= (global.tech['pickaxe'] && global.tech['pickaxe'] > 0 ? global.tech['pickaxe'] * 0.15 : 0) + 1;
             if (global.tech['explosives'] && global.tech['explosives'] >= 2){
