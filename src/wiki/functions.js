@@ -30,9 +30,9 @@ export function infoBoxBuilder(parent,args){
     
     if (args.break){
         for (let i=0; i<args.break.length; i++){
-            let end = i+1 === args.break.length ? args.paragraphs : (args.break[i] + 2);
+            let end = i+1 === args.break.length ? args.paragraphs : (args.break[i+1] - 1);
             ranges.push({ s: args.break[i], e: end });
-        }        
+        }
     }
     
     ranges.forEach(function(range){
@@ -47,12 +47,10 @@ export function infoBoxBuilder(parent,args){
                         }
                     }
                 }
-                else {
-                    let color_list = args.data_color[i] && Array.isArray(args.data_color[i]) ? args.data_color[i] : args.para_data[i].map(x => args.default_color);
-                    for (let j=0; j<color_list.length; j++){
-                        if (color_list[j] !== 'plain'){
-                            inputs[j] = `<span class="has-text-${color_list[j]}">${inputs[j]}</span>`;
-                        }
+                let color_list = args.data_color[i] && Array.isArray(args.data_color[i]) ? args.data_color[i] : args.para_data[i].map(x => args.default_color);
+                for (let j=0; j<color_list.length; j++){
+                    if (color_list[j] !== 'plain'){
+                        inputs[j] = `<span class="has-text-${color_list[j]}">${inputs[j]}</span>`;
                     }
                 }
                 para.append(`<span>${loc(`wiki_${args.template}_${args.name}_para${i}`,inputs)}</span>`);
