@@ -327,5 +327,25 @@ export function index(){
     columns.append(`<div id="queueColumn" class="queueCol column"></div>`);
 
     // Bottom Bar
-    $('body').append(`<div class="promoBar"><span class="left"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Unsupported Scripting Edition</h1></a></span><span class="right"><h2 class="is-sr-only">External Links</h2><a href="https://pmotschmann.github.io/Evolve/" target="_blank">Original Game</a> | <a href="wiki.html" target="_blank">Wiki</a> | <a href="https://www.reddit.com/r/EvolveIdle/" target="_blank">Reddit</a> | <a href="https://discord.gg/dcwdQEr" target="_blank">Discord</a> | <a href="https://github.com/pmotschmann/Evolve" target="_blank">Original GitHub</a> | <a href="https://www.patreon.com/demagorddon" target="_blank">Demagorddon's Patreon</a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PTRJZBW9J662C&currency_code=USD&source=url" target="_blank">Donate to Demagorddon</a></span></div>`);
+    $('body').append(`
+        <div class="promoBar">
+            <span class="left">
+                <h1>
+                <a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Unsupported Scripting Edition</h1></a>
+                </h1>
+            </span>
+            <span class="right">
+                <h2 class="is-sr-only">External Links</h2>
+                <ul class="external-links">
+                    <li><a href="https://pmotschmann.github.io/Evolve/" target="_blank">Original Game</a></li>
+                    <li><a href="wiki.html" target="_blank">Wiki</a></li>
+                    <li><a href="https://www.reddit.com/r/EvolveIdle/" target="_blank">Reddit</a></li>
+                    <li><a href="https://discord.gg/dcwdQEr" target="_blank">Discord</a></li>
+                    <li><a href="https://github.com/pmotschmann/Evolve" target="_blank">Original GitHub</a></li>
+                    <li><a href="https://www.patreon.com/demagorddon" target="_blank">Demagorddon's Patreon</a></li>
+                    <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PTRJZBW9J662C&currency_code=USD&source=url" target="_blank">Donate to Demagorddon</a></li>
+                </ul>
+            </span>
+        </div>
+    `);
 }
