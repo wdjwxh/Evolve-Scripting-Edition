@@ -162,34 +162,43 @@ export function mainVue(){
 
 export function popover(id,content,opts){
     if (!opts){ opts = {}; }
-    $('#'+id).on('mouseover',function(){
-        let wide = opts['wide'] ? ' wide' : '';
-        let classes = opts['classes'] ? opts['classes'] : `has-background-light has-text-dark pop-desc`;
-        var popper = $(`<div id="pop${id}" class="popper${wide} ${classes}"></div>`);
-        if (opts['attach']){
-            $(opts['attach']).append(popper);
-        }
-        else {
-            $(`#main`).append(popper);
-        }
-        popper.append(typeof content === 'function' ? content(popper) : content);
-        popper.show();
-        poppers[id] = new Popper($('#'+id),popper);
-        if (opts.hasOwnProperty('in') && typeof opts['in'] === 'function'){
-            opts['in'](popper);
-        }
-    });
-    $('#'+id).on('mouseout',function(){
-        $(`#pop${id}`).hide();
-        if (poppers[id]){
-            poppers[id].destroy();
-            delete poppers[id];
-        }
-        clearElement($(`#pop${id}`),true);
-        if (opts.hasOwnProperty('out') && typeof opts['out'] === 'function'){
-            opts['out']($(`#pop${id}`));
-        }
-    });
+    if (!opts.hasOwnProperty('elm')){ opts['elm'] = '#'+id; }
+    if (!opts.hasOwnProperty('bind')){ opts['bind'] = true; }
+    if (!opts.hasOwnProperty('unbind')){ opts['unbind'] = true; }
+    if (opts['bind']){
+        $(opts.elm).on('mouseover',function(){
+            let wide = opts['wide'] ? ' wide' : '';
+            let classes = opts['classes'] ? opts['classes'] : `has-background-light has-text-dark pop-desc`;
+            var popper = $(`<div id="pop${id}" class="popper${wide} ${classes}"></div>`);
+            if (opts['attach']){
+                $(opts['attach']).append(popper);
+            }
+            else {
+                $(`#main`).append(popper);
+            }
+            if (content){
+                popper.append(typeof content === 'function' ? content({ this: this, popper: popper }) : content);
+            }
+            popper.show();
+            poppers[id] = new Popper(opts['self'] ? this : $(opts.elm),popper);
+            if (opts.hasOwnProperty('in') && typeof opts['in'] === 'function'){
+                opts['in']({ this: this, popper: popper });
+            }
+        });
+    }
+    if (opts['unbind']){
+        $(opts.elm).on('mouseout',function(){
+            $(`#pop${id}`).hide();
+            if (poppers[id]){
+                poppers[id].destroy();
+                delete poppers[id];
+            }
+            clearElement($(`#pop${id}`),true);
+            if (opts.hasOwnProperty('out') && typeof opts['out'] === 'function'){
+                opts['out']({ this: this, popper: $(`#pop${id}`)});
+            }
+        });
+    }
 }
 
 window.exportGame = function exportGame(){
@@ -338,6 +347,7 @@ function attachQueuePopovers(){
             if (pop_lock !== id){
                 cleanBuildPopOver(pop_lock);
                 let wide = segments[0].substring(0,4) !== 'arpa' && c_action['wide'] ? ' wide' : '';
+
                 var popper = $(`<div id="pop${id}" class="popper${wide} has-background-light has-text-dark pop-desc"></div>`);
                 $(pop_target).append(popper);
                 if (segments[0].substring(0,4) === 'arpa'){

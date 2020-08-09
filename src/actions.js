@@ -8187,6 +8187,9 @@ export const actions = {
                     let tech = $(this)[0].grant[0];
                     global.tech[tech] = $(this)[0].grant[1];
                     global.settings.arpa.genetics = true;
+                    if (global.race['cataclysm']){
+                        global.arpa.sequence.on = false;
+                    }
                     arpa('Genetics');
                     return true;
                 }
@@ -14386,8 +14389,8 @@ export function setAction(c_action,action,type,old){
     });
 
     popover(id,function(){ return undefined; },{
-        in: function(popper){
-            actionDesc(popper,c_action,global[action][type],old);
+        in: function(obj){
+            actionDesc(obj.popper,c_action,global[action][type],old);
         },
         out: function(){
             vBind({el: `#popTimer`},'destroy');
@@ -14550,67 +14553,58 @@ export function setPlanet(hell){
         addAction('evolution','rna');
     });
 
-    $('#'+id).on('mouseover',function(){
-            var popper = $(`<div id="pop${id}" class="popper has-background-light has-text-dark"></div>`);
-            $('#main').append(popper);
+    popover(id,function(obj){
+        obj.popper.append($(`<div>${loc('set_planet',[title,biomes[biome].label,orbit])}</div>`));
+        obj.popper.append($(`<div>${biomes[biome].desc}</div>`));
+        if (trait !== 'none'){
+            obj.popper.append($(`<div>${planetTraits[trait].desc}</div>`));
+        }
 
-            popper.append($(`<div>${loc('set_planet',[title,biomes[biome].label,orbit])}</div>`));
-            popper.append($(`<div>${biomes[biome].desc}</div>`));
-            if (trait !== 'none'){
-                popper.append($(`<div>${planetTraits[trait].desc}</div>`));
-            }
-
-            let good = $('<div></div>');
-            let bad = $('<div></div>');
-            let goodCnt = 0;
-            let badCnt = 0;
-            let numShow = global.stats.achieve['miners_dream'] ? global.stats.achieve['miners_dream'].l >= 4 ? global.stats.achieve['miners_dream'].l * 2 - 3 : global.stats.achieve['miners_dream'].l : 0;
-            for (let key in geology){
-                if (key !== 0){
-                    if (geology[key] > 0) {
-                        goodCnt++;
-                        if (goodCnt === 1) {
-                            good.append($(`<div>${loc('set_planet_extra_rich')}</div>`));
-                        }
-                        let res_val = `<div class="has-text-advanced">${loc(`resource_${key}_name`)}`;
-                        if (numShow > 0) {
-                            res_val += `: <span class="has-text-success">+${Math.round((geology[key] + 1) * 100 - 100)}%</span>`;
-                            numShow--;
-                        }
-                        res_val += `</div>`;
-                        good.append(res_val);
+        let good = $('<div></div>');
+        let bad = $('<div></div>');
+        let goodCnt = 0;
+        let badCnt = 0;
+        let numShow = global.stats.achieve['miners_dream'] ? global.stats.achieve['miners_dream'].l >= 4 ? global.stats.achieve['miners_dream'].l * 2 - 3 : global.stats.achieve['miners_dream'].l : 0;
+        for (let key in geology){
+            if (key !== 0){
+                if (geology[key] > 0) {
+                    goodCnt++;
+                    if (goodCnt === 1) {
+                        good.append($(`<div>${loc('set_planet_extra_rich')}</div>`));
                     }
-                    else if (geology[key] < 0){
-                        badCnt++;
-                        if (badCnt === 1) {
-                            bad.append($(`<div>${loc('set_planet_extra_poor')}</div>`));
-                        }
-                        let res_val = `<div class="has-text-caution">${loc(`resource_${key}_name`)}`;
-                        if (numShow > 0) {
-                            res_val += `: <span class="has-text-danger">${Math.round((geology[key] + 1) * 100 - 100)}%</span>`;
-                            numShow--;
-                        }
-                        res_val += `</div>`;
-                        bad.append(res_val);
+                    let res_val = `<div class="has-text-advanced">${loc(`resource_${key}_name`)}`;
+                    if (numShow > 0) {
+                        res_val += `: <span class="has-text-success">+${Math.round((geology[key] + 1) * 100 - 100)}%</span>`;
+                        numShow--;
                     }
+                    res_val += `</div>`;
+                    good.append(res_val);
+                }
+                else if (geology[key] < 0){
+                    badCnt++;
+                    if (badCnt === 1) {
+                        bad.append($(`<div>${loc('set_planet_extra_poor')}</div>`));
+                    }
+                    let res_val = `<div class="has-text-caution">${loc(`resource_${key}_name`)}`;
+                    if (numShow > 0) {
+                        res_val += `: <span class="has-text-danger">${Math.round((geology[key] + 1) * 100 - 100)}%</span>`;
+                        numShow--;
+                    }
+                    res_val += `</div>`;
+                    bad.append(res_val);
                 }
             }
-            if (badCnt > 0){
-                good.append(bad);
-            }
-            if (goodCnt > 0 || badCnt > 0) {
-                popper.append(good);
-            }
-            popper.show();
-            poppers[id] = new Popper($('#'+id),popper);
-        });
-    $('#'+id).on('mouseout',function(){
-            $(`#pop${id}`).hide();
-            if (poppers[id]){
-                poppers[id].destroy();
-            }
-            clearElement($(`#pop${id}`),true);
-        });
+        }
+        if (badCnt > 0){
+            good.append(bad);
+        }
+        if (goodCnt > 0 || badCnt > 0) {
+            obj.popper.append(good);
+        }
+        return undefined;
+    },{
+        classes: `has-background-light has-text-dark`
+    });
     return biome === 'eden' ? 'hellscape' : biome;
 }
 
@@ -15787,8 +15781,8 @@ function attachQueuePopovers(){
         c_action = actions[segments[0]][segments[1]];
 
         popover(id,function(){ return undefined; },{
-            in: function(popper){
-                actionDesc(popper,c_action,global[segments[0]][segments[1]],false);
+            in: function(obj){
+                actionDesc(obj.popper,c_action,global[segments[0]][segments[1]],false);
             },
             out: function(){
                 cleanTechPopOver(id);

@@ -1,5 +1,5 @@
 import { save, global, webWorker, clearStates, poppers, keyMultiplier, sizeApproximation, p_on, moon_on, red_on, belt_on, int_on, gal_on, quantum_level } from './vars.js';
-import { vBind, messageQueue, clearElement, powerModifier, powerCostMod, calcPrestige, spaceCostMultiplier, darkEffect, calcGenomeScore, randomKey } from './functions.js';
+import { vBind, messageQueue, clearElement, popover, powerModifier, powerCostMod, calcPrestige, spaceCostMultiplier, darkEffect, calcGenomeScore, randomKey } from './functions.js';
 import { unlockAchieve, checkAchievements, unlockFeat } from './achieve.js';
 import { races, traits, genus_traits, planetTraits } from './races.js';
 import { spatialReasoning, defineResources, galacticTrade } from './resources.js';
@@ -4921,7 +4921,6 @@ function space(){
         let show = region.replace("spc_","");
         if (global.settings.space[`${show}`]){
             let name = typeof spaceProjects[region].info.name === 'string' ? spaceProjects[region].info.name : spaceProjects[region].info.name();
-            let desc = typeof spaceProjects[region].info.desc === 'string' ? spaceProjects[region].info.desc : spaceProjects[region].info.desc();
             
             if (spaceProjects[region].info['support']){
                 let support = spaceProjects[region].info['support'];
@@ -4938,22 +4937,15 @@ function space(){
             else {
                 parent.append(`<div id="${region}" class="space"><div><h3 class="name has-text-warning">${name}</h3></div></div>`);
             }
-            
-            $(`#${region} h3.name`).on('mouseover',function(){
-                var popper = $(`<div id="pop${region}" class="popper has-background-light has-text-dark"></div>`);
-                $('#main').append(popper);
-                
-                popper.append($(`<div>${desc}</div>`));
-                popper.show();
-                poppers[region] = new Popper($(`#${region} h3.name`),popper);
-            });
-            $(`#${region} h3.name`).on('mouseout',function(){
-                $(`#pop${region}`).hide();
-                if (poppers[region]){
-                    poppers[region].destroy();
+
+            popover(region, function(){
+                    return typeof typeof spaceProjects[region].info.desc === 'string' ? spaceProjects[region].info.desc : spaceProjects[region].info.desc();
+                },
+                {
+                    elm: `#${region} h3.name`,
+                    classes: `has-background-light has-text-dark`
                 }
-                clearElement($(`#pop${region}`),true);
-            });
+            );
 
             Object.keys(spaceProjects[region]).forEach(function (tech){
                 if (tech !== 'info' && checkRequirements(spaceProjects,region,tech)){
@@ -4994,22 +4986,14 @@ function deepSpace(){
                 parent.append(`<div id="${region}" class="space"><div><h3 class="name has-text-warning">${name}</h3></div></div>`);
             }
             
-            $(`#${region} h3.name`).on('mouseover',function(){
-                var popper = $(`<div id="pop${region}" class="popper has-background-light has-text-dark"></div>`);
-                $('#main').append(popper);
-                
-                let desc = typeof interstellarProjects[region].info.desc === 'string' ? interstellarProjects[region].info.desc : interstellarProjects[region].info.desc();
-                popper.append($(`<div>${desc}</div>`));
-                popper.show();
-                poppers[region] = new Popper($(`#${region} h3.name`),popper);
-            });
-            $(`#${region} h3.name`).on('mouseout',function(){
-                $(`#pop${region}`).hide();
-                if (poppers[region]){
-                    poppers[region].destroy();
+            popover(region, function(){
+                    return typeof interstellarProjects[region].info.desc === 'string' ? interstellarProjects[region].info.desc : interstellarProjects[region].info.desc();
+                },
+                {
+                    elm: `#${region} h3.name`,
+                    classes: `has-background-light has-text-dark`
                 }
-                clearElement($(`#pop${region}`),true);
-            });
+            );
 
             Object.keys(interstellarProjects[region]).forEach(function (tech){
                 if (tech !== 'info' && checkRequirements(interstellarProjects,region,tech)){
@@ -5140,23 +5124,15 @@ function galaxySpace(){
             }
 
             vBind(vData);
-            
-            $(`#${region} h3.name`).on('mouseover',function(){
-                var popper = $(`<div id="pop${region}" class="popper has-background-light has-text-dark"></div>`);
-                $('#main').append(popper);
-                
-                let desc = typeof galaxyProjects[region].info.desc === 'string' ? galaxyProjects[region].info.desc : galaxyProjects[region].info.desc();
-                popper.append($(`<div>${desc}</div>`));
-                popper.show();
-                poppers[region] = new Popper($(`#${region} h3.name`),popper);
-            });
-            $(`#${region} h3.name`).on('mouseout',function(){
-                $(`#pop${region}`).hide();
-                if (poppers[region]){
-                    poppers[region].destroy();
+
+            popover(region, function(){
+                    return typeof galaxyProjects[region].info.desc === 'string' ? galaxyProjects[region].info.desc : galaxyProjects[region].info.desc();
+                },
+                {
+                    elm: `#${region} h3.name`,
+                    classes: `has-background-light has-text-dark`
                 }
-                clearElement($(`#pop${region}`),true);
-            });
+            );
 
             Object.keys(galaxyProjects[region]).forEach(function (tech){
                 if (tech !== 'info' && checkRequirements(galaxyProjects,region,tech)){
@@ -5299,38 +5275,17 @@ function armada(parent,id){
         Object.keys(global.galaxy.defense).forEach(function (area){
             let r = area.substring(4);
             if (global.settings.space[r]){
-                $('#armada'+r).on('mouseover',function(){
-                    var popper = $(`<div id="pop${r}" class="popper has-background-light has-text-dark pop-desc"></div>`);
-                    popper.append(`<div>${typeof galaxyProjects[area].info.desc === 'string' ? galaxyProjects[area].info.desc : galaxyProjects[area].info.desc()}</div>`);
-                    $('#main').append(popper);
-                    popper.show();
-                    poppers[r] = new Popper($('#armada'+r),popper);
-                });
-                $('#armada'+r).on('mouseout',function(){
-                    $(`#pop${r}`).hide();
-                    if (poppers[r]){
-                        poppers[r].destroy();
-                    }
-                    clearElement($(`#pop${r}`),true);
+                popover(`armada${r}`,function(){
+                    return `<div>${typeof galaxyProjects[area].info.desc === 'string' ? galaxyProjects[area].info.desc : galaxyProjects[area].info.desc()}</div>`;
                 });
             }
         });
 
         for (let i=0; i<ships.length; i++){
             if (global.galaxy.hasOwnProperty(ships[i])){
-                $('#armada'+ships[i]).on('mouseover',function(){
-                    var popper = $(`<div id="pop${ships[i]}" class="popper has-background-light has-text-dark pop-desc"></div>`);
-                    actionDesc(popper,galaxyProjects.gxy_gateway[ships[i]],global.galaxy[ships[i]]);
-                    $('#main').append(popper);
-                    popper.show();
-                    poppers[ships[i]] = new Popper($('#armada'+ships[i]),popper);
-                });
-                $('#armada'+ships[i]).on('mouseout',function(){
-                    $(`#pop${ships[i]}`).hide();
-                    if (poppers[ships[i]]){
-                        poppers[ships[i]].destroy();
-                    }
-                    clearElement($(`#pop${ships[i]}`),true);
+                popover(`armada${ships[i]}`,function(obj){
+                    actionDesc(obj.popper,galaxyProjects.gxy_gateway[ships[i]],global.galaxy[ships[i]]);
+                    return undefined;
                 });
             }
         }
@@ -5474,25 +5429,14 @@ export function setUniverse(){
             clearElement($(`#pop${id}`),true);
         });
 
-        $('#'+id).on('mouseover',function(){
-                var popper = $(`<div id="pop${id}" class="popper has-background-light has-text-dark"></div>`);
-                $('#main').append(popper);
-                
-                popper.append($(`<div>${universe_types[universe].name}</div>`));
-                popper.append($(`<div>${universe_types[universe].desc}</div>`));
-                popper.append($(`<div>${universe_types[universe].effect}</div>`));
-
-                popper.show();
-                poppers[id] = new Popper($('#'+id),popper);
-            });
-            
-        $('#'+id).on('mouseout',function(){
-                $(`#pop${id}`).hide();
-                if (poppers[id]){
-                    poppers[id].destroy();
-                }
-                clearElement($(`#pop${id}`),true);
-            });
+        popover(id,function(obj){
+            obj.popper.append($(`<div>${universe_types[universe].name}</div>`));
+            obj.popper.append($(`<div>${universe_types[universe].desc}</div>`));
+            obj.popper.append($(`<div>${universe_types[universe].effect}</div>`));
+            return undefined;
+        },{
+            classes: `has-background-light has-text-dark`
+        });
     }
 }
 

@@ -3,6 +3,16 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `0.9.14`,
+        date: `8/9/2020`,
+        changes: [
+            `Angelic races now have an innate bonus vs demonic creatures.`,
+            `Enhanced Muscle Fibers added to perks page.`,
+            `Genome sequencing will now be off by default in Cataclysm.`,
+            `Reorganized achievements page in Wiki.`
+        ]
+    },
+    {
         version: `0.9.13`,
         date: `8/6/2020`,
         changes: [
