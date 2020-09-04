@@ -380,6 +380,7 @@ function loadResource(name,max,rate,tradable,stackable,color){
         res_container.append($('<span></span>'));
     }
     
+    let infopops = false;
     if (rate !== 0 || (max === -1 && rate === 0 && global.race['no_craft'])){
         res_container.append($(`<span id="inc${name}" class="diff" :aria-label="resRate('${name}')">{{ diff | diffSize }} /s</span>`));
     }
@@ -389,9 +390,10 @@ function loadResource(name,max,rate,tradable,stackable,color){
 
         let inc = [1,5];
         for (let i=0; i<inc.length; i++){
-            craft.append($(`<span id="inc${name}${inc[i]}" @mouseover="hover('${name}',${inc[i]})" @mouseout="unhover('${name}',${inc[i]})"><a @click="craft('${name}',${inc[i]})" aria-label="craft ${inc[i]} ${name}">+<span class="craft" data-val="${inc[i]}">${inc[i]}</span></a></span>`));
+            craft.append($(`<span id="inc${name}${inc[i]}"><a @click="craft('${name}',${inc[i]})" aria-label="craft ${inc[i]} ${name}">+<span class="craft" data-val="${inc[i]}">${inc[i]}</span></a></span>`));
         }
-        craft.append($(`<span id="inc${name}A" @mouseover="hover('${name}','A')" @mouseout="unhover('${name}','A')"><a @click="craft('${name}','A')" aria-label="craft max ${name}">+<span class="craft" data-val="${'A'}">A</span></a></span>`));
+        craft.append($(`<span id="inc${name}A"><a @click="craft('${name}','A')" aria-label="craft max ${name}">+<span class="craft" data-val="${'A'}">A</span></a></span>`));
+        infopops = true;
     }
     else {
         res_container.append($(`<span></span>`));
@@ -509,34 +511,66 @@ function loadResource(name,max,rate,tradable,stackable,color){
                 popper.append(costs);
                 
                 popper.show();
-                poppers[`r${res}${vol}`] = new Popper($(`#inc${res}${vol}`),popper);
-            },
-            unhover(res,vol){
-                $(`#popRes${res}${vol}`).hide();
-                poppers[`r${res}${vol}`].destroy();
-                clearElement($(`#popRes${res}${vol}`),true);
+                popover(`inc${res}${vol}`,popper);
             }
         }
     });
 
     breakdownPopover(`cnt${name}`,name,'c');
 
+    if (infopops){
+        let inc = [1,5,'A'];
+        for (let i=0; i<inc.length; i++){
+            popover(`inc${name}${inc[i]}`,function(){
+                let popper = $(`<div></div>`);
+                let res = name;
+                let vol = inc[i];
+                let bonus = (craftingRatio(res) * 100).toFixed(0);
+                popper.append($(`<div class="has-text-info">${loc('manual_crafting_hover_bonus',[bonus,global.resource[res].name])}</div>`));
+                
+                let craft_costs = craftCost();
+                let crafts = $(`<div><span class="has-text-success">${loc('manual_crafting_hover_craft')} </span></div>`);
+                let num_crafted = 0;
+                if (typeof vol !== 'number'){
+                    num_crafted = global.resource[craft_costs[res][0].r].amount / craft_costs[res][0].a;
+                    if (craft_costs[res].length > 1){
+                        for (let i=1; i<craft_costs[res].length; i++){
+                            let curr_max = global.resource[craft_costs[res][i].r].amount / craft_costs[res][i].a;
+                            if (curr_max < num_crafted){
+                                num_crafted = curr_max;
+                            }
+                        }
+                    }
+                    crafts.append($(`<span class="has-text-advanced">${sizeApproximation((bonus / 100) * num_crafted,1)} ${global.resource[res].name}</span>`));
+                }
+                else {
+                    num_crafted = keyMultiplier() * vol;
+                    let total_crafted = sizeApproximation((bonus / 100) * num_crafted,1);
+                    crafts.append($(`<span class="has-text-advanced"><span class="craft" data-val="${(sizeApproximation((bonus / 100) * vol))}">${total_crafted}</span> ${global.resource[res].name}</span>`));
+                }
+                let costs = $(`<div><span class="has-text-danger">${loc('manual_crafting_hover_use')} </span></div>`);
+                for (let i=0; i<craft_costs[res].length; i++){
+                    costs.append($(`<span class="craft-elm has-text-caution">${sizeApproximation(num_crafted * craft_costs[res][i].a,1)} ${global.resource[craft_costs[res][i].r].name}</span>`));
+                    if (i + 1 < craft_costs[res].length){
+                        costs.append($(`<span>, </span>`));
+                    }
+                }
+                popper.append(crafts);
+                popper.append(costs);
+                return popper;
+            });
+        }
+    }
+
     if (stackable){
-        $(`#con${name}`).on('mouseover',function(){
-            var popper = $(`<div id="popContainer${name}" class="popper has-background-light has-text-dark"></div>`);
-            $('#main').append(popper);
-            popper.append($(`<div>Crates ${global.resource[name].crates}</div>`));
+        popover(`con${name}`,function(){
+            var popper = $(`<div>${loc('resource_Crates_plural')} ${global.resource[name].crates}</div>`);
             if (global.tech['steel_container']){
-                popper.append($(`<div>Containers ${global.resource[name].containers}</div>`));
+                popper.append($(`<div>${loc('resource_Containers_plural')} ${global.resource[name].containers}</div>`));
             }
-            popper.show();
-            poppers[name] = new Popper($(`#con${name}`),popper);
+            return popper;
         });
-        $(`#con${name}`).on('mouseout',function(){
-            $(`#popContainer${name}`).hide();
-            poppers[name].destroy();
-            clearElement($(`#popContainer${name}`),true);
-        });
+
         var market_item = $(`<div id="stack-${name}" class="market-item" v-show="display"></div>`);
         $('#resStorage').append(market_item);
         containerItem(`#stack-${name}`,market_item,name,color,true);
@@ -599,71 +633,73 @@ function loadSpecialResource(name,color) {
         data: global.race[bind]
     });
 
-    let desc = $(`<div></div>`);
-    switch (name){
-        case 'Plasmid':
-            let active = global.race['no_plasmid'] ? (global.race.p_mutation > global.race[bind].count ? global.race[bind].count : global.race.p_mutation) : global.race[bind].count;
-            desc.append($(`<span>${loc(`resource_${name}_desc`,[active, +(plasmidBonus('plasmid') * 100).toFixed(2)])}</span>`));
-            if (global.genes['store'] && (global.race.universe !== 'antimatter' || global.genes['bleed'] >= 3)){
-                let plasmidSpatial = spatialReasoning(1,'plasmid');
-                if (plasmidSpatial > 1){
-                    desc.append($(`<span> ${loc(`resource_Plasmid_desc2`,[+((plasmidSpatial - 1) * 100).toFixed(2)])}</span>`));
-                }   
-            }
-            break;
-
-        case 'AntiPlasmid':
-            desc.append($(`<span>${loc(`resource_${name}_desc`,[global.race[bind].anti, +(plasmidBonus('antiplasmid') * 100).toFixed(2)])}</span>`));
-            let antiSpatial = spatialReasoning(1,'anti');
-            if (global.genes['store'] && (global.race.universe === 'antimatter' || global.genes['bleed'] >= 3)){
-                if (antiSpatial > 1){
-                    desc.append($(`<span> ${loc(`resource_Plasmid_desc2`,[+((antiSpatial - 1) * 100).toFixed(2)])}</span>`));
+    popover(`res${name}`, function(){
+        let desc = $(`<div></div>`);
+        switch (name){
+            case 'Plasmid':
+                let active = global.race['no_plasmid'] ? (global.race.p_mutation > global.race[bind].count ? global.race[bind].count : global.race.p_mutation) : global.race[bind].count;
+                desc.append($(`<span>${loc(`resource_${name}_desc`,[active, +(plasmidBonus('plasmid') * 100).toFixed(2)])}</span>`));
+                if (global.genes['store'] && (global.race.universe !== 'antimatter' || global.genes['bleed'] >= 3)){
+                    let plasmidSpatial = spatialReasoning(1,'plasmid');
+                    if (plasmidSpatial > 1){
+                        desc.append($(`<span> ${loc(`resource_Plasmid_desc2`,[+((plasmidSpatial - 1) * 100).toFixed(2)])}</span>`));
+                    }   
                 }
-            }
-            break;
-
-        case 'Phage':
-            desc.append($(`<span>${loc(global.race.Plasmid.anti > 0 ? `resource_${name}_desc2` : `resource_${name}_desc`,[250 + global.race[bind].count])}</span>`));
-            let phageSpatial = spatialReasoning(1,'phage');
-            if (global.genes['store'] && global.genes['store'] >= 4){
-                if (phageSpatial > 1){
-                    desc.append($(`<span> ${loc(`resource_Plasmid_desc2`,[+((phageSpatial - 1) * 100).toFixed(2)])}</span>`));
+                break;
+    
+            case 'AntiPlasmid':
+                desc.append($(`<span>${loc(`resource_${name}_desc`,[global.race[bind].anti, +(plasmidBonus('antiplasmid') * 100).toFixed(2)])}</span>`));
+                let antiSpatial = spatialReasoning(1,'anti');
+                if (global.genes['store'] && (global.race.universe === 'antimatter' || global.genes['bleed'] >= 3)){
+                    if (antiSpatial > 1){
+                        desc.append($(`<span> ${loc(`resource_Plasmid_desc2`,[+((antiSpatial - 1) * 100).toFixed(2)])}</span>`));
+                    }
                 }
-            }
-            break;
-
-        case 'Dark':
-            switch (global.race.universe){
-                case 'standard':
-                    desc.append($(`<span>${loc(`resource_${name}_desc_s`,[+((darkEffect('standard') - 1) * 100).toFixed(2)])}</span>`));
-                    break;
-
-                case 'evil':
-                    desc.append($(`<span>${loc(`resource_${name}_desc_e`,[+((darkEffect('evil') - 1) * 100).toFixed(2)])}</span>`));
-                    break;
-
-                case 'micro':
-                    desc.append($(`<span>${loc(`resource_${name}_desc_m`,[darkEffect('micro',false),darkEffect('micro',true)])}</span>`));
-                    break;
-
-                case 'heavy':
-                    let hDE = darkEffect('heavy');
-                    let space = +(0.25 + (0.5 * hDE)).toFixed(4);
-                    let int = +(0.2 + (0.3 * hDE)).toFixed(4);
-                    desc.append($(`<span>${loc(`resource_${name}_desc_h`,[space * 100,int * 100])}</span>`));
-                    break;
-
-                case 'antimatter':
-                    desc.append($(`<span>${loc(`resource_${name}_desc_a`,[+((darkEffect('antimatter') - 1) * 100).toFixed(2)])}</span>`));
-                    break;
-            }
-            break;
-
-        case 'Harmony':
-            desc.append($(`<span>${loc(`resource_${name}_desc`,[global.race.universe === 'standard' ? 0.1 : 1, harmonyEffect()])}</span>`));
-            break;
-    }
-    popover(`res${name}`, desc);
+                break;
+    
+            case 'Phage':
+                desc.append($(`<span>${loc(global.race.Plasmid.anti > 0 ? `resource_${name}_desc2` : `resource_${name}_desc`,[250 + global.race[bind].count])}</span>`));
+                let phageSpatial = spatialReasoning(1,'phage');
+                if (global.genes['store'] && global.genes['store'] >= 4){
+                    if (phageSpatial > 1){
+                        desc.append($(`<span> ${loc(`resource_Plasmid_desc2`,[+((phageSpatial - 1) * 100).toFixed(2)])}</span>`));
+                    }
+                }
+                break;
+    
+            case 'Dark':
+                switch (global.race.universe){
+                    case 'standard':
+                        desc.append($(`<span>${loc(`resource_${name}_desc_s`,[+((darkEffect('standard') - 1) * 100).toFixed(2)])}</span>`));
+                        break;
+    
+                    case 'evil':
+                        desc.append($(`<span>${loc(`resource_${name}_desc_e`,[+((darkEffect('evil') - 1) * 100).toFixed(2)])}</span>`));
+                        break;
+    
+                    case 'micro':
+                        desc.append($(`<span>${loc(`resource_${name}_desc_m`,[darkEffect('micro',false),darkEffect('micro',true)])}</span>`));
+                        break;
+    
+                    case 'heavy':
+                        let hDE = darkEffect('heavy');
+                        let space = +(0.25 + (0.5 * hDE)).toFixed(4);
+                        let int = +(0.2 + (0.3 * hDE)).toFixed(4);
+                        desc.append($(`<span>${loc(`resource_${name}_desc_h`,[space * 100,int * 100])}</span>`));
+                        break;
+    
+                    case 'antimatter':
+                        desc.append($(`<span>${loc(`resource_${name}_desc_a`,[+((darkEffect('antimatter') - 1) * 100).toFixed(2)])}</span>`));
+                        break;
+                }
+                break;
+    
+            case 'Harmony':
+                desc.append($(`<span>${loc(`resource_${name}_desc`,[global.race.universe === 'standard' ? 0.1 : 1, harmonyEffect()])}</span>`));
+                break;
+        }
+        return desc;
+    });
 }
 
 function marketItem(mount,market_item,name,color,full){
@@ -1107,12 +1143,8 @@ export function tradeBuyPrice(res){
 }
 
 function breakdownPopover(id,name,type){
-    $(`#${id}`).on('mouseover',function(){
-        
-        var popper = $(`<div id="resBreak${id}" class="popper breakdown has-background-light has-text-dark"></div>`);
-        $('#main').append(popper);
+    popover(`${id}`,function(){
         let bd = $(`<div class="resBreakdown"><div class="has-text-info">{{ res.name | namespace }}</div></div>`);
-
         let table = $(`<div class="parent"></div>`);
         bd.append(table);
 
@@ -1160,82 +1192,78 @@ function breakdownPopover(id,name,type){
             bd.append(`<div class="modal_bd sum"><span>{{ res.diff | direction }}</span><span class="has-text-${dir}">{{ res.amount | counter }}</span></div>`);
         }
 
-        popper.append(bd);
-        popper.show();
-        poppers[type+name] = new Popper($(`#${id}`),popper);
-
-        vBind({
-            el: `#resBreak${id} > div`,
-            data: {
-                'Global': breakdown[type]['Global'],
-                [name]: breakdown[type][name],
-                'consume': breakdown[type]['consume'],
-                res: global['resource'][name]
-            }, 
-            filters: {
-                translate(raw){
-                    let type = raw[raw.length -1];
-                    let val = parseFloat(raw.slice(0,-1));
-                    val = +(val).toFixed(2);
-                    let suffix = type === '%' ? '%' : '';
-                    if (val > 0){
-                        return '+' + sizeApproximation(val,2) + suffix;
-                    }
-                    else if (val < 0){
-                        return sizeApproximation(val,2) + suffix;
-                    }
-                },
-                fix(val){
-                    return val + 'v';
-                },
-                counter(val){
-                    let rate = global['resource'][name].diff;
-                    let time = 0;
-                    if (rate < 0){
-                        rate *= -1;
-                        time = +(val / rate).toFixed(0);
-                    }
-                    else {
-                        let gap = global['resource'][name].max - val;
-                        time = +(gap / rate).toFixed(0);
-                    }
-
-                    if (time === Infinity || Number.isNaN(time)){
-                        return 'Never';
-                    }
-                    
-                    if (time > 60){
-                        let secs = time % 60;
-                        let mins = (time - secs) / 60;
-                        if (mins >= 60){
-                            let r = mins % 60;
-                            let hours = (mins - r) / 60;
-                            return `${hours}h ${r}m`;
+        return bd;
+    },{
+        in: function(){
+            vBind({
+                el: `#pop${id} > div`,
+                data: {
+                    'Global': breakdown[type]['Global'],
+                    [name]: breakdown[type][name],
+                    'consume': breakdown[type]['consume'],
+                    res: global['resource'][name]
+                }, 
+                filters: {
+                    translate(raw){
+                        let type = raw[raw.length -1];
+                        let val = parseFloat(raw.slice(0,-1));
+                        val = +(val).toFixed(2);
+                        let suffix = type === '%' ? '%' : '';
+                        if (val > 0){
+                            return '+' + sizeApproximation(val,2) + suffix;
+                        }
+                        else if (val < 0){
+                            return sizeApproximation(val,2) + suffix;
+                        }
+                    },
+                    fix(val){
+                        return val + 'v';
+                    },
+                    counter(val){
+                        let rate = global['resource'][name].diff;
+                        let time = 0;
+                        if (rate < 0){
+                            rate *= -1;
+                            time = +(val / rate).toFixed(0);
                         }
                         else {
-                            return `${mins}m ${secs}s`;
+                            let gap = global['resource'][name].max - val;
+                            time = +(gap / rate).toFixed(0);
                         }
+    
+                        if (time === Infinity || Number.isNaN(time)){
+                            return 'Never';
+                        }
+                        
+                        if (time > 60){
+                            let secs = time % 60;
+                            let mins = (time - secs) / 60;
+                            if (mins >= 60){
+                                let r = mins % 60;
+                                let hours = (mins - r) / 60;
+                                return `${hours}h ${r}m`;
+                            }
+                            else {
+                                return `${mins}m ${secs}s`;
+                            }
+                        }
+                        else {
+                            return `${time}s`;
+                        }
+                    },
+                    direction(val){
+                        return val >= 0 ? loc('to_full') : loc('to_empty');
+                    },
+                    namespace(name){
+                        return name.replace("_"," ");
                     }
-                    else {
-                        return `${time}s`;
-                    }
-                },
-                direction(val){
-                    return val >= 0 ? loc('to_full') : loc('to_empty');
-                },
-                namespace(name){
-                    return name.replace("_"," ");
                 }
-            }
-        });
-    });
-    $(`#${id}`).on('mouseout',function(){
-        $(`#resBreak${id}`).hide();
-        if (poppers[type+name]){
-            poppers[type+name].destroy();
-        }
-        clearElement($(`#resBreak${id}`),true);
-        vBind({el: `#resBreak${id} > div`},'destroy');
+            });
+        },
+        out: function(){
+            vBind({el: `#pop${id} > div`},'destroy');
+        },
+        classes: `breakdown has-background-light has-text-dark`
     });
 }
 
