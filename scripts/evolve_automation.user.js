@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      3.1.2
 // @description  try to take over the world!
-// @downloadURL  https://gist.github.com/TMVictor/3f24e27a21215414ddc68842057482da/raw/evolve_automation.user.js
+// @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
 // @author       TMVictor
 // @author       wdjwxh
