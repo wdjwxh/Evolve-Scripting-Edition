@@ -7264,6 +7264,7 @@ function enableScript(){
         atomic_mass: atomic_mass,
         global: global,
         breakdown: breakdown,
+        traits: traits,
         checkTechRequirements: checkTechRequirements,
 
         craftingRatio: craftingRatio,
