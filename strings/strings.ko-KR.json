@@ -4159,7 +4159,7 @@
   "wiki_faq_a_weather": "Weather effects vary per species. Consult the Species page for weather effects, and consult the Planets page for specific weather rules per planet/season.",
   "wiki_faq_q_sundial": "Which factors affect Sundial?",
   "wiki_faq_a_sundial": "The Sundial is the base knowledge income. +1 base, +1 after first MAD reset on the current planet, +1 after Euthanasia Perk, +1 on Magnetic planets.",
-  "wiki_faq_q_stoned": "What is the \"-2% stoned\" production penalty?",
+  "wiki_faq_q_stoned": "What is the \"-10% stoned\" production penalty?",
   "wiki_faq_a_stoned": "The Mellow Planetary Modifier gives this penalty, but also reduces stress.",
   "wiki_faq_q_plasmid": "What are plasmids?",
   "wiki_faq_a_plasmid": "Plasmids are the first prestige resource, all prestige options award Plasmids. They boost production and can be used to buy permanent upgrades from the CRISPR tab.",
