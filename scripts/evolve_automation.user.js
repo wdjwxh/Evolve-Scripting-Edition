@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Evolve(fixed by wdjwxh)
 // @namespace    http://tampermonkey.net/
-// @version      3.2.1
+// @version      3.2.1.1
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -4813,7 +4813,7 @@
 
             getVueById(this._vueBinding).action();
 
-            state.log.logSuccess(loggingTypes.research, `${techIds[this._action.id].title} has been researched.`);
+            state.log.logSuccess(loggingTypes.research, game.loc("research_success", [`${techIds[this._action.id].title}`]));
             return true;
         }
 
