@@ -3,6 +3,18 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `1.0.2`,
+        date: `11/10/2020`,
+        changes: [
+            `Valdi now take your chosen Genus instead of humanoid.`,
+            `Wrath Blood Infusion now properly applies to all Mech fights.`,
+            `Artifacts can now be spent properly on the CRISPR tab.`,
+            `Crystal trade prices adjusted.`,
+            `Megalith base price reduced from 100k to 55k.`,
+            `Many minor bug fixes.`
+        ]
+    },
+    {
         version: `1.0.1`,
         date: `11/08/2020`,
         changes: [
