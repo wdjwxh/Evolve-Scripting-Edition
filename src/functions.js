@@ -170,12 +170,12 @@ export function popover(id,content,opts){
             if (content){
                 popper.append(typeof content === 'function' ? content({ this: this, popper: popper }) : content);
             }
-            popper.show();
             poppers[id] = new Popper(
                 opts['self'] ? this : $(opts.elm),
                 popper, 
                 opts.hasOwnProperty('prop') ? opts['prop'] : {}
             );
+            popper.show();
             if (opts.hasOwnProperty('in') && typeof opts['in'] === 'function'){
                 opts['in']({ this: this, popper: popper });
             }
