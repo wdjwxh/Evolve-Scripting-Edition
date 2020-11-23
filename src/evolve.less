@@ -677,6 +677,39 @@ Misc ---------> Main template
         }
     }
 
+    .powerGrid {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: 1rem;
+        .circuit {
+            width: 18rem;
+            cursor: pointer;
+            &.inactive {
+                display: none;
+            }
+            > span {
+                display: inline-block;
+            }
+            > span:first-child {
+                width: 1.5rem;
+            }
+            .struct {
+                width: 12rem;
+            }
+            
+        }
+    }
+
+    .powerGridHeader {
+        margin-left: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .resetPowerGrid {
+        margin-left: 1rem;
+        margin-top: 2rem;
+    }
+
     // .fort
     .fort {
         .patrol {
@@ -809,7 +842,7 @@ html.light {
     font-weight: 500;
   }
   // .button
-  .button {
+  .button, .button:hover {
     border: solid .0625rem @black;
   }
   // UI Bars
@@ -847,7 +880,7 @@ html.light {
           }
         }
       }
-      .action.cna {
+      .action.cna:not(.cnam) {
         span.aTitle {
           color: #282828;
         }
