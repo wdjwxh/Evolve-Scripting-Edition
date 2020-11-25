@@ -3,6 +3,14 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `1.0.6`,
+        date: `11/24/2020`,
+        changes: [
+            `Fixed Mechlab quick switch button.`,
+            `Titan class mech power increased by 12.5%.`
+        ]
+    },
+    {
         version: `1.0.5`,
         date: `11/22/2020`,
         changes: [

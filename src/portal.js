@@ -1495,7 +1495,7 @@ const fortressModules = {
             special: true,
             sAction(){
                 global.settings.civTabs = 2;
-                global.settings.govTabs = 3;
+                global.settings.govTabs = 4;
             },
             effect(){
                 let bay = global.portal.hasOwnProperty('mechbay') ? global.portal.mechbay.bay : 0;
@@ -3436,7 +3436,7 @@ export function mechRating(mech,boss){
             rating = 0.01;
             break;
         case 'titan':
-            rating = 0.02;
+            rating = 0.0225;
             break;
     }
 
