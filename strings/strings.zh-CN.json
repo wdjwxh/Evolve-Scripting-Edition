@@ -4330,7 +4330,7 @@
   "portal_transport_effect": "货物运输舱位 +%0",
   "portal_transport_effect2": "货物运输损耗 %0%",
   "portal_transport_supply": "货物运输舱位",
-  "portal_transport_item": "每舱位输送数量 %0，折算物资供给 %1/s。",
+  "portal_transport_item": "每舱位运输数量 %0，折算物资供给 %1/s。",
   "portal_transport_unlocked": "尖塔支持已解锁，前往资源页面 >> 尖塔支持页面，管理货物运输。",
   "portal_spire_name": "尖塔",
   "portal_spire_desc": "湖心有一座巨大的塔。它太高了，一眼看不见尽头，塔尖渐渐消失在朦胧的天空中，好像有一个不祥的生物在俯视着你。",
