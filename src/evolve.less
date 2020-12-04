@@ -1112,7 +1112,7 @@ Misc ---------> Main template
             margin-left: 1rem;
 
             .circuit {
-                width: 18rem;
+                width: 18.5rem;
                 cursor: pointer;
 
                 &.inactive {
@@ -1131,17 +1131,38 @@ Misc ---------> Main template
                     width: 12rem;
                 }
 
+                .off,
+                .on {
+                    min-width: 2rem;
+                    text-align: center;
+                }
+
+                .off {
+                    color: @has-text-danger;
+                }
+                .on {
+                    color: @has-text-success;
+                }
             }
+        }
+
+        .gridHeader {
+            border-top: @secondary-border solid .0625rem;
+            margin: .25rem 0 .25rem 1rem;
+            padding-top: .25rem;
         }
 
         .powerGridHeader {
             margin-left: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: .5rem;
         }
 
         .resetPowerGrid {
             margin-left: 1rem;
-            margin-top: 2rem;
+            margin-top: .75rem;
+            .button {
+                height: 1.5rem;
+            }
         }
 
         // .fort
@@ -1170,6 +1191,10 @@ Misc ---------> Main template
             &.alt {
                 background-color: @market-item-background;
             }
+        }
+
+        .inactive-row {
+            background-color: @market-item-background;
         }
 
         // .modal

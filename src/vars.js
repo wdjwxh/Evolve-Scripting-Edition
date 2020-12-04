@@ -578,11 +578,25 @@ if (convertVersion(global['version']) < 10000){
     }
 }
 
-global['version'] = '1.0.11';
+global['version'] = '1.0.12';
 delete global['beta'];
 
 if (!global.hasOwnProperty('power')){
     global['power'] = [];       
+}
+
+if (!global.hasOwnProperty('support')){
+    global['support'] = {
+        moon: [],
+        red: [],
+        belt: [],
+        alpha: [],
+        nebula: [],
+        gateway: [],
+        alien2: [],
+        lake: [],
+        spire: [],
+    };
 }
 
 if (global.civic['cement_worker'] && global.civic.cement_worker.impact === 0.25){
@@ -1701,7 +1715,6 @@ export function clearStates(){
     global.settings.space.stargate = false;
     global.settings.space.gateway = false;
     global.settings.space.gorddon = false;
-    global.settings.space.alien1 = false;
     global.settings.space.alien1 = false;
     global.settings.space.alien2 = false;
     global.settings.space.chthonian = false;
