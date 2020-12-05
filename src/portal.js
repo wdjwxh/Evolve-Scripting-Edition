@@ -3314,6 +3314,7 @@ export function drawMechLab(){
 }
 
 function drawMechs(){
+    clearMechDrag();
     clearElement($('#mechList'));
     let list = $('#mechList');
     let used = 0;
@@ -3376,6 +3377,16 @@ export function mechSize(s){
             return global.blood['prepared'] && global.blood.prepared >= 2 ? 20 : 25;
         case 'default':
             return 25;
+    }
+}
+
+function clearMechDrag(){
+    let el = $('#mechList')[0];
+    if (el){
+        let sort = Sortable.get(el);
+        if (sort){
+            sort.destroy();
+        }
     }
 }
 

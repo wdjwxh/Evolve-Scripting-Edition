@@ -314,6 +314,7 @@ export function removeFromRQueue(tech_trees){
 }
 
 export function buildQueue(){
+    clearDragQueue();
     clearElement($('#buildQueue'));
     $('#buildQueue').append($(`<h2 class="has-text-success is-sr-only">${loc('building_queue')}</h2>`));
 
@@ -391,7 +392,17 @@ export function buildQueue(){
     }
 }
 
-export function dragQueue(){
+function clearDragQueue(){
+    let el = $('#buildQueue .buildList')[0];
+    if (el){
+        let sort = Sortable.get(el);
+        if (sort){
+            sort.destroy();
+        }
+    }
+}
+
+function dragQueue(){
     let el = $('#buildQueue .buildList')[0];
     Sortable.create(el,{
         onEnd(e){

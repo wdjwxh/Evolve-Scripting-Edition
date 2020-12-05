@@ -1003,12 +1003,29 @@ function colorRange(num,max,invert){
     }
 }
 
+export function gridEnabled(c_action,region,p0,p1){
+    let isOk = false;
+    switch (region){
+        case 'city':
+            isOk = checkCityRequirements(p1);
+            break;
+        case 'portal':
+            isOk = checkRequirements(fortressTech(),p0,p1);
+            break;
+        default:
+            isOk = checkSpaceRequirements(region,p0,p1);
+            break;
+    }
+    return global[region][p1] && isOk && checkPowerRequirements(c_action) ? true : false;
+}
+
 export function setPowerGrid(){
-    clearElement($('#powerGrid'));
-
-    $('#powerGrid').append(`<div class="powerGridHeader has-text-info">${loc(`power_grid_header`)}</div>`);
-
     let grids = gridDefs();
+    clearGrids(grids);
+
+    clearElement($('#powerGrid'));
+    $('#powerGrid').append(`<div class="powerGridHeader has-text-info">${loc(`power_grid_header`)}</div>`);
+    
     Object.keys(grids).forEach(function(grid_type){
         if (!grids[grid_type].s){
             return;
@@ -1025,7 +1042,7 @@ export function setPowerGrid(){
             $('#powerGrid').append(`<div class="gridHeader has-text-caution">${grids[grid_type].n}</div>`);
         }
 
-        let grid = $(`<div class="powerGrid ${grid_type}"></div>`);
+        let grid = $(`<div id="grid${grid_type}" class="powerGrid"></div>`);
         $('#powerGrid').append(grid);
 
         let idx = 0;
@@ -1054,20 +1071,7 @@ export function setPowerGrid(){
                     break;
             }
 
-            let isOk = false;
-            switch (region){
-                case 'city':
-                    isOk = checkCityRequirements(parts[1]);
-                    break;
-                case 'portal':
-                    isOk = checkRequirements(fortressTech(),parts[0],parts[1]);
-                    break;
-                default:
-                    isOk = checkSpaceRequirements(region,parts[0],parts[1]);
-                    break;
-            }
-
-            if (global[region][parts[1]] && isOk && checkPowerRequirements(c_action)){
+            if (gridEnabled(c_action,region,parts[0],parts[1])){
                 idx++;
                 let circuit = $(`<div id="pg${c_action.id}${grid_type}" class="circuit" data-idx="${i}"></div>`);
                 circuit.append(`<span>${idx}</span> <span class="struct has-text-warning">${title}${extra}</span>`);
@@ -1156,7 +1160,6 @@ export function setPowerGrid(){
             data: {},
             methods: {
                 resetGrid(type){
-                    console.log(type);
                     powerGrid(type,true);
                     setPowerGrid();
                 }
@@ -1180,8 +1183,20 @@ export function gridDefs(){
     };
 }
 
+function clearGrids(grids){
+    Object.keys(grids).forEach(function(grid_type){
+        let el = $(`#grid${grid_type}`)[0];
+        if (el){
+            let sort = Sortable.get(el);
+            if (sort){
+                sort.destroy();
+            }
+        }
+    });
+}
+
 function dragPowerGrid(grid_type){
-    let el = $(`#powerGrid .${grid_type}`)[0];
+    let el = $(`#grid${grid_type}`)[0];
     let grids = gridDefs();
     Sortable.create(el,{
         onEnd(e){
