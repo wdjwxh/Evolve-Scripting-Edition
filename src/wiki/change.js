@@ -3,6 +3,67 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `1.0.13`,
+        date: `12/4/2020`,
+        changes: [
+            `Power Grid now correctly unlocks when gaining Electricity from Infiltrator trait.`,
+            `Feats Garbage Pie and Finish Line can now be unlocked by Demonic Infusion.`
+        ]
+    },
+    {
+        version: `1.0.12`,
+        date: `12/4/2020`,
+        changes: [
+            `MechBay tab improvements.`,
+            `Mechlist can now be reordered by dragging.`,
+            `Power Grid can now control On/Off state.`,
+            `Support type structures can now be controlled by the power grid.`
+        ]
+    },
+    {
+        version: `1.0.11`,
+        date: `12/2/2020`,
+        changes: [
+            `Fixed a memory leak.`,
+            `Minor adjustments to GruvBox Dark theme.`,
+            `Cheesy Goodness.`
+        ]
+    },
+    {
+        version: `1.0.10`,
+        date: `12/1/2020`,
+        changes: [
+            `Ascended buff now persists after Demonic Infusion.`,
+            `New Themes: GruvBox Light, GruvBox Dark, and Orange Soda.`
+        ]
+    },
+    {
+        version: `1.0.9`,
+        date: `11/29/2020`,
+        changes: [
+            `Perks separated on to a separate tab under Stats.`,
+            `Added Perks section to Wiki.`
+        ]
+    },
+    {
+        version: `1.0.8`,
+        date: `11/28/2020`,
+        changes: [
+            `Base Neutronium cost of Inferno Reactor lowered to 3,750,000.`,
+            `Fixed Valdi genus traits after evolution.`,
+            `Prepared rank 2 now correctly applies when building mechs.`,
+            `Power Grid is now more strict in checking what is available.`,
+            `Fixed bug that sometimes caused crafting to use a wrong Mastery value.`
+        ]
+    },
+    {
+        version: `1.0.7`,
+        date: `11/25/2020`,
+        changes: [
+            `Fixed a bug where Technocracy prevented Alien 2 & Chthonian invasions from working.`
+        ]
+    },
+    {
         version: `1.0.6`,
         date: `11/24/2020`,
         changes: [
