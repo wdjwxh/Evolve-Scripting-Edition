@@ -496,7 +496,7 @@ if (convertVersion(global['version']) < 9014){
     }
 }
 
-if (convertVersion(global['version']) < 10000){
+if (convertVersion(global['version']) < 100000){
     delete global.city['lumber'];
     delete global.city['stone'];
     
@@ -586,7 +586,31 @@ if (convertVersion(global['version']) < 100013){
     }
 }
 
-global['version'] = '1.0.13';
+if (convertVersion(global['version']) < 100014){
+    if (global.race['Dark']){
+        global.stats['dark'] = global.race['Dark'].count;
+    }
+    if (global.race['casting'] && global.race['evil']){
+        global.race.casting.total -= global.race.casting.lumberjack;
+        global.race.casting.lumberjack = 0;
+    }
+    if (global['queue'] && global['queue']['queue']){
+        for (let i=0; i<global.queue.queue.length; i++){
+            if (global.queue.queue[i].type === 'arpa'){
+                global.queue.queue[i].type = global.queue.queue[i].action;
+                global.queue.queue[i].action = 'arpa';
+            }
+        }
+    }
+}
+
+if (convertVersion(global['version']) < 100015){
+    if (global.race['cataclysm']){
+        global.settings.showPowerGrid = true;
+    }
+}
+
+global['version'] = '1.0.15';
 delete global['beta'];
 
 if (!global.hasOwnProperty('power')){
@@ -760,6 +784,10 @@ if (!global['r_queue']){
         display: false,
         queue: [],
     };
+}
+
+if (!global['queue']['rename']){
+    global.queue['rename'] = false;
 }
 
 if (!global['space']){
@@ -1551,7 +1579,7 @@ window.soft_reset = function reset(){
     if (global.race['rapid_mutation'] && global.race['rapid_mutation'] > 0){
         replace['rapid_mutation'] = global.race['rapid_mutation'];
     }
-    if (global.race['ancient_ruins'] && global.race['rapid_mutation'] > 0){
+    if (global.race['ancient_ruins'] && global.race['ancient_ruins'] > 0){
         replace['ancient_ruins'] = global.race['ancient_ruins'];
     }
     if (global.race['bigbang']){
