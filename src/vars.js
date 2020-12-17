@@ -610,7 +610,19 @@ if (convertVersion(global['version']) < 100015){
     }
 }
 
-global['version'] = '1.0.15';
+if (convertVersion(global['version']) < 100016){
+    ['l','a','e','h','m','mg'].forEach(function(affix){
+        if (global.stats.hasOwnProperty('spire') && global.stats.spire.hasOwnProperty(affix) && global.stats.spire[affix].hasOwnProperty('lord')){
+            global.stats.spire[affix]['dlstr'] = global.stats.spire[affix].lord;
+        }
+    });
+
+    if (global.hasOwnProperty('special') && global.special.hasOwnProperty('gift') && global.special.gift){
+        global.special.gift = { g2019: true };
+    }
+}
+
+global['version'] = '1.0.16';
 delete global['beta'];
 
 if (!global.hasOwnProperty('power')){
@@ -1017,8 +1029,8 @@ if (!global.settings['affix']){
 if (!global['special']){
     global['special'] = {};
 }
-if (!global.special.hasOwnProperty('gift')){
-    global.special['gift'] = false;
+if (!global.special['gift']){
+    global.special['gift'] = {};
 }
 if (!global.special.hasOwnProperty('egg')){
     global.special['egg'] = {
@@ -1144,6 +1156,21 @@ if (!global.race['evil'] && global.race['immoral']){
     const date = new Date();
     if (global.race.species === 'elven' && date.getMonth() === 11 && date.getDate() >= 17){
         global.race['slaver'] = 1;
+    }
+
+    
+}
+
+{
+    if (global.hasOwnProperty('special') && global.special.hasOwnProperty('gift')){
+        const sdate = new Date(global.stats.start);
+        const cdate = new Date();
+        Object.keys(global.special.gift).forEach(function(gy){
+            let year = Number(gy.substring(1,5));
+            if ((year < sdate.getFullYear()) || (cdate.getFullYear() < year) || (cdate.getFullYear() === year && cdate.getMonth() !== 11)){
+                delete global.special.gift[gy];
+            }
+        });
     }
 }
 
