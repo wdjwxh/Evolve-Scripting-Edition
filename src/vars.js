@@ -622,7 +622,17 @@ if (convertVersion(global['version']) < 100016){
     }
 }
 
-global['version'] = '1.0.16';
+if (convertVersion(global['version']) < 100017){
+    if (global.hasOwnProperty('settings') && !global.settings.hasOwnProperty('font')){
+        global.settings['font'] = 'standard';
+    }
+
+    if (global.hasOwnProperty('lastMsg') && global.lastMsg){
+        global.lastMsg = [global.lastMsg];
+    }
+}
+
+global['version'] = '1.0.17';
 delete global['beta'];
 
 if (!global.hasOwnProperty('power')){
@@ -668,6 +678,7 @@ if (!global['settings']){
         animated: true,
         disableReset: false,
         onlineSave: false,
+        font: 'standard',
         cLabels: true,
         theme: 'night',
         locale: 'en-US',
@@ -972,7 +983,7 @@ if (!global.stats['spire']){
 }
 
 if (!global['lastMsg']){
-    global['lastMsg'] = false;
+    global['lastMsg'] = [];
 }
 if (!global.race['seeded']){
     global.race['seeded'] = false;
@@ -1157,8 +1168,6 @@ if (!global.race['evil'] && global.race['immoral']){
     if (global.race.species === 'elven' && date.getMonth() === 11 && date.getDate() >= 17){
         global.race['slaver'] = 1;
     }
-
-    
 }
 
 {
@@ -1649,7 +1658,7 @@ window.soft_reset = function reset(){
     }
 
     clearStates();
-    global.lastMsg = false;
+    global.lastMsg = [];
     global.new = true;
     Math.seed = Math.rand(0,10000);
 
