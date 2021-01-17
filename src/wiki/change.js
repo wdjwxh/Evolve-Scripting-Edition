@@ -3,6 +3,17 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `1.0.23`,
+        date: `1/16/2021`,
+        changes: [
+            `Redesigned Heat based Genus mechanics.`,
+            `Untapped Potential formula changed: now has diminishing returns for stacking unspent genes.`,
+            `Faith now has an effect on auto crafting (Craftsmen Only).`,
+            `Added new topics to Mechanics section of Wiki.`,
+            `Minor bug fixes.`
+        ]
+    },
+    {
         version: `1.0.22`,
         date: `1/15/2021`,
         changes: [

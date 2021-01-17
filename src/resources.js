@@ -7,6 +7,7 @@ import { loc } from './locale.js';
 export const resource_values = {
     Food: 5,
     Lumber: 5,
+    Chrysotile: 5,
     Stone: 5,
     Crystal: 6,
     Furs: 8,
@@ -46,6 +47,7 @@ export const resource_values = {
 export const tradeRatio = {
     Food: 2,
     Lumber: 2,
+    Chrysotile: 1,
     Stone: 2,
     Crystal: 0.4,
     Furs: 1,
@@ -78,6 +80,7 @@ export const tradeRatio = {
 export const atomic_mass = {
     Food: 4.355,
     Lumber: 7.668,
+    Chrysotile: 15.395,
     Stone: 20.017,
     Crystal: 5.062,
     Furs: 13.009,
@@ -117,6 +120,7 @@ export const atomic_mass = {
 
 export const supplyValue = {
     Lumber: { in: 0.5, out: 25000 },
+    Chrysotile: { in: 0.5, out: 25000 },
     Stone: { in: 0.5, out: 25000 },
     Crystal: { in: 3, out: 25000 },
     Furs: { in: 3, out: 25000 },
@@ -246,18 +250,13 @@ export function craftingRatio(res,auto){
         if (global.blood['artisan']){
             multiplier *= 1 + (global.blood.artisan / 100);
         }
+        let faith = faithBonus();
+        if (faith > 0){
+            multiplier *= 1 + (faith / (global.race.universe === 'antimatter' ? 1.5 : 3));
+        }
     }
     if (global.race.Plasmid.count > 0){
         multiplier *= plasmidBonus() / 8 + 1;
-    }
-    if (global.race['no_plasmid']){
-        if (global.city['temple'] && global.city['temple'].count){
-            let temple_bonus = global.tech['anthropology'] && global.tech['anthropology'] >= 1 ? 0.016 : 0.01;
-            if (global.tech['fanaticism'] && global.tech['fanaticism'] >= 2){
-                temple_bonus += global.civic.professor.workers * 0.0004;
-            }
-            multiplier *= 1 + (global.city.temple.count * temple_bonus / 4);
-        }
     }
     if (global.genes['challenge'] && global.genes['challenge'] >= 2){
         multiplier *= 1 + (calc_mastery() / (global.race['weak_mastery'] ? 50 : 100));
@@ -318,6 +317,7 @@ export function defineResources(){
     loadResource('Containers',0,0,false,false,'warning');
     loadResource('Food',250,1,true,true);
     loadResource('Lumber',200,1,true,true);
+    loadResource('Chrysotile',200,1,true,true);
     loadResource('Stone',200,1,true,true);
     loadResource('Crystal',200,1,true,true);
     loadResource('Furs',100,1,true,true);
@@ -990,7 +990,7 @@ export const galaxyOffers = [
     },
     {
         buy: { res: 'Graphene', vol: 25 },
-        sell: { res: global.race['kindling_kindred'] ? 'Stone' : 'Lumber', vol: 1000 }
+        sell: { res: global.race['kindling_kindred'] || global.race['smoldering'] ? (global.race['smoldering'] ? 'Chrysotile' : 'Stone') : 'Lumber', vol: 1000 }
     },
     {
         buy: { res: 'Stanene', vol: 40 },
@@ -1427,8 +1427,8 @@ function tradeRouteColor(res){
 }
 
 function buildCrateLabel(){
-    let material = global.race['kindling_kindred'] ? global.resource.Stone.name : (global.resource['Plywood'] ? global.resource.Plywood.name : loc('resource_Plywood_name'));
-    let cost = global.race['kindling_kindred'] ? 200 : 10
+    let material = global.race['kindling_kindred'] || global.race['smoldering'] ? (global.race['smoldering'] ? global.resource.Chrysotile.name : global.resource.Stone.name) : (global.resource['Plywood'] ? global.resource.Plywood.name : loc('resource_Plywood_name'));
+    let cost = global.race['kindling_kindred'] || global.race['smoldering'] ? 200 : 10
     return loc('resource_modal_crate_construct_desc',[cost,material,crateValue()]);
 }
 
@@ -1438,8 +1438,8 @@ function buildContainerLabel(){
 
 function buildCrate(){
     let keyMutipler = keyMultiplier();
-    let material = global.race['kindling_kindred'] ? 'Stone' : 'Plywood';
-    let cost = global.race['kindling_kindred'] ? 200 : 10;
+    let material = global.race['kindling_kindred'] || global.race['smoldering'] ? (global.race['smoldering'] ? 'Chrysotile' : 'Stone') : 'Plywood';
+    let cost = global.race['kindling_kindred'] || global.race['smoldering'] ? 200 : 10;
     if (keyMutipler + global.resource.Crates.amount > global.resource.Crates.max){
         keyMutipler = global.resource.Crates.max - global.resource.Crates.amount;
     }
@@ -2026,6 +2026,32 @@ export const spatialReasoning = (function(){
         return type ? (spatial[tkey][key] * value) : Math.round(spatial[tkey][key] * value);
     }
 })();
+
+export function faithBonus(){
+    if (global.race['no_plasmid'] || global.race.universe === 'antimatter'){
+        if ((global.race['cataclysm'] && global.space['ziggurat'] && global.space.ziggurat.count) || (global.city['temple'] && global.city['temple'].count)){
+            let temple_bonus = global.tech['anthropology'] && global.tech['anthropology'] >= 1 ? 0.016 : 0.01;
+            if (global.tech['fanaticism'] && global.tech['fanaticism'] >= 2){
+                temple_bonus += global.civic.professor.workers * (global.race.universe === 'antimatter' ? 0.0002 : 0.0004);
+            }
+            if (global.genes['ancients'] && global.genes['ancients'] >= 2 && global.civic.priest.display){
+                let priest_bonus = global.genes['ancients'] >= 5 ? 0.00015 : (global.genes['ancients'] >= 3 ? 0.000125 : 0.0001);
+                temple_bonus += priest_bonus * global.civic.priest.workers;
+            }
+            if (global.race.universe === 'antimatter'){
+                temple_bonus /= 2;
+            }
+            if (global.race['spiritual']){
+                temple_bonus *= 1 + (traits.spiritual.vars[0] / 100);
+            }
+            if (global.civic.govern.type === 'theocracy'){
+                temple_bonus *= 1.12;
+            }
+            return (global.race['cataclysm'] ? global.space.ziggurat.count : global.city.temple.count) * temple_bonus;
+        }
+    }
+    return 0;
+}
 
 export const plasmidBonus = (function (){
     var plasma = {};

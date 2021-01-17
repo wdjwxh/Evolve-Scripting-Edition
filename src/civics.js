@@ -72,6 +72,11 @@ export function defineIndustry(){
         $(`#industry`).append(casting);
         loadIndustry('pylon',casting,'#iPylon');
     }
+    if (global.race['smoldering'] && global.city['rock_quarry']){
+        var ratio = $(`<div id="iQuarry" class="industry"><h2 class="header has-text-advanced">${loc('city_rock_quarry')}</h2></div>`);
+        $(`#industry`).append(ratio);
+        loadIndustry('rock_quarry',ratio,'#iQuarry');
+    }
 }
 
 // Sets up garrison in civics tab
@@ -1254,6 +1259,9 @@ function war_campaign(gov){
         let basic = ['Food','Lumber','Stone'];
         let common = ['Copper','Iron','Aluminium','Coal'];
         let rare = ['Cement','Steel'];
+        if (global.tech['smoldering']){
+            basic.push('Chrysotile');
+        }
         if (global.race['terrifying']){
             rare.push('Titanium');
         }
