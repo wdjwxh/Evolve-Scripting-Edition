@@ -1,19 +1,20 @@
 import { global, save, webWorker, intervals, keyMap, resizeGame, breakdown, sizeApproximation, keyMultiplier, p_on, moon_on, red_on, belt_on, int_on, gal_on, spire_on, set_qlevel, quantum_level } from './vars.js';
 import { loc } from './locale.js';
 import { unlockAchieve, checkAchievements, drawAchieve, alevel, universeAffix, challengeIcon } from './achieve.js';
-import { adjustCosts, gameLoop, vBind, popover, clearElement, deepClone, timeCheck, arpaTimeCheck, timeFormat, powerModifier, modRes, messageQueue, calc_mastery, calcPillar, darkEffect, buildQueue, cleanBuildPopOver, vacuumCollapse, shrineBonusActive, getShrineBonus, getEaster, easterEgg, easterEggBind, getHalloween, trickOrTreatBind, powerGrid } from './functions.js';
+import { gameLoop, vBind, popover, clearElement, timeCheck, arpaTimeCheck, timeFormat, powerModifier, modRes, messageQueue, calc_mastery, calcPillar, darkEffect, buildQueue, cleanBuildPopOver, vacuumCollapse, shrineBonusActive, getShrineBonus, getEaster, easterEgg, easterEggBind, getHalloween, trickOrTreatBind, powerGrid } from './functions.js';
 import { races, traits, racialTrait, randomMinorTrait, biomes, planetTraits } from './races.js';
 import { defineResources, resource_values, spatialReasoning, craftCost, plasmidBonus, faithBonus, tradeRatio, craftingRatio, crateValue, containerValue, tradeSellPrice, tradeBuyPrice, atomic_mass, supplyValue, galaxyOffers } from './resources.js';
 import { defineJobs, job_desc, loadFoundry, farmerValue } from './jobs.js';
 import { f_rate, manaCost, setPowerGrid, gridEnabled, gridDefs } from './industry.js';
 import { defineIndustry, checkControlling, garrisonSize, armyRating, govTitle } from './civics.js';
-import { checkOldTech, actions, updateDesc, challengeGeneHeader, challengeActionHeader, scenarioActionHeader, checkTechRequirements, addAction, storageMultipler, checkAffordable, drawCity, drawTech, gainTech, removeAction, evoProgress, housingLabel, updateQueueNames, wardenLabel, setPlanet, resQueue, bank_vault, start_cataclysm, cleanTechPopOver } from './actions.js';
+import { actions, updateDesc, challengeGeneHeader, challengeActionHeader, scenarioActionHeader, addAction, storageMultipler, checkAffordable, drawCity, drawTech, gainTech, removeAction, evoProgress, housingLabel, updateQueueNames, wardenLabel, setPlanet, resQueue, bank_vault, start_cataclysm, cleanTechPopOver } from './actions.js';
 import { renderSpace, fuel_adjust, int_fuel_adjust, zigguratBonus, setUniverse, universe_types, gatewayStorage, piracy } from './space.js';
 import { renderFortress, bloodwar, soulForgeSoldiers, hellSupression, genSpireFloor, mechRating, mechSize } from './portal.js';
 import { arpaAdjustCosts, arpaProjects, arpa, buildArpa } from './arpa.js';
 import { events } from './events.js';
 import { index, mainVue, initTabs, loadTab } from './index.js';
 import { getTopChange } from './wiki/change.js';
+import { enableDebug, updateDebugData } from './debug.js';
 
 {
     $(document).ready(function() {
@@ -35,8 +36,10 @@ import { getTopChange } from './wiki/change.js';
     });
 }
 
-
-enableScript();
+// Scripting edition always enable debug
+//if (global.settings.expose){
+    enableDebug();
+//}
 
 var quickMap = {
     showCiv: 1,
@@ -4938,9 +4941,13 @@ function fastLoop(){
         }
     });
 
-    if (!window['evolve']){
-        enableScript();
-    }
+    // Scripting edition always enable debug
+    //if (global.settings.expose){
+        if (!window['evolve']){
+            enableDebug();
+        }
+        //updateDebugData();
+    //}
 
     let easter = getEaster();
     if (easter.active){
@@ -8130,37 +8137,6 @@ function spyCaught(i){
             messageQueue(loc(global.race['elusive'] ? 'event_spy_fail' : 'event_spy',[govTitle(i)]),'danger');
             break;
     }
-}
-
-function enableScript(){
-    window.evolve = {
-        actions: actions,
-        races: races,
-        tradeRatio: tradeRatio,
-        craftCost: craftCost,
-        atomic_mass: atomic_mass,
-		checkTechRequirements: checkTechRequirements,
-        global: global,
-        breakdown: breakdown,
-
-        craftingRatio: craftingRatio,
-        armyRating: armyRating,
-        keyMultiplier: keyMultiplier,
-        checkAffordable: checkAffordable,
-        checkOldTech: checkOldTech,
-        f_rate: f_rate,
-        adjustCosts: adjustCosts,
-        arpaAdjustCosts: arpaAdjustCosts,
-        arpaProjects: arpaProjects,
-        loc: loc,
-        messageQueue: messageQueue,
-        tradeSellPrice: tradeSellPrice,
-        tradeBuyPrice: tradeBuyPrice,
-        keyMap: keyMap,
-        traits: traits,
-
-        document: document,
-    };
 }
 
 intervals['version_check'] = setInterval(function(){
