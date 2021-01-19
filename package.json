@@ -13,6 +13,7 @@
     "wiki-dev": "npx webpack --config webpack.wiki.dev.js",
     "wiki": "npx webpack --config webpack.wiki.prod.js",
     "wiki-less": "lessc -x src/wiki/wiki.less wiki/wiki.css",
+    "babel-script":"npx babel --compact=false scripts/evolve_automation.user.js -o scripts/evolve_automation.user.js",
     "serve": "servehere -c"
   },
   "repository": {
@@ -29,6 +30,9 @@
   },
   "homepage": "https://github.com/pmotschmann/Evolve#readme",
   "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "less": "^3.13.0",
     "servehere": "^1.7.0",
     "webpack": "^5.10.1",
