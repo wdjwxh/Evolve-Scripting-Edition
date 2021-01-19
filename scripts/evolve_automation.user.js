@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Evolve(fixed by wdjwxh)
 // @namespace    http://tampermonkey.net/
-// @version      3.3.1.1
+// @version      3.3.1.2
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -12,8 +12,8 @@
 // @match        https://wdjwxh.gitee.io/evolve-scripting-edition/
 // @match        http://10.3.18.31:8000/
 // @grant        none
-// @require      https://code.jquery.com/jquery-3.4.1.min.js
-// @require      https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
+// @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js
+// @require      https://cdn.bootcdn.net/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 // ==/UserScript==
 //
 // DIRECT LINK FOR GREASEMONKEY / TAMPERMONKEY: https://gist.github.com/TMVictor/3f24e27a21215414ddc68842057482da/raw/evolve_automation.user.js
