@@ -149,7 +149,6 @@ window.importGame = function importGame(data,utf16){
         save.setItem('evolved',LZString.compressToUTF16(JSON.stringify(saveState)));
         window.location.reload();
     }
-    return false;
 }
 
 export function powerGrid(type,reset){

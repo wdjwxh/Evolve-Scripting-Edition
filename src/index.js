@@ -170,6 +170,8 @@ function tabLabel(lbl){
 }
 
 export function initTabs(){
+    // Scripting requires preloaded tab data
+    global.settings.tabLoad = true;
     if (global.settings.tabLoad){
         loadTab(`mTabCivil`);
         loadTab(`mTabCivic`);

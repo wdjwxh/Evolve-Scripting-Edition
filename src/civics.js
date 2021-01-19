@@ -5,6 +5,7 @@ import { unlockAchieve, unlockFeat, checkAchievements } from './achieve.js';
 import { races, racialTrait, traits, planetTraits } from './races.js';
 import { loadIndustry } from './industry.js';
 import { drawTech } from  './actions.js';
+import { renderFortress } from './portal.js';
 
 // Sets up government in civics tab
 export function defineGovernment(define){
@@ -89,6 +90,7 @@ export function defineGarrison(){
     var garrison = $('<div id="garrison" v-show="vis()" class="garrison tile is-child"></div>');
     $('#military').append(garrison);
     $('#military').append($(`<div id="fortress"></div>`));
+    renderFortress();
     
     buildGarrison(garrison,true);
     defineMad();

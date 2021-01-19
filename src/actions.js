@@ -7001,7 +7001,7 @@ function sentience(){
 
     defineJobs(true);
     commisionGarrison();
-    defineGovernment();
+    defineGovernment(true);
 
     calc_mastery(true);
     if (global.settings.tabLoad){

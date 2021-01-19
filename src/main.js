@@ -4938,12 +4938,12 @@ function fastLoop(){
         }
     });
 
-    if (global.settings.expose){
+    //if (global.settings.expose){
         if (!window['evolve']){
             enableDebug();
         }
-        updateDebugData();
-    }
+        //updateDebugData();
+    //}
 
     let easter = getEaster();
     if (easter.active){
