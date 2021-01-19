@@ -30,6 +30,7 @@ export function enableDebug(){
             // alevel: deepClone(alevel),
             // messageQueue: deepClone(messageQueue),
             // loc: deepClone(loc),
+            // updateDebugData: deepClone(updateDebugData),
             // global: {},
             // breakdown: {},
 
@@ -52,6 +53,7 @@ export function enableDebug(){
             arpaAdjustCosts: arpaAdjustCosts,
             arpaProjects: arpaProjects,
             loc: loc,
+            updateDebugData: updateDebugData,
             messageQueue: messageQueue,
             tradeSellPrice: tradeSellPrice,
             tradeBuyPrice: tradeBuyPrice,
