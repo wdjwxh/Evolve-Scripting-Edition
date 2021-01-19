@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Evolve(fixed by wdjwxh)
 // @namespace    http://tampermonkey.net/
-// @version      3.3.1.2
+// @version      3.3.1.3
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
