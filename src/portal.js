@@ -1174,6 +1174,10 @@ const fortressModules = {
             sAction(){
                 global.settings.civTabs = 4;
                 global.settings.marketTabs = 3;
+                if (!global.settings.tabLoad){
+                    loadTab('mTabResource');
+                    clearElement($('#popportal-transport'),true);
+                }
             },
             ship: {
                 civ: 3,
@@ -1503,6 +1507,10 @@ const fortressModules = {
             sAction(){
                 global.settings.civTabs = 2;
                 global.settings.govTabs = 4;
+                if (!global.settings.tabLoad){
+                    loadTab('mTabCivic');
+                    clearElement($('#popportal-mechbay'),true);
+                }
             },
             effect(){
                 let bay = global.portal.hasOwnProperty('mechbay') ? global.portal.mechbay.bay : 0;
@@ -1650,6 +1658,9 @@ export function fortressTech(){
 }
 
 export function renderFortress(){
+    if (!global.settings.tabLoad && (global.settings.civTabs !== 1 || global.settings.spaceTabs !== 4)){
+        return;
+    }
     let parent = $('#portal');
     clearElement(parent);
     parent.append($(`<h2 class="is-sr-only">${loc('tab_portal')}</h2>`));
@@ -3029,7 +3040,10 @@ export const monsters = {
     }
 };
 
-export function drawMechLab(){    
+export function drawMechLab(){
+    if (!global.settings.tabLoad && (global.settings.civTabs !== 2 || global.settings.govTabs !== 4)){
+        return;
+    }
     clearElement($('#mechLab'));
     if (global.portal.hasOwnProperty('mechbay') && global.settings.showMechLab){
         let lab = $(`#mechLab`);

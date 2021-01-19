@@ -23,6 +23,9 @@ export function loadIndustry(industry,parent,bind){
         case 'pylon':
             loadPylon(parent,bind);
             break;
+        case 'rock_quarry':
+            loadQuarry(parent,bind);
+            break;
     }
 }
 
@@ -565,7 +568,7 @@ function loadFactory(parent,bind){
                 return loc('modal_factory_alloy_label',[copper,loc('resource_Copper_name'),aluminium,loc('resource_Aluminium_name'),loc('resource_Alloy_name')]);
             }
             case 'Polymer':{
-                if (global.race['kindling_kindred']){
+                if (global.race['kindling_kindred'] || global.race['smoldering']){
                     let oil = assembly ? f_rate.Polymer.oil_kk[global.tech['factory']] : f_rate.Polymer.oil_kk[0];
                     return loc('modal_factory_polymer_label2',[oil,loc('resource_Oil_name'),loc('resource_Polymer_name')]);
                 }
@@ -718,7 +721,7 @@ function loadGraphene(parent,bind){
     let fuelTypes = $('<div></div>');
     parent.append(fuelTypes);
 
-    if (!global.race['kindling_kindred']){
+    if (!global.race['kindling_kindred'] && !global.race['smoldering']){
         let f_label = global.resource.Lumber.name;
         let wood = $(`<span :aria-label="buildLabel('wood') + ariaCount('Wood')" class="current wood">${f_label} {{ Lumber }}</span>`);
         let subWood = $(`<span role="button" class="sub" @click="subWood" aria-label="Remove lumber fuel"><span>&laquo;</span></span>`);
@@ -978,6 +981,38 @@ function loadPylon(parent,bind){
     });
 }
 
+function loadQuarry(parent,bind){
+    parent.append($(`<div>${loc('modal_quarry_ratio',[global.resource.Chrysotile.name])}</div>`));
+
+    let slider = $(`<div class="sliderbar"><span class="sub" role="button" @click="sub" aria-label="Increase Stone Production">&laquo;</span><b-slider v-model="asbestos" format="percent"></b-slider><span class="add" role="button" @click="add" aria-label="Increase Chrysotile Production">&raquo;</span></div>`);
+    parent.append(slider);
+
+    vBind({
+        el: bind ? bind : '#specialModal',
+        data: global.city.rock_quarry,
+        methods: {
+            sub(){
+                let keyMult = keyMultiplier();
+                if (global.city.rock_quarry.asbestos > 0){
+                    global.city.rock_quarry.asbestos -= keyMult;
+                    if (global.city.rock_quarry.asbestos < 0){
+                        global.city.rock_quarry.asbestos = 0;
+                    }
+                }
+            },
+            add(){
+                let keyMult = keyMultiplier();
+                if (global.city.rock_quarry.asbestos < 100){
+                    global.city.rock_quarry.asbestos += keyMult;
+                    if (global.city.rock_quarry.asbestos > 100){
+                        global.city.rock_quarry.asbestos = 100;
+                    }
+                }
+            }
+        }
+    });
+}
+
 export function manaCost(spell,rate){
     rate = typeof rate === 'undefined' ? 0.0025 : rate;
     return spell * ((1 + rate) ** spell - 1);
@@ -1021,6 +1056,9 @@ export function gridEnabled(c_action,region,p0,p1){
 }
 
 export function setPowerGrid(){
+    if (!global.settings.tabLoad && (global.settings.civTabs !== 2 && global.settings.govTabs !== 2)){
+        return;
+    }
     let grids = gridDefs();
     clearGrids(grids);
 
@@ -1184,7 +1222,8 @@ export function gridDefs(){
     };
 }
 
-function clearGrids(grids){
+export function clearGrids(grids){
+    grids = grids || gridDefs();
     Object.keys(grids).forEach(function(grid_type){
         let el = $(`#grid${grid_type}`)[0];
         if (el){

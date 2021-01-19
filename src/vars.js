@@ -20,6 +20,7 @@ export var global = {
     },
     event: 200
 };
+export var tmp_vars = {};
 export var vues = {};
 export var poppers = {};
 export var breakdown = {
@@ -632,7 +633,52 @@ if (convertVersion(global['version']) < 100017){
     }
 }
 
-global['version'] = '1.0.20';
+if (convertVersion(global['version']) < 100023){
+    if (global.city.hasOwnProperty('rock_quarry')){
+        global.city.rock_quarry['asbestos'] = 50;
+    }
+
+    if (global.race['smoldering']){
+        global.resource['Chrysotile'] = {
+            name: 'Chrysotile', display: true, value: 5, amount: 0,
+            crates: 0, diff: 0, delta: 0, max: 200, rate: 1
+        };
+        if (!global.race['kindling_kindred']){
+            global.resource.Lumber.display = false;
+            global.resource.Crates.amount += global.resource.Lumber.crates;
+            global.resource.Lumber.crates = 0;
+            global.resource.Containers.amount += global.resource.Lumber.containers;
+            global.resource.Lumber.containers = 0;
+            global.resource.Lumber.trade = 0;
+            global.resource.Plywood.display = false;
+            global.city['lumber'] = 0;
+            if (global.city['sawmill']){ delete global.city['sawmill']; }
+            if (global.city['graveyard']){ delete global.city['graveyard']; }
+            if (global.city['lumber_yard']){ delete global.city['lumber_yard']; }
+            delete global.tech['axe']; delete global.tech['reclaimer']; delete global.tech['saw'];
+            global.civic.lumberjack.display = false;
+            global.civic.lumberjack.workers = 0;
+            if (global.civic.d_job === 'lumberjack') { global.civic.d_job = 'unemployed'; }
+            if (global.race['casting']){
+                global.race.casting.total -= global.race.casting.lumberjack;
+                global.race.casting.lumberjack = 0;
+            }
+            if (global.tech['foundry']){
+                global.civic.craftsman.workers -= global.city.foundry['Plywood'];
+                global.city.foundry.crafting -= global.city.foundry['Plywood'];
+                global.city.foundry['Plywood'] = 0;
+                global['loadFoundry'] = true;
+            }
+            if (global.city['s_alter']) { global.city.s_alter.harvest = 0; }
+            if (global.interstellar['mass_ejector']){
+                global.interstellar.mass_ejector.total -= global.interstellar.mass_ejector.Lumber;
+                global.interstellar.mass_ejector.Lumber = 0;
+            }
+        }
+    }
+}
+
+global['version'] = '1.0.24';
 delete global['beta'];
 
 if (!global.hasOwnProperty('power')){
@@ -680,7 +726,7 @@ if (!global['settings']){
         onlineSave: false,
         font: 'standard',
         cLabels: true,
-        theme: 'night',
+        theme: 'dark',
         locale: 'en-US',
         icon: 'star'
     };
@@ -884,6 +930,9 @@ if (!global.settings['statsTabs']){
 if (!global.settings['locale']){
     global.settings['locale'] = 'en-us';
 }
+if (typeof global.settings.pause === 'undefined'){
+    global.settings['pause'] = false;
+}
 if (typeof global.settings.mKeys === 'undefined'){
     global.settings['mKeys'] = true;
 }
@@ -910,6 +959,9 @@ if (typeof global.settings.qAny === 'undefined'){
 }
 if (typeof global.settings.expose === 'undefined'){
     global.settings['expose'] = false;
+}
+if (typeof global.settings.tabLoad === 'undefined'){
+    global.settings['tabLoad'] = false;
 }
 if (typeof global.settings.boring === 'undefined'){
     global.settings['boring'] = false;
@@ -1194,6 +1246,10 @@ if (!global.race['evil'] && global.race['immoral']){
 
 $('html').addClass(global.settings.theme);
 
+if (!global.settings['at']){
+    global.settings['at'] = 0;
+}
+
 if (!global.city['morale']){
     global.city['morale'] = {
         current: 0,
@@ -1415,65 +1471,6 @@ export var keyMap = {
     q: false
 };
 
-var quickMap = {
-    showCiv: 1,
-    showCivic: 2,
-    showResearch: 3,
-    showResources: 4,
-    showGenetics: 5,
-    showAchieve: 6,
-    settings: 7
-};
-
-$(document).keydown(function(e){
-    e = e || window.event;
-    let key = e.key || e.keyCode;
-    Object.keys(keyMap).forEach(function(k){
-        if (key === global.settings.keyMap[k]){
-            keyMap[k] = true;
-        }
-    });
-    if (!$(`input`).is(':focus') && !$(`textarea`).is(':focus')){
-        Object.keys(quickMap).forEach(function(k){
-            if (key === global.settings.keyMap[k] && global.settings.civTabs !== 0 && (k === 'settings' || global.settings[k])){
-                global.settings.civTabs = quickMap[k];
-            }
-        });
-    }
-});
-$(document).keyup(function(e){
-    e = e || window.event;
-    let key = e.key || e.keyCode;
-    Object.keys(keyMap).forEach(function(k){
-        if (key === global.settings.keyMap[k]){
-            keyMap[k] = false;
-        }
-    });
-});
-$(document).mousemove(function(e){
-    e = e || window.event;
-    Object.keys(global.settings.keyMap).forEach(function(k){
-        switch(global.settings.keyMap[k]){
-            case 'Shift':
-            case 16:
-                keyMap[k] = e.shiftKey ? true : false;
-                break;
-            case 'Control':
-            case 17:
-                keyMap[k] = e.ctrlKey ? true : false;
-                break;
-            case 'Alt':
-            case 18:
-                keyMap[k] = e.altKey ? true : false;
-                break;
-            case 'Meta':
-            case 91:
-                keyMap[k] = e.metaKey ? true : false;
-                break;
-        }
-    });
-});
-
 export function keyMultiplier(){
     let number = 1;
     if (global.settings['mKeys']){
@@ -1673,11 +1670,14 @@ window.soft_reset = function reset(){
     global.new = true;
     Math.seed = Math.rand(0,10000);
 
+    global.stats['current'] = Date.now();
     save.setItem('evolved',LZString.compressToUTF16(JSON.stringify(global)));
     window.location.reload();
 }
 
-export var webWorker = { w: false };
+export var webWorker = { w: false, s: false, mt: 250 };
+export var intervals = {};
+
 export function clearStates(){
     if (webWorker.w){
         webWorker.w.terminate();
@@ -1755,6 +1755,7 @@ export function clearStates(){
     global.stats.died = 0;
     global.stats.attacks = 0;
     global.stats.dkills = 0;
+    global.settings.at = 0;
 
     global.settings.showEvolve = true;
     global.settings.showCiv = false;
@@ -1812,6 +1813,7 @@ export function clearStates(){
     global.settings.marketTabs = 0
     global.settings.statsTabs = 0
     global.settings.disableReset = false;
+    global.settings.pause = false;
     global.arpa = {};
 }
 

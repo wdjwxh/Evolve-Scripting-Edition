@@ -1,23 +1,102 @@
-import { keyMap, global, save, webWorker, resizeGame, breakdown, sizeApproximation, keyMultiplier, p_on, moon_on, red_on, belt_on, int_on, gal_on, spire_on, set_qlevel, quantum_level } from './vars.js';
-import { loc, locales } from './locale.js';
-import { setupStats, unlockAchieve, checkAchievements, drawAchieve, alevel, universeAffix } from './achieve.js';
-import { vBind, mainVue, popover, powerGrid, deepClone, timeCheck, arpaTimeCheck, timeFormat, powerModifier, modRes, messageQueue, calc_mastery, calcPillar, darkEffect, clearElement, adjustCosts, buildQueue, cleanBuildPopOver, vacuumCollapse, shrineBonusActive, getShrineBonus, getEaster, easterEgg, easterEggBind ,getHalloween, trickOrTreatBind } from './functions.js';
+import { global, save, webWorker, intervals, keyMap, resizeGame, breakdown, sizeApproximation, keyMultiplier, p_on, moon_on, red_on, belt_on, int_on, gal_on, spire_on, set_qlevel, quantum_level } from './vars.js';
+import { loc } from './locale.js';
+import { unlockAchieve, checkAchievements, drawAchieve, alevel, universeAffix, challengeIcon } from './achieve.js';
+import { gameLoop, vBind, popover, clearElement, timeCheck, arpaTimeCheck, timeFormat, powerModifier, modRes, messageQueue, calc_mastery, calcPillar, darkEffect, buildQueue, cleanBuildPopOver, vacuumCollapse, shrineBonusActive, getShrineBonus, getEaster, easterEgg, easterEggBind, getHalloween, trickOrTreatBind, powerGrid } from './functions.js';
 import { races, traits, racialTrait, randomMinorTrait, biomes, planetTraits } from './races.js';
-import { defineResources, resource_values, spatialReasoning, craftCost, plasmidBonus, tradeRatio, craftingRatio, crateValue, containerValue, tradeSellPrice, tradeBuyPrice, atomic_mass, supplyValue, galaxyOffers } from './resources.js';
+import { defineResources, resource_values, spatialReasoning, craftCost, plasmidBonus, faithBonus, tradeRatio, craftingRatio, crateValue, containerValue, tradeSellPrice, tradeBuyPrice, atomic_mass, supplyValue, galaxyOffers } from './resources.js';
 import { defineJobs, job_desc, loadFoundry, farmerValue } from './jobs.js';
 import { f_rate, manaCost, setPowerGrid, gridEnabled, gridDefs } from './industry.js';
-import { defineGovernment, defineIndustry, defineGarrison, buildGarrison, foreignGov, checkControlling, garrisonSize, armyRating, govTitle } from './civics.js';
-import { checkOldTech, actions, updateDesc, challengeGeneHeader, challengeActionHeader, scenarioActionHeader, checkTechRequirements, addAction, storageMultipler, checkAffordable, drawCity, drawTech, gainTech, removeAction, evoProgress, housingLabel, updateQueueNames, wardenLabel, setPlanet, resQueue, bank_vault, start_cataclysm, cleanTechPopOver } from './actions.js';
+import { defineIndustry, checkControlling, garrisonSize, armyRating, govTitle } from './civics.js';
+import { actions, updateDesc, challengeGeneHeader, challengeActionHeader, scenarioActionHeader, addAction, storageMultipler, checkAffordable, drawCity, drawTech, gainTech, removeAction, evoProgress, housingLabel, updateQueueNames, wardenLabel, setPlanet, resQueue, bank_vault, start_cataclysm, cleanTechPopOver } from './actions.js';
 import { renderSpace, fuel_adjust, int_fuel_adjust, zigguratBonus, setUniverse, universe_types, gatewayStorage, piracy } from './space.js';
-import { renderFortress, bloodwar, soulForgeSoldiers, hellSupression, genSpireFloor, mechRating, drawMechLab, mechSize } from './portal.js';
-import { arpa, arpaAdjustCosts, arpaProjectCosts, arpaProjects, buildArpa } from './arpa.js';
+import { renderFortress, bloodwar, soulForgeSoldiers, hellSupression, genSpireFloor, mechRating, mechSize } from './portal.js';
+import { arpa, buildArpa } from './arpa.js';
 import { events } from './events.js';
-import { index } from './index.js';
+import { index, mainVue, initTabs, loadTab } from './index.js';
 import { getTopChange } from './wiki/change.js';
 import { tryPlayFabAutoLogin} from './playfab.js';
+import { enableDebug, updateDebugData } from './debug.js';
 
-var intervals = {};
-enableScript();
+{
+    $(document).ready(function() {
+        if (!window.matchMedia)
+            return;
+    
+        var current = $('head > link[rel="icon"][media]');
+        $.each(current, function(i, icon) {
+            var match = window.matchMedia(icon.media);
+            function swap() {
+                if (match.matches) {
+                    current.remove();
+                    current = $(icon).appendTo('head');
+                }
+            }
+            match.addListener(swap);
+            swap();
+        });
+    });
+}
+
+enableDebug();
+var quickMap = {
+    showCiv: 1,
+    showCivic: 2,
+    showResearch: 3,
+    showResources: 4,
+    showGenetics: 5,
+    showAchieve: 6,
+    settings: 7
+};
+
+$(document).keydown(function(e){
+    e = e || window.event;
+    let key = e.key || e.keyCode;
+    Object.keys(keyMap).forEach(function(k){
+        if (key === global.settings.keyMap[k]){
+            keyMap[k] = true;
+        }
+    });
+    if (!$(`input`).is(':focus') && !$(`textarea`).is(':focus')){
+        Object.keys(quickMap).forEach(function(k){
+            if (key === global.settings.keyMap[k] && global.settings.civTabs !== 0 && (k === 'settings' || global.settings[k])){
+                global.settings.civTabs = quickMap[k];
+                loadTab(global.settings.civTabs);
+            }
+        });
+    }
+});
+$(document).keyup(function(e){
+    e = e || window.event;
+    let key = e.key || e.keyCode;
+    Object.keys(keyMap).forEach(function(k){
+        if (key === global.settings.keyMap[k]){
+            keyMap[k] = false;
+        }
+    });
+});
+$(document).mousemove(function(e){
+    e = e || window.event;
+    Object.keys(global.settings.keyMap).forEach(function(k){
+        switch(global.settings.keyMap[k]){
+            case 'Shift':
+            case 16:
+                keyMap[k] = e.shiftKey ? true : false;
+                break;
+            case 'Control':
+            case 17:
+                keyMap[k] = e.ctrlKey ? true : false;
+                break;
+            case 'Alt':
+            case 18:
+                keyMap[k] = e.altKey ? true : false;
+                break;
+            case 'Meta':
+            case 91:
+                keyMap[k] = e.metaKey ? true : false;
+                break;
+        }
+    });
+});
 
 index();
 if (global['beta']){
@@ -39,17 +118,11 @@ if (global.queue.rename === true){
 }
 
 mainVue();
-resQueue();
-Object.keys(gridDefs()).forEach(function(gridtype){
-    powerGrid(gridtype);
-});
-setPowerGrid();
 
 if (global['new']){
     messageQueue(loc('new'), 'warning');
     global['new'] = false;
 }
-
 if (global.city['mass_driver']){
     p_on['mass_driver'] = global.city['mass_driver'].on;
 }
@@ -63,26 +136,14 @@ if (global.portal['hell_forge']){
     p_on['hell_forge'] = global.portal.hell_forge.on;
 }
 
-// Load Resources
+defineJobs(true);
 defineResources();
-$('#civic').append($('<div id="civics" class="tile is-parent"></div>'));
-defineJobs();
-$('#civics').append($('<div id="r_civics" class="tile is-vertical is-parent civics"></div>'));
-defineGovernment();
-if (global.race.species !== 'protoplasm' && !global.race['start_cataclysm']){
-    defineGarrison();
-    buildGarrison($('#c_garrison'),false);
-    foreignGov();
-    drawMechLab();
-}
-defineIndustry();
-
+initTabs();
 buildQueue();
 
-arpa('Physics');
-arpa('Genetics');
-arpa('Crispr');
-arpa('Blood');
+Object.keys(gridDefs()).forEach(function(gridtype){
+    powerGrid(gridtype);
+});
 
 resizeGame();
 
@@ -209,11 +270,20 @@ popover('powerStatus',function(obj){
     }
 );
 
+
+if (global.settings.pause){
+    $(`#pausegame`).addClass('pause');
+}
+else {
+    $(`#pausegame`).addClass('play');
+}
+
 vBind({
     el: '#topBar',
     data: {
         city: global.city,
-        race: global.race
+        race: global.race,
+        s: global.settings
     },
     methods: {
         weather(){
@@ -269,6 +339,27 @@ vBind({
         },
         showUniverse(){
             return global.race.universe === 'standard' || global.race.universe === 'bigbang' ? false : true;
+        },
+        atRemain(){
+            return loc(`accelerated_time`);
+        },
+        pause(){
+            $(`#pausegame`).removeClass('play');
+            $(`#pausegame`).removeClass('pause');
+            if (global.settings.pause){
+                global.settings.pause = false;
+                $(`#pausegame`).addClass('play');
+            }
+            else {
+                global.settings.pause = true;
+                $(`#pausegame`).addClass('pause');
+            }
+            if (!global.settings.pause && !webWorker.s){
+                gameLoop('start');
+            }
+        },
+        pausedesc(){
+            return global.settings.pause ? `Start the Game` : `Pause the Game`;
         }
     },
     filters: {
@@ -277,6 +368,15 @@ vBind({
         },
         universe(universe){
             return universe === 'standard' || universe === 'bigbang' ? '' : universe_types[universe].name;
+        },
+        remain(at){
+            let minutes = Math.ceil(at * 2.5 / 60);
+            if (minutes > 0){
+                let hours = Math.floor(minutes / 60);
+                minutes -= hours * 60;
+                return `${hours}:${minutes.toString().padStart(2,'0')}`;
+            }
+            return;
         }
     }
 });
@@ -383,6 +483,8 @@ popover('topBarUniverse',
         classes: `has-background-light has-text-dark`
     }
 );
+
+challengeIcon();
 
 if (global.race.species === 'protoplasm'){
     global.resource.RNA.display = true;
@@ -494,32 +596,15 @@ else {
     if (global.portal.hasOwnProperty('soul_forge') && global.portal.soul_forge.on){
         p_on['soul_forge'] = 1;
     }
-    drawCity();
-    drawTech();
-    renderSpace();
-    renderFortress();
     setWeather();
 }
 
-setupStats();
 q_check(true);
 
 $('#lbl_city').html('Village');
 
-var main_timer = global.race['slow'] ? 275 : 250;
-var mid_timer = global.race['slow'] ? 1100 : 1000;
-var long_timer = global.race['slow'] ? 5500 : 5000;
-if (global.race['hyper']){
-    main_timer = Math.floor(main_timer * 0.95);
-    mid_timer = Math.floor(mid_timer * 0.95);
-    long_timer = Math.floor(long_timer * 0.95);
-}
-
 if (window.Worker){
     webWorker.w = new Worker("evolve/evolve.js");
-    webWorker.w.postMessage({ loop: 'short', period: main_timer });
-    webWorker.w.postMessage({ loop: 'mid', period: mid_timer });
-    webWorker.w.postMessage({ loop: 'long', period: long_timer });
     webWorker.w.addEventListener('message', function(e){
         var data = e.data;
         switch (data) {
@@ -535,19 +620,7 @@ if (window.Worker){
         }
     }, false);
 }
-else {
-    intervals['main_loop'] = setInterval(function(){
-        fastLoop();
-    }, main_timer);
-
-    intervals['mid_loop'] = setInterval(function(){
-        midLoop();
-    }, mid_timer);
-
-    intervals['long_loop'] = setInterval(function(){
-        longLoop();
-    }, long_timer);
-}
+gameLoop('start');
 
 resourceAlt();
 
@@ -580,25 +653,7 @@ function fastLoop(){
     }
     if (global.race['no_plasmid'] || global.race.universe === 'antimatter'){
         if ((global.race['cataclysm'] && global.space['ziggurat'] && global.space.ziggurat.count) || (global.city['temple'] && global.city['temple'].count)){
-            let temple_bonus = global.tech['anthropology'] && global.tech['anthropology'] >= 1 ? 0.016 : 0.01;
-            if (global.tech['fanaticism'] && global.tech['fanaticism'] >= 2){
-                temple_bonus += global.civic.professor.workers * (global.race.universe === 'antimatter' ? 0.0002 : 0.0004);
-            }
-            if (global.genes['ancients'] && global.genes['ancients'] >= 2 && global.civic.priest.display){
-                let priest_bonus = global.genes['ancients'] >= 5 ? 0.00015 : (global.genes['ancients'] >= 3 ? 0.000125 : 0.0001);
-                temple_bonus += priest_bonus * global.civic.priest.workers;
-            }
-            if (global.race.universe === 'antimatter'){
-                temple_bonus /= 2;
-            }
-            if (global.race['spiritual']){
-                temple_bonus *= 1 + (traits.spiritual.vars[0] / 100);
-            }
-            if (global.civic.govern.type === 'theocracy'){
-                temple_bonus *= 1.12;
-            }
-
-            let faith = (global.race['cataclysm'] ? global.space.ziggurat.count : global.city.temple.count) * temple_bonus ;
+            let faith = faithBonus();
             breakdown.p['Global'][loc('faith')] = (faith * 100) + '%';
             global_multiplier *= (1 + faith);
         }
@@ -614,8 +669,9 @@ function fastLoop(){
     }
     if (global.race['untapped']){
         if (global.race['untapped'] > 0){
-            breakdown.p['Global'][loc('trait_untapped_bd')] = `${global.race.untapped / 2}%`;
-            global_multiplier *= 1 + (global.race.untapped / 200);
+            let untapped = +(global.race.untapped / (global.race.untapped + 20) / 10 + 0.00024).toFixed(4);
+            breakdown.p['Global'][loc('trait_untapped_bd')] = `${untapped * 100}%`;
+            global_multiplier *= 1 + (untapped);
         }
     }
     if (global.race['rainbow'] && global.race['rainbow'] > 1){
@@ -778,6 +834,7 @@ function fastLoop(){
         Food: {},
         Lumber: {},
         Stone: {},
+        Chrysotile: {},
         Crystal: {},
         Furs: {},
         Copper: {},
@@ -2989,8 +3046,8 @@ function fastLoop(){
                     global.city.factory.Polymer--;
                 }
 
-                let oilIncrement = global.race['kindling_kindred'] ? (assembly ? f_rate.Polymer.oil_kk[global.tech['factory']] : f_rate.Polymer.oil_kk[0]) : (assembly ? f_rate.Polymer.oil[global.tech['factory']] : f_rate.Polymer.oil[0]);
-                let lumberIncrement = global.race['kindling_kindred'] ? 0 : (assembly ? f_rate.Polymer.lumber[global.tech['factory']] : f_rate.Polymer.lumber[0]);
+                let oilIncrement = global.race['kindling_kindred'] || global.race['smoldering'] ? (assembly ? f_rate.Polymer.oil_kk[global.tech['factory']] : f_rate.Polymer.oil_kk[0]) : (assembly ? f_rate.Polymer.oil[global.tech['factory']] : f_rate.Polymer.oil[0]);
+                let lumberIncrement = global.race['kindling_kindred'] || global.race['smoldering'] ? 0 : (assembly ? f_rate.Polymer.lumber[global.tech['factory']] : f_rate.Polymer.lumber[0]);
                 let oil_cost = global.city.factory.Polymer * oilIncrement;
                 let lumber_cost = global.city.factory.Polymer * lumberIncrement;
                 let workDone = global.city.factory.Polymer;
@@ -3288,10 +3345,10 @@ function fastLoop(){
                 global.city.smelter.Oil = global.city.smelter.cap;
             }
 
-            if (global.race['kindling_kindred'] && !global.race['evil']){
+            if ((global.race['kindling_kindred'] || global.race['smoldering']) && !global.race['evil']){
                 global.city.smelter.Wood = 0;
             }
-            let coal_fuel = global.race['kindling_kindred'] ? 0.15 : 0.25;
+            let coal_fuel = global.race['kindling_kindred'] || global.race['smoldering'] ? 0.15 : 0.25;
 
             let total_fuel = 0;
             ['Wood', 'Coal', 'Oil', 'Star', 'Inferno'].forEach(function(fuel){
@@ -3523,7 +3580,7 @@ function fastLoop(){
 
         // Graphene
         if (global.interstellar['g_factory'] && global.interstellar['g_factory'].count > 0){
-            if (global.race['kindling_kindred']){
+            if (global.race['kindling_kindred'] || global.race['smoldering']){
                 global.interstellar.g_factory.Lumber = 0;
             }
 
@@ -3672,7 +3729,7 @@ function fastLoop(){
         // Lumber
         { //block scope
             if (global.race['cataclysm']){
-                if (global.tech['mars'] && red_on['biodome'] && !global.race['kindling_kindred']){
+                if (global.tech['mars'] && red_on['biodome'] && !global.race['kindling_kindred'] && !global.race['smoldering']){
                     let lumber_bd = {};
                     let lumber = red_on['biodome'] * 1.5 * global.civic.colonist.workers * zigguratBonus();
 
@@ -3801,6 +3858,13 @@ function fastLoop(){
                 stone_base *= global.tech['explosives'] >= 3 ? 1.75 : 1.5;
             }
 
+            let asbestos_base = 0;
+            if (global.race['smoldering'] && global.resource.Chrysotile.display && global.city['rock_quarry']){
+                asbestos_base = stone_base;
+                stone_base *= (100 - global.city.rock_quarry.asbestos) / 100;
+                asbestos_base *= global.city.rock_quarry.asbestos / 100;
+            }
+
             let power_mult = 1;
             let rock_quarry = 1;
             if (global.city['rock_quarry']){
@@ -3811,21 +3875,34 @@ function fastLoop(){
             }
 
             let stone_bd = {};
+            let chrysotile_bd = {};
             stone_bd[loc('workers')] = stone_base + 'v';
             if (stone_base > 0){
                 stone_bd[`ᄂ${loc('city_rock_quarry')}`] = ((rock_quarry - 1) * 100) + '%';
                 stone_bd[`ᄂ${loc('power')}`] = ((power_mult - 1) * 100) + '%';
+                if (global.race['smoldering'] && global.resource.Chrysotile.display){
+                    chrysotile_bd[loc('workers')] = asbestos_base + 'v';
+                    chrysotile_bd[`ᄂ${loc('city_rock_quarry')}`] = ((rock_quarry - 1) * 100) + '%';
+                    chrysotile_bd[`ᄂ${loc('power')}`] = ((power_mult - 1) * 100) + '%';
+                }
             }
 
             if (global.race['discharge'] && global.race['discharge'] > 0 && p_on['rock_quarry'] > 0){
                 power_mult = (power_mult - 1) * 0.5 + 1;
                 stone_bd[`ᄂ${loc('evo_challenge_discharge')}`] = '-50%';
+                if (global.race['smoldering'] && global.resource.Chrysotile.display){
+                    chrysotile_bd[`ᄂ${loc('evo_challenge_discharge')}`] = '-50%';
+                }
             }
 
             if (global.race['cataclysm']){
                 if (global.tech['mars'] && red_on['red_mine']){
                     stone_base = red_on['red_mine'] * 0.75 * global.civic.colonist.workers * zigguratBonus();
                     stone_bd[loc('space_red_mine_title')] = stone_base + 'v';
+                    if (global.race['smoldering'] && global.resource.Chrysotile.display){
+                        asbestos_base = red_on['red_mine'] * 1.25 * global.civic.colonist.workers * zigguratBonus();
+                        chrysotile_bd[loc('space_red_mine_title')] = asbestos_base + 'v';
+                    }
                 }
                 power_mult = 1;
                 rock_quarry = 1;
@@ -3837,6 +3914,15 @@ function fastLoop(){
             stone_bd[loc('hunger')] = ((hunger - 1) * 100) + '%';
             breakdown.p['Stone'] = stone_bd;
             modRes('Stone', delta * time_multiplier);
+
+            if (global.race['smoldering'] && global.resource.Chrysotile.display){
+                let a_delta = asbestos_base * power_mult * rock_quarry;
+                a_delta *= hunger * global_multiplier;
+                
+                chrysotile_bd[loc('hunger')] = ((hunger - 1) * 100) + '%';
+                breakdown.p['Chrysotile'] = chrysotile_bd;
+                modRes('Chrysotile', a_delta * time_multiplier);
+            }
 
             // Aluminium
             if ((global.city['metal_refinery'] && global.city['metal_refinery'].count > 0) || global.race['cataclysm']){
@@ -4848,12 +4934,15 @@ function fastLoop(){
     // main resource delta tracking
     Object.keys(global.resource).forEach(function (res) {
         if (global['resource'][res].rate > 0 || (global['resource'][res].rate === 0 && global['resource'][res].max === -1)){
-            diffCalc(res,main_timer);
+            diffCalc(res,webWorker.mt);
         }
     });
 
-    if (!window['evolve']){
-        enableScript();
+    if (global.settings.expose){
+        if (!window['evolve']){
+            enableDebug();
+        }
+        updateDebugData();
     }
 
     let easter = getEaster();
@@ -4937,6 +5026,7 @@ function midLoop(){
             Containers: 0,
             Lumber: 200,
             Stone: 200,
+            Chrysotile: 200,
             Crystal: 10,
             Furs: 100,
             Copper: 100,
@@ -4993,6 +5083,7 @@ function midLoop(){
             caps['Knowledge'] += 100000;
             caps['Lumber'] += 100000;
             caps['Stone'] += 100000;
+            caps['Chrysotile'] += 100000;
             caps['Furs'] += 100000;
             caps['Aluminium'] += 100000;
             caps['Steel'] += 100000;
@@ -5014,6 +5105,7 @@ function midLoop(){
         var bd_Food = { Base: caps['Food']+'v' };
         var bd_Lumber = { Base: caps['Lumber']+'v' };
         var bd_Stone = { Base: caps['Stone']+'v' };
+        var bd_Chrysotile = { Base: caps['Chrysotile']+'v' };
         var bd_Crystal = { Base: caps['Crystal']+'v' };
         var bd_Furs = { Base: caps['Furs']+'v' };
         var bd_Copper = { Base: caps['Copper']+'v' };
@@ -5115,6 +5207,11 @@ function midLoop(){
             if (global.stats.achieve['blackhole']){ gain = Math.round(gain * (1 + (global.stats.achieve.blackhole.l * 0.05))) };
             caps['Stone'] += gain;
             bd_Stone[loc('city_rock_quarry')] = gain+'v';
+
+            if (global.race['smoldering'] && global.resource.Chrysotile.display){
+                caps['Chrysotile'] += gain;
+                bd_Chrysotile[loc('city_rock_quarry')] = gain+'v';
+            }
         }
         if (global.city['lumber_yard']){
             let gain = (global.city['lumber_yard'].count * spatialReasoning(100));
@@ -5308,6 +5405,12 @@ function midLoop(){
             caps['Stone'] += gain;
             bd_Stone[label] = gain+'v';
 
+            if (global.resource.Chrysotile.display){
+                gain = (global.city['shed'].count * (spatialReasoning(300 * multiplier)));
+                caps['Chrysotile'] += gain;
+                bd_Chrysotile[label] = gain+'v';
+            }
+
             if (global.resource.Crystal.display){
                 gain = (global.city['shed'].count * (spatialReasoning(8 * multiplier)));
                 caps['Crystal'] += gain;
@@ -5350,6 +5453,12 @@ function midLoop(){
             gain = (global.interstellar['warehouse'].count * (spatialReasoning(750 * multiplier)));
             caps['Stone'] += gain;
             bd_Stone[label] = gain+'v';
+
+            if (global.resource.Chrysotile.display){
+                gain = (global.interstellar['warehouse'].count * (spatialReasoning(750 * multiplier)));
+                caps['Chrysotile'] += gain;
+                bd_Chrysotile[label] = gain+'v';
+            }
 
             gain = (global.interstellar['warehouse'].count * (spatialReasoning(425 * multiplier)));
             caps['Furs'] += gain;
@@ -5512,10 +5621,16 @@ function midLoop(){
                 caps['Coal'] += gain;
                 bd_Coal[loc('space_red_garage_title')] = gain+'v';
 
-                if (!global.race['kindling_kindred']){
+                if (!global.race['kindling_kindred'] && !global.race['smoldering']){
                     gain = (global.space.garage.count * (spatialReasoning(7500 * multiplier)));
                     caps['Lumber'] += gain;
                     bd_Lumber[loc('space_red_garage_title')] = gain+'v';
+                }
+
+                if (global.race['smoldering'] && global.resource.Chrysotile.display){
+                    gain = (global.space.garage.count * (spatialReasoning(7500 * multiplier)));
+                    caps['Chrysotile'] += gain;
+                    bd_Chrysotile[loc('space_red_garage_title')] = gain+'v';
                 }
 
                 gain = (global.space.garage.count * (spatialReasoning(7500 * multiplier)));
@@ -6154,6 +6269,7 @@ function midLoop(){
             Food: bd_Food,
             Lumber: bd_Lumber,
             Stone: bd_Stone,
+            Chrysotile: bd_Chrysotile,
             Crystal: bd_Crystal,
             Furs: bd_Furs,
             Copper: bd_Copper,
@@ -6525,7 +6641,7 @@ function midLoop(){
 
         if (global.city['foundry']){
             let fworkers = global.civic.craftsman.workers;
-            if (global.race['kindling_kindred'] && global.city.foundry['Plywood'] > 0){
+            if ((global.race['kindling_kindred'] || global.race['smoldering']) && global.city.foundry['Plywood'] > 0){
                 global.civic.craftsman.workers -= global.city.foundry['Plywood'];
                 global.city.foundry.crafting -= global.city.foundry['Plywood'];
                 global.city.foundry['Plywood'] = 0;
@@ -6540,7 +6656,7 @@ function midLoop(){
             });
         }
 
-        if (global.tech['foundry'] === 3 && global.race['kindling_kindred']){
+        if (global.tech['foundry'] === 3 && (global.race['kindling_kindred'] || global.race['smoldering'])){
             global.tech['foundry'] = 4;
         }
 
@@ -6549,13 +6665,13 @@ function midLoop(){
             global.civic.farmer.max = 0;
         }
 
-        if (global.race['kindling_kindred']){
+        if (global.race['kindling_kindred'] || global.race['smoldering']){
             global.civic.lumberjack.workers = 0;
             global.resource.Lumber.crates = 0;
             global.resource.Lumber.containers = 0;
             global.resource.Lumber.trade = 0;
         }
-        if (global.race['kindling_kindred'] && global.city['foundry'] && global.city.foundry['Plywood']){
+        if ((global.race['kindling_kindred'] || global.race['smoldering']) && global.city['foundry'] && global.city.foundry['Plywood']){
             global.city.foundry['Plywood'] = 0;
         }
 
@@ -7412,223 +7528,135 @@ function longLoop(){
         if (!global.settings['cLabels'] && $('#city-dist-outskirts').length > 0){
             drawCity();
         }
-    }
 
-    if (global.tech['xeno'] && global.tech['xeno'] >= 5 && !global.tech['piracy']){
-        if (Math.rand(0,5) === 0){
-            global.tech['piracy'] = 1;
-            messageQueue(loc('galaxy_piracy_msg',[races[global.galaxy.alien2.id].name]),'info');
-            renderSpace();
-        }
-    }
-    if (global.tech['piracy']){
-        if (global.tech.piracy < 1000){
-            global.tech.piracy++;
-        }
-        else if (global.tech.xeno >= 8 && global.tech.piracy < 2500){
-            global.tech.piracy++;
-        }
-        else if (global.tech['conflict'] && global.tech.piracy < 5000){
-            global.tech.piracy++;
-        }
-    }
-
-    if (global.race['infiltrator']){
-        let tech_source = global.tech['world_control'] ? `trait_infiltrator_steal_alt` : `trait_infiltrator_steal`;
-        if (global.resource.Knowledge.max >= 4000 && !global.race['steelen'] && global.tech['smelting'] && global.tech.smelting === 1){
-            messageQueue(loc(tech_source,[loc('tech_steel')]),'info');
-            global.resource.Steel.display = true;
-            global.tech.smelting = 2;
-            defineIndustry();
-            drawTech();
-        }
-        if (global.resource.Knowledge.max >= 10000 && global.tech['high_tech'] && global.tech.high_tech === 1){
-            messageQueue(loc(tech_source,[loc('tech_electricity')]),'info');
-            global.tech.high_tech = 2;
-            global.city['power'] = 0;
-            global.city['powered'] = true;
-            global.city['coal_power'] = {
-                count: 0,
-                on: 0
-            };
-            global.settings.showPowerGrid = true;
-            setPowerGrid();
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 40000 && global.tech['high_tech'] && global.tech.high_tech === 3 && global.tech['titanium']){
-            messageQueue(loc(tech_source,[loc('tech_electronics')]),'info');
-            global.tech.high_tech = 4;
-            if (global.race['terrifying']){
-                global.tech['gambling'] = 1;
-                global.city['casino'] = { count: 0 };
-                global.space['spc_casino'] = { count: 0 };
+        if (global.tech['xeno'] && global.tech['xeno'] >= 5 && !global.tech['piracy']){
+            if (Math.rand(0,5) === 0){
+                global.tech['piracy'] = 1;
+                messageQueue(loc('galaxy_piracy_msg',[races[global.galaxy.alien2.id].name]),'info');
+                renderSpace();
             }
-            drawTech();
-            drawCity();
         }
-        if (global.resource.Knowledge.max >= 72000 && global.tech['high_tech'] && global.tech.high_tech === 4 && global.tech['uranium']){
-            messageQueue(loc(tech_source,[loc('tech_fission')]),'info');
-            global.tech.high_tech = 5;
-            global.city['fission_power'] = {
-                count: 0,
-                on: 0
-            };
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 105000 && global.tech['high_tech'] && global.tech.high_tech === 6){
-            messageQueue(loc(tech_source,[loc('tech_rocketry')]),'info');
-            global.tech.high_tech = 7;
-            arpa('Physics');
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 310000 && global.tech['high_tech'] && global.tech.high_tech === 9){
-            messageQueue(loc(tech_source,[loc('tech_artificial_intelligence')]),'info');
-            global.tech.high_tech = 10;
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 420000 && global.tech['high_tech'] && global.tech.high_tech === 10 && global.tech['nano']){
-            messageQueue(loc(tech_source,[loc('tech_quantum_computing')]),'info');
-            global.tech.high_tech = 11;
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 580000 && global.tech['high_tech'] && global.tech.high_tech === 11 && global.tech['infernite'] && global.tech['stanene'] && global.tech['alpha'] && global.tech['alpha'] >= 2){
-            messageQueue(loc(tech_source,[loc('tech_virtual_reality')]),'info');
-            global.tech.high_tech = 12;
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 835000 && global.tech['high_tech'] && global.tech.high_tech === 13){
-            messageQueue(loc(tech_source,[loc('tech_shields')]),'info');
-            global.tech.high_tech = 14;
-            global.settings.space.neutron = true;
-            global.settings.space.blackhole = true;
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 1420000 && global.tech['high_tech'] && global.tech.high_tech === 14 && global.tech['blackhole'] && global.tech['blackhole'] >= 3){
-            messageQueue(loc(tech_source,[loc('tech_ai_core')]),'info');
-            global.tech.high_tech = 15;
-            global.interstellar['citadel'] = { count: 0, on: 0 };
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 2250000 && global.tech['ai_core'] && global.tech.ai_core === 2){
-            messageQueue(loc(tech_source,[loc('tech_graphene_processing')]),'info');
-            global.tech.ai_core = 3;
-            drawTech();
-        }
-        if (global.resource.Knowledge.max >= 8075000 && global.tech['science'] && global.tech.science >= 18 && !global.tech['nanoweave']){
-            messageQueue(loc(tech_source,[loc('tech_nanoweave')]),'info');
-            global.tech['nanoweave'] = 1;
-            global.resource.Nanoweave.display = true;
-            drawTech();
-            loadFoundry();
-        }
-        if (global.resource.Knowledge.max >= 11590000 && global.tech['high_tech'] && global.tech.high_tech === 16 && global.tech['chthonian'] && global.tech['chthonian'] >= 3){
-            messageQueue(loc(tech_source,[loc('tech_orichalcum_analysis')]),'info');
-            messageQueue(loc('tech_orichalcum_analysis_result'),'info');
-            global.tech.high_tech = 17;
-            drawTech();
-            drawCity();
-        }
-        if (global.resource.Knowledge.max >= 24750000 && global.tech['smelting'] && global.tech.smelting === 7 && global.tech['hell_ruins'] && global.tech['hell_ruins'] >= 4){
-            messageQueue(loc(tech_source,[loc('tech_infernium_fuel')]),'info');
-            global.tech.smelting = 8;
-            defineIndustry();
-            drawTech();
-        }
-    }
-
-    // Event triggered
-    if (!global.race.seeded || (global.race.seeded && global.race['chose'])){
-        if (Math.rand(0,global.event) === 0){
-            var event_pool = [];
-            Object.keys(events).forEach(function (event){
-                var isOk = true;
-                if (events[event]['condition'] && !events[event].condition()){
-                    isOk = false;
-                }
-                else if (events[event]['reqs']){
-                    Object.keys(events[event].reqs).forEach(function (req) {
-                        switch(req){
-                            case 'race':
-                                if (events[event].reqs[req] !== global.race.species){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'genus':
-                                if (events[event].reqs[req] !== races[global.race.species].type){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'nogenus':
-                                if (events[event].reqs[req] === races[global.race.species].type){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'resource':
-                                if (!global.resource[events[event].reqs[req]] || !global.resource[events[event].reqs[req]].display){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'trait':
-                                if (!global.race[events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'notrait':
-                                if (global.race[events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'tech':
-                                if (!global.tech[events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'notech':
-                                if (global.tech[events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'high_tax_rate':
-                                if (global.civic.taxes.tax_rate <= [events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'low_morale':
-                                if (global.city.morale.current >= [events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            case 'biome':
-                                if (global.city.biome !== [events[event].reqs[req]]){
-                                    isOk = false;
-                                }
-                                break;
-                            default:
-                                isOk = false;
-                                break;
-                        }
-                    });
-                }
-                if (isOk){
-                    event_pool.push(event);
-                }
-            });
-            if (event_pool.length > 0){
-                var msg = events[event_pool[Math.floor(Math.seededRandom(0,event_pool.length))]].effect();
-                messageQueue(msg);
+        if (global.tech['piracy']){
+            if (global.tech.piracy < 1000){
+                global.tech.piracy++;
             }
-            global.event = 999;
+            else if (global.tech.xeno >= 8 && global.tech.piracy < 2500){
+                global.tech.piracy++;
+            }
+            else if (global.tech['conflict'] && global.tech.piracy < 5000){
+                global.tech.piracy++;
+            }
         }
-        else {
-            global.event--;
+
+        if (global.race['infiltrator']){
+            let tech_source = global.tech['world_control'] ? `trait_infiltrator_steal_alt` : `trait_infiltrator_steal`;
+            if (global.resource.Knowledge.max >= 4000 && !global.race['steelen'] && global.tech['smelting'] && global.tech.smelting === 1){
+                messageQueue(loc(tech_source,[loc('tech_steel')]),'info');
+                global.resource.Steel.display = true;
+                global.tech.smelting = 2;
+                defineIndustry();
+                drawTech();
+            }
+            if (global.resource.Knowledge.max >= 10000 && global.tech['high_tech'] && global.tech.high_tech === 1){
+                messageQueue(loc(tech_source,[loc('tech_electricity')]),'info');
+                global.tech.high_tech = 2;
+                global.city['power'] = 0;
+                global.city['powered'] = true;
+                global.city['coal_power'] = {
+                    count: 0,
+                    on: 0
+                };
+                global.settings.showPowerGrid = true;
+                setPowerGrid();
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 40000 && global.tech['high_tech'] && global.tech.high_tech === 3 && global.tech['titanium']){
+                messageQueue(loc(tech_source,[loc('tech_electronics')]),'info');
+                global.tech.high_tech = 4;
+                if (global.race['terrifying']){
+                    global.tech['gambling'] = 1;
+                    global.city['casino'] = { count: 0 };
+                    global.space['spc_casino'] = { count: 0 };
+                }
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 72000 && global.tech['high_tech'] && global.tech.high_tech === 4 && global.tech['uranium']){
+                messageQueue(loc(tech_source,[loc('tech_fission')]),'info');
+                global.tech.high_tech = 5;
+                global.city['fission_power'] = {
+                    count: 0,
+                    on: 0
+                };
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 105000 && global.tech['high_tech'] && global.tech.high_tech === 6){
+                messageQueue(loc(tech_source,[loc('tech_rocketry')]),'info');
+                global.tech.high_tech = 7;
+                arpa('Physics');
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 310000 && global.tech['high_tech'] && global.tech.high_tech === 9){
+                messageQueue(loc(tech_source,[loc('tech_artificial_intelligence')]),'info');
+                global.tech.high_tech = 10;
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 420000 && global.tech['high_tech'] && global.tech.high_tech === 10 && global.tech['nano']){
+                messageQueue(loc(tech_source,[loc('tech_quantum_computing')]),'info');
+                global.tech.high_tech = 11;
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 580000 && global.tech['high_tech'] && global.tech.high_tech === 11 && global.tech['infernite'] && global.tech['stanene'] && global.tech['alpha'] && global.tech['alpha'] >= 2){
+                messageQueue(loc(tech_source,[loc('tech_virtual_reality')]),'info');
+                global.tech.high_tech = 12;
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 835000 && global.tech['high_tech'] && global.tech.high_tech === 13){
+                messageQueue(loc(tech_source,[loc('tech_shields')]),'info');
+                global.tech.high_tech = 14;
+                global.settings.space.neutron = true;
+                global.settings.space.blackhole = true;
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 1420000 && global.tech['high_tech'] && global.tech.high_tech === 14 && global.tech['blackhole'] && global.tech['blackhole'] >= 3){
+                messageQueue(loc(tech_source,[loc('tech_ai_core')]),'info');
+                global.tech.high_tech = 15;
+                global.interstellar['citadel'] = { count: 0, on: 0 };
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 2250000 && global.tech['ai_core'] && global.tech.ai_core === 2){
+                messageQueue(loc(tech_source,[loc('tech_graphene_processing')]),'info');
+                global.tech.ai_core = 3;
+                drawTech();
+            }
+            if (global.resource.Knowledge.max >= 8075000 && global.tech['science'] && global.tech.science >= 18 && !global.tech['nanoweave']){
+                messageQueue(loc(tech_source,[loc('tech_nanoweave')]),'info');
+                global.tech['nanoweave'] = 1;
+                global.resource.Nanoweave.display = true;
+                drawTech();
+                loadFoundry();
+            }
+            if (global.resource.Knowledge.max >= 11590000 && global.tech['high_tech'] && global.tech.high_tech === 16 && global.tech['chthonian'] && global.tech['chthonian'] >= 3){
+                messageQueue(loc(tech_source,[loc('tech_orichalcum_analysis')]),'info');
+                messageQueue(loc('tech_orichalcum_analysis_result'),'info');
+                global.tech.high_tech = 17;
+                drawTech();
+                drawCity();
+            }
+            if (global.resource.Knowledge.max >= 24750000 && global.tech['smelting'] && global.tech.smelting === 7 && global.tech['hell_ruins'] && global.tech['hell_ruins'] >= 4){
+                messageQueue(loc(tech_source,[loc('tech_infernium_fuel')]),'info');
+                global.tech.smelting = 8;
+                defineIndustry();
+                drawTech();
+            }
         }
 
         if (global.civic.govern['protest'] && global.civic.govern.protest > 0){
@@ -7708,6 +7736,94 @@ function longLoop(){
         }
     }
 
+    // Event triggered
+    if (!global.race.seeded || (global.race.seeded && global.race['chose'])){
+        if (Math.rand(0,global.event) === 0){
+            var event_pool = [];
+            Object.keys(events).forEach(function (event){
+                var isOk = true;
+                if (events[event]['reqs']){
+                    Object.keys(events[event].reqs).forEach(function (req) {
+                        switch(req){
+                            case 'race':
+                                if (events[event].reqs[req] !== global.race.species){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'genus':
+                                if (events[event].reqs[req] !== races[global.race.species].type){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'nogenus':
+                                if (events[event].reqs[req] === races[global.race.species].type){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'resource':
+                                if (!global.resource[events[event].reqs[req]] || !global.resource[events[event].reqs[req]].display){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'trait':
+                                if (!global.race[events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'notrait':
+                                if (global.race[events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'tech':
+                                if (!global.tech[events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'notech':
+                                if (global.tech[events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'high_tax_rate':
+                                if (global.civic.taxes.tax_rate <= [events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'low_morale':
+                                if (global.city.morale.current >= [events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            case 'biome':
+                                if (global.city.biome !== [events[event].reqs[req]]){
+                                    isOk = false;
+                                }
+                                break;
+                            default:
+                                isOk = false;
+                                break;
+                        }
+                    });
+                }
+                if (isOk && events[event]['condition'] && !events[event].condition()){
+                    isOk = false;
+                }
+                if (isOk){
+                    event_pool.push(event);
+                }
+            });
+            if (event_pool.length > 0){
+                var msg = events[event_pool[Math.floor(Math.seededRandom(0,event_pool.length))]].effect();
+                messageQueue(msg);
+            }
+            global.event = 999;
+        }
+        else {
+            global.event--;
+        }
+    }
+
     if (date.getMonth() === 11 && date.getDate() >= 17 && date.getDate() <= 24){
         global.special.gift[`g${date.getFullYear()}`] = true;
         global.tech['santa'] = 1;
@@ -7728,7 +7844,19 @@ function longLoop(){
     }
 
     // Save game state
+    global.stats['current'] = Date.now();
     save.setItem('evolved',LZString.compressToUTF16(JSON.stringify(global)));
+
+    if (global.settings.pause && webWorker.s){
+        gameLoop('stop');
+    }
+    if (global.settings.at > 0){
+        global.settings.at--;
+        if (global.settings.at <= 0){
+            gameLoop('stop');
+            gameLoop('start');
+        }
+    }
 }
 
 function buildGene(){
@@ -8005,37 +8133,6 @@ function spyCaught(i){
             messageQueue(loc(global.race['elusive'] ? 'event_spy_fail' : 'event_spy',[govTitle(i)]),'danger');
             break;
     }
-}
-
-function enableScript(){
-    window.evolve = {
-        actions: actions,
-        races: races,
-        tradeRatio: tradeRatio,
-        craftCost: craftCost,
-        atomic_mass: atomic_mass,
-        global: global,
-        breakdown: breakdown,
-        traits: traits,
-        checkTechRequirements: checkTechRequirements,
-
-        craftingRatio: craftingRatio,
-        armyRating: armyRating,
-        keyMultiplier: keyMultiplier,
-        checkAffordable: checkAffordable,
-        checkOldTech: checkOldTech,
-        f_rate: f_rate,
-        adjustCosts: adjustCosts,
-        arpaProjects: arpaProjects,
-        loc: loc,
-        messageQueue: messageQueue,
-        tradeSellPrice: tradeSellPrice,
-        tradeBuyPrice: tradeBuyPrice,
-        keyMap: keyMap,
-        arpaAdjustCosts: arpaAdjustCosts,
-
-        document: document,
-    };
 }
 
 intervals['version_check'] = setInterval(function(){

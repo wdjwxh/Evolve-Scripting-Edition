@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Evolve(fixed by wdjwxh)
 // @namespace    http://tampermonkey.net/
-// @version      3.2.1.1
+// @version      3.3.1.1
 // @description  try to take over the world!
 // @downloadURL  https://wdjwxh.gitee.io/evolve-scripting-edition/scripts/evolve_automation.user.js
 // @author       Fafnir
@@ -80,6 +80,7 @@
     var racialTraitCarnivore = "carnivore";
     var racialTraitSoulEater = "soul_eater";
     var racialTraitKindlingKindred = "kindling_kindred";
+    var racialTraitSmoldering = "smoldering";
     var racialTraitIntelligent = "intelligent";
     var racialTraitForge = 'forge';
     var racialTraitHiveMind = "hivemind";
@@ -412,18 +413,15 @@
                 count = this.max - this.count;
             }
 
-            let vue = getVueById(this._vueBinding);
-            if (vue !== undefined) {
-                state.multiplier.reset(count);
-                while (state.multiplier.remainder > 0) {
-                    state.multiplier.setMultiplier();
-                    vue.add();
-                }
+            if (getVueById(this._vueBinding) === undefined) { return false; }
 
-                return true;
+            state.multiplier.reset(count);
+            while (state.multiplier.remainder > 0) {
+                state.multiplier.setMultiplier();
+                getVueById(this._vueBinding)?.add();
             }
 
-            return false;
+            return true;
         }
 
         /**
@@ -446,18 +444,15 @@
                 count = this.count;
             }
 
-            let vue = getVueById(this._vueBinding);
-            if (vue !== undefined) {
-                state.multiplier.reset(count);
-                while (state.multiplier.remainder > 0) {
-                    state.multiplier.setMultiplier();
-                    vue.sub();
-                }
+            if (getVueById(this._vueBinding) === undefined) { return false; }
 
-                return true;
+            state.multiplier.reset(count);
+            while (state.multiplier.remainder > 0) {
+                state.multiplier.setMultiplier();
+                getVueById(this._vueBinding)?.sub();
             }
 
-            return false;
+            return true;
         }
 
         isDefault() {
@@ -469,7 +464,7 @@
         }
 
         setAsDefault() {
-            if (this.id !== 'farmer' && this.id !== 'lumberjack' && this.id !== 'quarry_worker' && this.id !== 'scavenger') {
+            if (this.id !== 'farmer' && this.id !== 'lumberjack' && this.id !== 'quarry_worker' && this.id !== 'crystal_miner' && this.id !== 'scavenger') {
                 return false; // Only these jobs can be set as default
             }
 
@@ -544,18 +539,15 @@
                 this.removeWorkers(-1 * count);
             }
 
-            let vue = getVueById(this._vueBinding);
-            if (vue !== undefined) {
-                state.multiplier.reset(count);
-                while (state.multiplier.remainder > 0) {
-                    state.multiplier.setMultiplier();
-                    vue.add(this._originalId);
-                }
+            if (getVueById(this._vueBinding) === undefined) { return false; }
 
-                return true;
+            state.multiplier.reset(count);
+            while (state.multiplier.remainder > 0) {
+                state.multiplier.setMultiplier();
+                getVueById(this._vueBinding)?.add(this._originalId);
             }
 
-            return false;
+            return true;
         }
 
         /**
@@ -574,18 +566,15 @@
                 count = this.count;
             }
 
-            let vue = getVueById(this._vueBinding);
-            if (vue !== undefined) {
-                state.multiplier.reset(count);
-                while (state.multiplier.remainder > 0) {
-                    state.multiplier.setMultiplier();
-                    vue.sub(this._originalId);
-                }
+            if (getVueById(this._vueBinding) === undefined) { return false; }
 
-                return true;
+            state.multiplier.reset(count);
+            while (state.multiplier.remainder > 0) {
+                state.multiplier.setMultiplier();
+                getVueById(this._vueBinding)?.sub(this._originalId);
             }
 
-            return false;
+            return true;
         }
     }
 
@@ -851,6 +840,7 @@
                     else if (this === state.cityBuildings.Food) { retVal = retVal && resources.Food.currentQuantity < resources.Food.maxQuantity; }
                     else if (this === state.cityBuildings.Lumber) { retVal = retVal && resources.Lumber.currentQuantity < resources.Lumber.maxQuantity; }
                     else if (this === state.cityBuildings.Stone) { retVal = retVal && resources.Stone.currentQuantity < resources.Stone.maxQuantity; }
+                    else if (this === state.cityBuildings.Chrysotile) { retVal = retVal && resources.Chrysotile.currentQuantity < resources.Chrysotile.maxQuantity; }
                     else if (this === state.cityBuildings.Slaughter) {
                         retVal = retVal && (resources.Lumber.currentQuantity < resources.Lumber.maxQuantity || resources.Food.currentQuantity < resources.Food.maxQuantity);
                     }
@@ -862,6 +852,7 @@
                     || this === state.cityBuildings.Lumber
                     || this === state.cityBuildings.Stone
                     || this === state.cityBuildings.Slaughter
+                    || this === state.cityBuildings.Chrysotile
                     || this === state.cityBuildings.SlaveMarket) { // Don't log buying slaves
                 return retVal;
             }
@@ -1012,6 +1003,21 @@
         196418,
         317811,
         514229,
+        832040,
+        1346269,
+        2178309,
+        3524578,
+        5702887,
+        9227465,
+        14930352,
+        24157817,
+        39088169,
+        63245986,
+        102334155,
+        165580141,
+        267914296,
+        433494437,
+        701408733,
     ];
 
     class MinorTrait {
@@ -1128,13 +1134,13 @@
         tryBuyWithGenes(traitName, count) {
             if (count === 0) { return true; }
             if (!this.isUnlocked()) { return false; }
-            let vue = getVueById(this._traitVueBinding);
-            if (vue === undefined) { return false; }
+
+            if (getVueById(this._traitVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.gene(traitName);
+                getVueById(this._traitVueBinding)?.gene(traitName);
             }
 
             return true;
@@ -1286,13 +1292,12 @@
          * @param {number} count
          */
         increaseEjection(count) {
-            let vue = getVueById(this._ejectorVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._ejectorVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.ejectMore(this.id);
+                getVueById(this._ejectorVueBinding)?.ejectMore(this.id);
             }
         }
 
@@ -1300,13 +1305,12 @@
          * @param {number} count
          */
         decreaseEjection(count) {
-            let vue = getVueById(this._ejectorVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._ejectorVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.ejectLess(this.id);
+                getVueById(this._ejectorVueBinding)?.ejectLess(this.id);
             }
         }
 
@@ -1460,13 +1464,12 @@
          * @param {number} count
          */
         tryAssignCrate(count) {
-            let vue = getVueById(this._stackVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._stackVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.addCrate(this.id);
+                getVueById(this._stackVueBinding)?.addCrate(this.id);
             }
 
             return true;
@@ -1476,13 +1479,12 @@
          * @param {number} count
          */
         tryUnassignCrate(count) {
-            let vue = getVueById(this._stackVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._stackVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.subCrate(this.id);
+                getVueById(this._stackVueBinding)?.subCrate(this.id);
             }
 
             return true;
@@ -1492,13 +1494,12 @@
          * @param {number} count
          */
         tryAssignContainer(count) {
-            let vue = getVueById(this._stackVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._stackVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.addCon(this.id);
+                getVueById(this._stackVueBinding)?.addCon(this.id);
             }
 
             return true;
@@ -1508,13 +1509,12 @@
          * @param {number} count
          */
         tryUnassignContainer(count) {
-            let vue = getVueById(this._stackVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._stackVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.subCon(this.id);
+                getVueById(this._stackVueBinding)?.subCon(this.id);
             }
 
             return true;
@@ -1779,8 +1779,17 @@
                 if (resources.Population.currentQuantity < 20 || resources.Population.currentQuantity !== resources.Population.maxQuantity) {
                     return false;
                 } else {
-                    return game.global.city.s_alter.rage < 3600 || game.global.city.s_alter.regen < 3600 || game.global.city.s_alter.mind < 3600
-                        || game.global.city.s_alter.mine < 3600 || game.global.city.s_alter.harvest < 3600;
+                    let sacrifices = game.global.civic.d_job !== 'unemployed' ? game.global.civic[game.global.civic.d_job].workers : game.global.civic.free;
+                    if (sacrifices === 0) return false;
+
+                    let clickable = game.global.city.s_alter.rage < 3600 || game.global.city.s_alter.regen < 3600 || game.global.city.s_alter.mind < 3600
+                        || game.global.city.s_alter.mine < 3600;
+
+                    if (isLumberRace()) {
+                        clickable = clickable || game.global.city.s_alter.harvest < 3600;
+                    }
+                    
+                    return clickable;
                 }
             }
             
@@ -1858,7 +1867,7 @@
         constructor() {
             super("Smelter", "city", "smelter", "");
 
-            this._vue = null;
+            this._industryVueBinding = "iSmelter";
 
             /** @type {ResourceProductionCost[][]} */
             this.smeltingConsumption = [ [], [] ];
@@ -1908,7 +1917,7 @@
                 }
     
                 if (fuel.resource === resources.Coal) {
-                    fuel.productionCost.quantity = game.global.race[racialTraitKindlingKindred] ? 0.15 : 0.25;
+                    fuel.productionCost.quantity = !isLumberRace() ? 0.15 : 0.25;
                 }
             });
 
@@ -1930,40 +1939,12 @@
             return this.isUnlocked() && this.count > 0;
         }
 
-        isOptionsCached() {
-            return this._vue !== null;
-        }
-
-        cacheOptions() {
-            let vue = getVueById("iSmelter");
-            if (vue !== undefined) {
-                this._vue = vue;
-                return;
-            }
-
-            if (!this.hasOptions() || state.windowManager.isOpen()) {
-                return;
-            }
-            
-            let optionsNode = document.querySelector("#city-smelter .special");
-            let title = typeof game.actions.city.smelter.title === 'string' ? game.actions.city.smelter.title : game.actions.city.smelter.title();
-            state.windowManager.openModalWindowWithCallback(title, this.cacheOptionsCallback, optionsNode);
-        }
-
-        cacheOptionsCallback() {
-            state.cityBuildings.Smelter._vue = getVueById("specialModal");
-        }
-
         /**
          * @param {number} fuelType
          */
         isFuelUnlocked(fuelType) {
-            if (!this.isOptionsCached()) {
-                return false;
-            }
-
             if (fuelType === SmelterFuelTypes.Wood) {
-                return !game.global.race[racialTraitKindlingKindred];
+                return isLumberRace();
             }
 
             if (fuelType === SmelterFuelTypes.Coal) {
@@ -2000,10 +1981,6 @@
          * @param {number} smeltingType
          */
         isSmeltingUnlocked(smeltingType) {
-            if (!this.isOptionsCached()) {
-                return false;
-            }
-
             // Iron is always unlocked if the smelter is available
             if (smeltingType === SmelterSmeltingTypes.Iron) {
                 return this.isUnlocked();
@@ -2038,6 +2015,8 @@
          * @param {number} count
          */
         increaseFuel(fuelType, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isFuelUnlocked(fuelType)) {
                 return false;
             }
@@ -2065,7 +2044,7 @@
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                this._vue.addFuel(type);
+                getVueById(this._industryVueBinding)?.addFuel(type);
             }
 
             return true;
@@ -2076,6 +2055,8 @@
          * @param {number} count
          */
         decreaseFuel(fuelType, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isFuelUnlocked(fuelType)) {
                 return false;
             }
@@ -2103,7 +2084,7 @@
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                this._vue.subFuel(type);
+                getVueById(this._industryVueBinding)?.subFuel(type);
             }
 
             return true;
@@ -2114,27 +2095,25 @@
          * @param {number} count
          */
         increaseSmelting(smeltingType, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             // Increasing one decreases the other so no need for both an "increaseXXXX" and a "descreaseXXXX"
             if (count === 0 || !this.isSmeltingUnlocked(smeltingType)) {
                 return false;
             }
 
-            let func = null;
-
-            if (smeltingType === SmelterSmeltingTypes.Iron) {
-                func = this._vue.ironSmelting;
-            }
-
-            if (smeltingType === SmelterSmeltingTypes.Steel) {
-                func = this._vue.steelSmelting;
-            }
-
-            if (func === null) { return false; }
-
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                func();
+
+                if (smeltingType === SmelterSmeltingTypes.Iron) {
+                    getVueById(this._industryVueBinding)?.ironSmelting();
+                }
+    
+                if (smeltingType === SmelterSmeltingTypes.Steel) {
+                    getVueById(this._industryVueBinding)?.steelSmelting();
+                }
+
             }
 
             return true;
@@ -2146,6 +2125,8 @@
             if (game.global.tech['star_forge'] && game.global.tech['star_forge'] >= 2) {
                 operating += (state.spaceBuildings.NeutronStellarForge.stateOnCount * 2);
             }
+
+            operating += state.spaceBuildings.PortalHellForge.stateOnCount * 3;
 
             return operating;
         }
@@ -2164,7 +2145,7 @@
         constructor() {
             super("Factory", "city", "factory", "");
 
-            this._vue = null;
+            this._industryVueBinding = "iFactory";
 
             this._productionCosts = null;
             this._productionOptions = null;
@@ -2175,35 +2156,7 @@
             return this.isUnlocked() && this.count > 0;
         }
 
-        isOptionsCached() {
-            return this._vue !== null;
-        }
-
-        cacheOptions() {
-            let vue = getVueById("iFactory");
-            if (vue !== undefined) {
-                this._vue = vue;
-                return;
-            }
-
-            if (!this.hasOptions() || state.windowManager.isOpen()) {
-                return;
-            }
-            
-            let optionsNode = document.querySelector("#city-factory .special");
-            let title = typeof game.actions.city.factory.title === 'string' ? game.actions.city.factory.title : game.actions.city.factory.title();
-            state.windowManager.openModalWindowWithCallback(title, this.cacheOptionsCallback, optionsNode);
-        }
-        
-        cacheOptionsCallback() {
-            state.cityBuildings.Factory._vue = getVueById("specialModal");
-        }
-
         get maxOperating() {
-            if (!this.isOptionsCached()) {
-                return 0;
-            }
-
             let operating = game.global.space['red_factory'] ? game.global.space.red_factory.on + game.global.city.factory.on : game.global.city.factory.on;
             operating += (state.spaceBuildings.AlphaMegaFactory.stateOnCount * 2);
 
@@ -2235,10 +2188,7 @@
          * @param {string} production
          */
         isProductionUnlocked(production) {
-            if (!this.isOptionsCached()) {
-                return false;
-            }
-
+            if (!game) return false;
             if (production === FactoryGoods.LuxuryGoods || production === FactoryGoods.Alloy) {
                 return true;
             }
@@ -2309,8 +2259,8 @@
             }
 
             if (production === FactoryGoods.Polymer) {
-                this._productionCosts[production][0].quantity = game.global.race[racialTraitKindlingKindred] ? (assembly ? game.f_rate.Polymer.oil_kk[game.global.tech[techFactory]] : game.f_rate.Polymer.oil_kk[0]) : (assembly ? game.f_rate.Polymer.oil[game.global.tech[techFactory]] : game.f_rate.Polymer.oil[0]);
-                this._productionCosts[production][1].quantity = game.global.race[racialTraitKindlingKindred] ? 0 : (assembly ? game.f_rate.Polymer.lumber[game.global.tech[techFactory]] : game.f_rate.Polymer.lumber[0]);
+                this._productionCosts[production][0].quantity = !isLumberRace() ? (assembly ? game.f_rate.Polymer.oil_kk[game.global.tech[techFactory]] : game.f_rate.Polymer.oil_kk[0]) : (assembly ? game.f_rate.Polymer.oil[game.global.tech[techFactory]] : game.f_rate.Polymer.oil[0]);
+                this._productionCosts[production][1].quantity = !isLumberRace() ? 0 : (assembly ? game.f_rate.Polymer.lumber[game.global.tech[techFactory]] : game.f_rate.Polymer.lumber[0]);
             }
 
             if (production === FactoryGoods.NanoTube) {
@@ -2342,6 +2292,8 @@
          * @param {number} count
          */
         increaseProduction(production, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isProductionUnlocked(production)) {
                 return false;
             }
@@ -2353,7 +2305,7 @@
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                this._vue.addItem(production);
+                getVueById(this._industryVueBinding)?.addItem(production);
             }
 
             return true;
@@ -2364,6 +2316,8 @@
          * @param {number} count
          */
         decreaseProduction(production, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isProductionUnlocked(production)) {
                 return false;
             }
@@ -2375,7 +2329,7 @@
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                this._vue.subItem(production);
+                getVueById(this._industryVueBinding)?.subItem(production);
             }
 
             return true;
@@ -2393,7 +2347,7 @@
         constructor() {
             super("Alpha Mining Droid", "interstellar", "mining_droid", "int_alpha");
 
-            this._vue = null;
+            this._industryVueBinding = "iDroid";
         }
 
         hasOptions() {
@@ -2401,43 +2355,11 @@
             return this.isUnlocked() && this.count > 0;
         }
 
-        isOptionsCached() {
-            return this._vue !== null;
-        }
-
-        cacheOptions() {
-            let vue = getVueById("iDroid");
-            if (vue !== undefined) {
-                this._vue = vue;
-                return;
-            }
-
-            if (!this.hasOptions() || state.windowManager.isOpen()) {
-                return;
-            }
-            
-            let optionsNode = document.querySelector("#interstellar-mining_droid .special");
-            let title = typeof game.actions.interstellar.int_alpha.mining_droid.title === 'string' ? game.actions.interstellar.int_alpha.mining_droid.title : game.actions.interstellar.int_alpha.mining_droid.title();
-            state.windowManager.openModalWindowWithCallback(title, this.cacheOptionsCallback, optionsNode);
-        }
-        
-        cacheOptionsCallback() {
-            state.spaceBuildings.AlphaMiningDroid._vue = getVueById("specialModal");
-        }
-
         get currentOperating() {
-            if (!this.isOptionsCached()) {
-                return 0;
-            }
-
             return game.global.interstellar.mining_droid.adam + game.global.interstellar.mining_droid.uran + game.global.interstellar.mining_droid.coal + game.global.interstellar.mining_droid.alum;
         }
 
         get maxOperating() {
-            if (!this.isOptionsCached()) {
-                return 0;
-            }
-
             return game.global.interstellar.mining_droid.on;
         }
 
@@ -2446,7 +2368,7 @@
          */
         isProductionUnlocked(production) {
             // All production is immediately unlocked
-            return this.isOptionsCached();
+            return true;
         }
 
         /**
@@ -2465,6 +2387,8 @@
          * @param {number} count
          */
         increaseProduction(production, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isProductionUnlocked(production)) {
                 return false;
             }
@@ -2476,7 +2400,7 @@
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                this._vue.addItem(production);
+                getVueById(this._industryVueBinding)?.addItem(production);
             }
 
             return true;
@@ -2487,6 +2411,8 @@
          * @param {number} count
          */
         decreaseProduction(production, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isProductionUnlocked(production)) {
                 return false;
             }
@@ -2498,7 +2424,7 @@
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                this._vue.subItem(production);
+                getVueById(this._industryVueBinding)?.subItem(production);
             }
 
             return true;
@@ -2515,7 +2441,7 @@
         constructor() {
             super("Alpha Factory", "interstellar", "g_factory", "int_alpha");
 
-            this._vue = null;
+            this._industryVueBinding = "iGraphene";
 
             /** @type {ResourceProductionCost[]} */
             this.grapheheConsumption = [];
@@ -2535,40 +2461,12 @@
             return this.isUnlocked() && this.count > 0;
         }
 
-        isOptionsCached() {
-            return this._vue !== null;
-        }
-
-        cacheOptions() {
-            let vue = getVueById("iGraphene");
-            if (vue !== undefined) {
-                this._vue = vue;
-                return;
-            }
-
-            if (!this.hasOptions() || state.windowManager.isOpen()) {
-                return;
-            }
-            
-            let optionsNode = document.querySelector("#interstellar-g_factory .special");
-            let title = typeof game.actions.interstellar.int_alpha.g_factory.title === 'string' ? game.actions.interstellar.int_alpha.g_factory.title : game.actions.interstellar.int_alpha.g_factory.title();
-            state.windowManager.openModalWindowWithCallback(title, this.cacheOptionsCallback, optionsNode);
-        }
-
-        cacheOptionsCallback() {
-            state.spaceBuildings.AlphaFactory._vue = getVueById("specialModal");
-        }
-
         /**
          * @param {number} fuelType
          */
         isFuelUnlocked(fuelType) {
-            if (!this.isOptionsCached()) {
-                return false;
-            }
-
             if (fuelType === GrapheneFuelTypes.Lumber) {
-                return !game.global.race[racialTraitKindlingKindred];
+                return isLumberRace();
             }
 
             if (fuelType === GrapheneFuelTypes.Coal) {
@@ -2606,6 +2504,8 @@
          * @param {number} count
          */
         increaseFuel(fuelType, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isFuelUnlocked(fuelType)) {
                 return false;
             }
@@ -2614,26 +2514,21 @@
                 return this.decreaseFuel(fuelType, count * -1);
             }
 
-            let func = null;
-
-            if (fuelType === GrapheneFuelTypes.Lumber) {
-                func = this._vue.addWood;
-            }
-
-            if (fuelType === GrapheneFuelTypes.Coal) {
-                func = this._vue.addCoal;
-            }
-
-            if (fuelType === GrapheneFuelTypes.Oil) {
-                func = this._vue.addOil;
-            }
-
-            if (func === null) { return false; }
-
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                func();
+
+                if (fuelType === GrapheneFuelTypes.Lumber) {
+                    getVueById(this._industryVueBinding)?.addWood();
+                }
+    
+                if (fuelType === GrapheneFuelTypes.Coal) {
+                    getVueById(this._industryVueBinding)?.addCoal();
+                }
+    
+                if (fuelType === GrapheneFuelTypes.Oil) {
+                    getVueById(this._industryVueBinding)?.addOil();
+                }
             }
 
             return true;
@@ -2644,6 +2539,8 @@
          * @param {number} count
          */
         decreaseFuel(fuelType, count) {
+            if (getVueById(this._industryVueBinding) === undefined) { return false; }
+
             if (count === 0 || !this.isFuelUnlocked(fuelType)) {
                 return false;
             }
@@ -2652,26 +2549,21 @@
                 return this.increaseFuel(fuelType, count * -1);
             }
 
-            let func = null;
-
-            if (fuelType === GrapheneFuelTypes.Wood) {
-                func = this._vue.subWood;
-            }
-
-            if (fuelType === GrapheneFuelTypes.Coal) {
-                func = this._vue.subCoal;
-            }
-
-            if (fuelType === GrapheneFuelTypes.Oil) {
-                func = this._vue.subOil;
-            }
-
-            if (func === null) { return false; }
-
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                func();
+                
+                if (fuelType === GrapheneFuelTypes.Wood) {
+                    getVueById(this._industryVueBinding)?.subWood();
+                }
+    
+                if (fuelType === GrapheneFuelTypes.Coal) {
+                    getVueById(this._industryVueBinding)?.subCoal();
+                }
+    
+                if (fuelType === GrapheneFuelTypes.Oil) {
+                    getVueById(this._industryVueBinding)?.subOil();
+                }
             }
 
             return true;
@@ -3774,6 +3666,11 @@
                 } else if (availableHellSoldiers < hellGarrison * 2) {
                     hellGarrison = Math.floor(availableHellSoldiers / 2); // Always try to send out at least half our people
                 }
+
+                // Guardposts need at least one soldier free so lets just always keep one handy
+                if (state.spaceBuildings.PortalGuardPost.count > 0) {
+                    hellGarrison = hellGarrison + 1 + state.spaceBuildings.PortalGuardPost.stateOnCount;
+                }
                 
                 // Determine the patrol attack rating
                 // let tempRating1 = 0;
@@ -4570,22 +4467,19 @@
          * @param {number} count
          */
         addTradeRoutes(resource, count) {
+            if (getVueById(resource.marketVueBinding) === undefined) { return false; }
+
             if (!this.isResourceUnlocked(resource)) {
                 return false;
             }
 
-            let vue = getVueById(resource.marketVueBinding);
-            if (vue !== null) {
-                state.multiplier.reset(count);
-                while (state.multiplier.remainder > 0) {
-                    state.multiplier.setMultiplier();
-                    vue.autoBuy(resource.id);
-                }
-
-                return true;
+            state.multiplier.reset(count);
+            while (state.multiplier.remainder > 0) {
+                state.multiplier.setMultiplier();
+                getVueById(resource.marketVueBinding)?.autoBuy(resource.id);
             }
 
-            return false
+            return true;
         }
 
         /**
@@ -4593,22 +4487,19 @@
          * @param {number} count
          */
         removeTradeRoutes(resource, count) {
+            if (getVueById(resource.marketVueBinding) === undefined) { return false; }
+
             if (!this.isResourceUnlocked(resource)) {
                 return false;
             }
 
-            let vue = getVueById(resource.marketVueBinding);
-            if (vue !== null) {
-                state.multiplier.reset(count);
-                while (state.multiplier.remainder > 0) {
-                    state.multiplier.setMultiplier();
-                    vue.autoSell(resource.id);
-                }
-
-                return true;
+            state.multiplier.reset(count);
+            while (state.multiplier.remainder > 0) {
+                state.multiplier.setMultiplier();
+                getVueById(resource.marketVueBinding)?.autoSell(resource.id);
             }
 
-            return false
+            return true;
         }
     }
 
@@ -4673,13 +4564,12 @@
          */
         tryConstructCrate(count) {
             if (count === 0) { return true; }
-            let vue = getVueById(this._storageVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._storageVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.crate();
+                getVueById(this._storageVueBinding)?.crate();
             }
 
             return true;
@@ -4690,13 +4580,12 @@
          */
         tryConstructContainer(count) {
             if (count === 0) { return true; }
-            let vue = getVueById(this._storageVueBinding);
-            if (vue === undefined) { return false; }
+            if (getVueById(this._storageVueBinding) === undefined) { return false; }
 
             state.multiplier.reset(count);
             while (state.multiplier.remainder > 0) {
                 state.multiplier.setMultiplier();
-                vue.container();
+                getVueById(this._storageVueBinding)?.container();
             }
 
             return true;
@@ -5379,7 +5268,8 @@
 
         // Basic resources (can trade for these)
         Food: new Resource("Food", "res", "Food", true, true, 2, false, -1, false),
-        Lumber: new Resource("Lumber", "res", "Lumber", true, true, 2,false, -1, false),
+        Lumber: new Resource("Lumber", "res", "Lumber", true, true, 2, false, -1, false),
+        Chrysotile: new Resource("Chrysotile", "res", "Chrysotile", true, true, 1, false, -1, false),
         Stone: new Resource("Stone", "res", "Stone", true, true, 2, false, -1, false),
         Crystal: new Resource("Crystal", "res", "Crystal", true, true, 1, false, -1, false),
         Furs: new Resource("Furs", "res", "Furs", true, true, 1, false, -1, false),
@@ -5470,6 +5360,7 @@
             Farmer: new Job("farmer", "Farmer"),
             Lumberjack: new Job("lumberjack", "Lumberjack"),
             QuarryWorker: new Job("quarry_worker", "Quarry Worker"),
+            CrystalMiner: new Job("crystal_miner", "Crystal Miner"),
             Scavenger: new Job("scavenger", "Scavenger"),
 
             Miner: new Job("miner", "Miner"),
@@ -5483,6 +5374,7 @@
             Colonist: new Job("colonist", "Colonist"),
             SpaceMiner: new Job("space_miner", "Space Miner"),
             HellSurveyor: new Job("hell_surveyor", "Hell Surveyor"),
+            Archaeologist: new Job("archaeologist", "Archaeologist"),
 
             // Crafting jobs
             Plywood: new CraftingJob("Plywood", "Plywood Crafter"),
@@ -5617,6 +5509,7 @@
         cityBuildings: {
             Food: new Action("Food", "city", "food", ""),
             Lumber: new Action("Lumber", "city", "lumber", ""),
+            Chrysotile: new Action("Chrysotile", "city", "chrysotile", ""),
             Stone: new Action("Stone", "city", "stone", ""),
 
             Slaughter: new Action("Slaughter", "city", "slaughter", ""),
@@ -5647,6 +5540,7 @@
             Windmill: new Action("Windmill (Evil only)", "city", "windmill", ""),
             Silo: new Action("Grain Silo", "city", "silo", ""),
             Shed: new Action("Shed", "city", "shed", ""),
+            Pylon: new Action("Pylon", "city", "pylon", ""),
             LumberYard: new Action("Lumber Yard", "city", "lumber_yard", ""),
             RockQuarry: new Action("Rock Quarry", "city", "rock_quarry", ""),
             CementPlant: new Action("Cement Factory", "city", "cement_plant", ""),
@@ -5755,6 +5649,7 @@
             AlphaWarehouse: new Action("Alpha Warehouse", "interstellar", "warehouse", "int_alpha"),
             AlphaMegaFactory: new Action("Alpha Mega Factory", "interstellar", "int_factory", "int_alpha"),
             AlphaLuxuryCondo: new Action("Alpha Luxury Condo", "interstellar", "luxury_condo", "int_alpha"),
+            AlphaExoticZoo: new Action("Alpha Exotic Zoo", "interstellar", "zoo", "int_alpha"),
 
             ProximaMission: new Action("Proxima Mission", "interstellar", "proxima_mission", "int_proxima"),
             ProximaTransferStation: new Action("Proxima Transfer Station", "interstellar", "xfer_station", "int_proxima"),
@@ -5838,6 +5733,11 @@
             PortalSoulForge: new Action("Portal Soul Forge", "portal", "soul_forge", "prtl_pit"),
             PortalGunEmplacement: new Action("Portal Gun Emplacement", "portal", "gun_emplacement", "prtl_pit"),
             PortalSoulAttractor: new Action("Portal Soul Attractor", "portal", "soul_attractor", "prtl_pit"),
+
+            PortalGuardPost: new Action("Portal Guard Post", "portal", "guard_post", "prtl_ruins"),
+            PortalHellForge: new Action("Portal Infernal Forge", "portal", "hell_forge", "prtl_ruins"),
+            PortalEastTower: new Action("Portal East Tower", "portal", "east_tower", "prtl_gate"),
+            PortalWestTower: new Action("Portal West Tower", "portal", "west_tower", "prtl_gate"),
         },
 
         projects: {
@@ -5941,6 +5841,9 @@
         state.spaceBuildings.SiriusAscensionTrigger.gameMax = 1;
         state.spaceBuildings.SiriusAscend.gameMax = 1;
         state.spaceBuildings.PortalSoulForge.gameMax = 1;
+
+        state.spaceBuildings.PortalEastTower.gameMax = 1;
+        state.spaceBuildings.PortalWestTower.gameMax = 1;
 
         state.cityBuildings.Smelter.addSmeltingConsumption(SmelterSmeltingTypes.Steel, resources.Coal, 0.25, 1.25);
         state.cityBuildings.Smelter.addSmeltingConsumption(SmelterSmeltingTypes.Steel, resources.Iron, 2, 6);
@@ -6365,11 +6268,13 @@
         state.marketManager.addResourceToPriorityList(resources.Furs);
         state.marketManager.addResourceToPriorityList(resources.Crystal);
         state.marketManager.addResourceToPriorityList(resources.Stone);
+        state.marketManager.addResourceToPriorityList(resources.Chrysotile);
         state.marketManager.addResourceToPriorityList(resources.Lumber);
         state.marketManager.addResourceToPriorityList(resources.Food);
 
         resources.Food.updateMarketState(false, 0.5, false, 0.9, false, 0, true, 10);
         resources.Lumber.updateMarketState(false, 0.5, false, 0.9, false, 0, true, 10);
+        resources.Chrysotile.updateMarketState(false, 0.5, false, 0.9, false, 0, true, 10);
         resources.Stone.updateMarketState(false, 0.5, false, 0.9, false, 0, true, 20);
         resources.Crystal.updateMarketState(false, 0.5, false, 0.9, false, 0, true, 10);
         resources.Furs.updateMarketState(false, 0.5, false, 0.9, false, 0, true, 10);
@@ -6414,11 +6319,13 @@
         state.storageManager.addResourceToPriorityList(resources.Copper);
         state.storageManager.addResourceToPriorityList(resources.Furs);
         state.storageManager.addResourceToPriorityList(resources.Stone);
+        state.storageManager.addResourceToPriorityList(resources.Chrysotile);
         state.storageManager.addResourceToPriorityList(resources.Lumber);
         state.storageManager.addResourceToPriorityList(resources.Food);
 
         resources.Food.updateStorageState(true, 0, -1, -1);
         resources.Lumber.updateStorageState(true, 1, -1, -1);
+        resources.Chrysotile.updateStorageState(true, 1, -1, -1);
         resources.Stone.updateStorageState(true, 1, -1, -1);
         resources.Furs.updateStorageState(true, 1, -1, -1);
         resources.Copper.updateStorageState(true, 1, -1, -1);
@@ -6466,6 +6373,7 @@
         settings.jobSetDefault = false;
         settings.jobLumberWeighting = 50;
         settings.jobQuarryWeighting = 50;
+        settings.jobCrystalWeighting = 50;
         settings.jobScavengerWeighting = 50;
     }
 
@@ -6475,6 +6383,7 @@
         state.jobManager.addJobToPriorityList(state.jobs.Farmer);
         state.jobManager.addJobToPriorityList(state.jobs.Lumberjack);
         state.jobManager.addJobToPriorityList(state.jobs.QuarryWorker);
+        state.jobManager.addJobToPriorityList(state.jobs.CrystalMiner);
         state.jobManager.addJobToPriorityList(state.jobs.Scavenger);
         state.jobManager.addJobToPriorityList(state.jobs.Plywood);
         state.jobManager.addJobToPriorityList(state.jobs.Brick);
@@ -6495,11 +6404,13 @@
         state.jobManager.addJobToPriorityList(state.jobs.SpaceMiner);
         state.jobManager.addJobToPriorityList(state.jobs.HellSurveyor);
         state.jobManager.addJobToPriorityList(state.jobs.Priest);
+        state.jobManager.addJobToPriorityList(state.jobs.Archaeologist);
 
         state.jobs.Farmer.breakpointMaxs = [0, 0, 0]; // Farmers are calculated based on food rate of change only, ignoring cap
-        state.jobs.Lumberjack.breakpointMaxs = [5, 10, 10]; // Lumberjacks, scavengers and quarry workers are special - remaining worker divided between them
-        state.jobs.QuarryWorker.breakpointMaxs = [5, 10, 10]; // Lumberjacks, scavengers and quarry workers are special - remaining worker divided between them
-        state.jobs.Scavenger.breakpointMaxs = [0, 0, 10]; // Lumberjacks, scavengers and quarry workers are special - remaining worker divided between them
+        state.jobs.Lumberjack.breakpointMaxs = [5, 10, 10]; // Lumberjacks, scavengers, quarry workers and crystal miners are special - remaining worker divided between them
+        state.jobs.QuarryWorker.breakpointMaxs = [5, 10, 10]; // Lumberjacks, scavengers, quarry workers and crystal miners are special - remaining worker divided between them
+        state.jobs.CrystalMiner.breakpointMaxs = [5, 10, 10]; // Lumberjacks, scavengers, quarry workers and crystal miners are special - remaining worker divided between them
+        state.jobs.Scavenger.breakpointMaxs = [0, 0, 10]; // Lumberjacks, scavengers, quarry workers and crystal miners are special - remaining worker divided between them
 
         state.jobs.SheetMetal.breakpointMaxs = [2, 4, -1];
         state.jobs.Plywood.breakpointMaxs = [2, 4, -1];
@@ -6521,6 +6432,7 @@
         state.jobs.SpaceMiner.breakpointMaxs = [0, 0, -1];
         state.jobs.HellSurveyor.breakpointMaxs = [0, 0, -1];
         state.jobs.Priest.breakpointMaxs = [0, 0, 0];
+        state.jobs.Archaeologist.breakpointMaxs = [0, 0, -1];
     }
 
     function resetBuildingState() {
@@ -6591,6 +6503,7 @@
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.SoulWell); // Evil only
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.Silo);
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.Shed);
+        state.buildingManager.addBuildingToPriorityList(state.cityBuildings.Pylon);
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.LumberYard);
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.Foundry);
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.OilDepot);
@@ -6666,6 +6579,8 @@
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.PortalRepairDroid);
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.PortalPitMission);
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.PortalAssaultForge);
+        state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.PortalEastTower);
+        state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.PortalWestTower);
 
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.BlackholeJumpShip);
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.BlackholeWormholeMission);
@@ -6690,13 +6605,14 @@
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.RockQuarry);
         state.buildingManager.addBuildingToPriorityList(state.cityBuildings.Sawmill);
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.RedVrCenter);
+        state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.AlphaExoticZoo);
 
         state.buildingManager.addBuildingToPriorityList(state.spaceBuildings.SiriusAscensionMachine);
 
         for (let i = 0; i < state.buildingManager.priorityList.length; i++) {
             const building = state.buildingManager.priorityList[i];
             
-            if (building.settingId === "spcdock-probes") {
+            if (building.settingId === "starDock-probes") {
                 building._autoMax = 4;
             } else {
                 building._autoMax = -1;
@@ -7212,6 +7128,7 @@
         addSetting("jobSetDefault", false);
         addSetting("jobLumberWeighting", 50);
         addSetting("jobQuarryWeighting", 50);
+        addSetting("jobCrystalWeighting", 50);
         addSetting("jobScavengerWeighting", 50);
 
         addSetting("masterScriptToggle", true);
@@ -7868,6 +7785,7 @@
         }
 
         let quarryWorkerIndex = jobList.indexOf(state.jobs.QuarryWorker);
+        let crystalMinerIndex = jobList.indexOf(state.jobs.CrystalMiner);
         let lumberjackIndex = -1;
         let scavengerIndex = jobList.indexOf(state.jobs.Scavenger);
         
@@ -7902,6 +7820,7 @@
         if (state.jobs.Farmer.isManaged()) {
             if (!state.jobs.Lumberjack.isUnlocked()
                     && !state.jobs.QuarryWorker.isUnlocked()
+                    && !state.jobs.CrystalMiner.isUnlocked()
                     && !state.jobs.Scavenger.isUnlocked()
                     && !state.jobs.Miner.isUnlocked()
                     && !state.jobs.CoalMiner.isUnlocked()
@@ -7913,7 +7832,8 @@
                     && !state.jobs.Banker.isUnlocked()
                     && !state.jobs.Colonist.isUnlocked()
                     && !state.jobs.SpaceMiner.isUnlocked()
-                    && !state.jobs.HellSurveyor.isUnlocked()) {
+                    && !state.jobs.HellSurveyor.isUnlocked()
+                    && !state.jobs.Archaeologist.isUnlocked()) {
                 // No other jobs are unlocked - everyone on farming!
                 requiredJobs.push(availableEmployees);
                 log("autoJobs", "Pushing all farmers")
@@ -8062,9 +7982,10 @@
         let splitJobs = [];
         if (lumberjackIndex !== -1) splitJobs.push( { jobIndex: lumberjackIndex, job: state.jobs.Lumberjack, weighting: settings.jobLumberWeighting, completed: false } );
         if (quarryWorkerIndex !== -1) splitJobs.push( { jobIndex: quarryWorkerIndex, job: state.jobs.QuarryWorker, weighting: settings.jobQuarryWeighting, completed: false });
+        if (crystalMinerIndex !== -1) splitJobs.push( { jobIndex: crystalMinerIndex, job: state.jobs.CrystalMiner, weighting: settings.jobCrystalWeighting, completed: false });
         if (scavengerIndex !== -1) splitJobs.push( { jobIndex: scavengerIndex, job: state.jobs.Scavenger, weighting: settings.jobScavengerWeighting, completed: false });
 
-        // Balance lumberjacks, quarry workers and scavengers if they are unlocked
+        // Balance lumberjacks, quarry workers, crystal miners and scavengers if they are unlocked
         if (splitJobs.length > 0) {
             let minLumberjacks = 0;
             let totalWeighting = 0;
@@ -8153,7 +8074,7 @@
                 availableEmployees -= availableEmployees;
             }
         } else {
-            // No lumberjacks, quarry workers or scavengers...
+            // No lumberjacks, quarry workers, crystal miners or scavengers...
             if (state.jobs.Farmer.isManaged()) {
                 requiredJobs[0] += availableEmployees;
                 jobAdjustments[0] += availableEmployees;
@@ -8240,6 +8161,8 @@
                 if (!state.jobs.QuarryWorker.isDefault()) { state.jobs.QuarryWorker.setAsDefault(); }
             } else if (state.jobs.Lumberjack.isUnlocked() && state.jobs.Lumberjack.count > 0) {
                 if (!state.jobs.Lumberjack.isDefault()) { state.jobs.Lumberjack.setAsDefault(); }
+            } else if (state.jobs.CrystalMiner.isUnlocked() && state.jobs.CrystalMiner.count > 0) {
+                if (!state.jobs.CrystalMiner.isDefault()) { state.jobs.CrystalMiner.setAsDefault(); }
             } else if (state.jobs.Scavenger.isUnlocked() && state.jobs.Scavenger.count > 0) {
                 if (!state.jobs.Scavenger.isDefault()) { state.jobs.Scavenger.setAsDefault(); }
             } else if (state.jobs.Farmer.isUnlocked() && state.jobs.Farmer.count > 0) {
@@ -8269,8 +8192,9 @@
         let currentTaxRate = taxInstance.tax_rate;
         let currentMorale = moraleInstance.current;
 
+        // main.js -> let mBaseCap = xxxx
         let maxMorale = 100 + state.cityBuildings.Amphitheatre.count + state.cityBuildings.Casino.stateOnCount + state.spaceBuildings.HellSpaceCasino.stateOnCount
-            + (state.spaceBuildings.RedVrCenter.stateOnCount * 2) + (state.spaceBuildings.Alien1Resort.stateOnCount * 2)
+            + (state.spaceBuildings.RedVrCenter.stateOnCount * 2) + (state.spaceBuildings.AlphaExoticZoo.stateOnCount * 2) + (state.spaceBuildings.Alien1Resort.stateOnCount * 2)
             + (state.projects.Monument.level * 2);
 
         if (game.global.tech[techSuperstar]) {
@@ -8335,12 +8259,6 @@
 
         // No smelter; no auto smelter. No soup for you.
         if (!smelter.isUnlocked()) {
-            return;
-        }
-
-        // If we don't have a cache of the smelter options then attempt to cache them
-        if (!smelter.isOptionsCached()) {
-            smelter.cacheOptions();
             return;
         }
 
@@ -8475,12 +8393,6 @@
             return;
         }
 
-        // If we don't have a cache of the factory options then attempt to cache them
-        if (!factory.isOptionsCached()) {
-            factory.cacheOptions();
-            return;
-        }
-
         let allProduction = factory.productionOptions;
         let remainingFactories = state.cityBuildings.Factory.maxOperating;
 
@@ -8579,12 +8491,6 @@
             return;
         }
 
-        // If we don't have a cache of the options then attempt to cache them
-        if (!droid.isOptionsCached()) {
-            droid.cacheOptions();
-            return;
-        }
-
         // We've already got our cached values so just check if there is any need to change our ratios
         // We're not changing any existing setup, just allocating any free to adamantite
         // There aren't any settings around this currently
@@ -8601,12 +8507,6 @@
 
         // If not unlocked then nothing to do
         if (!plant.isUnlocked()) {
-            return;
-        }
-
-        // If we don't have a cache of the options then attempt to cache them
-        if (!plant.isOptionsCached()) {
-            plant.cacheOptions();
             return;
         }
 
@@ -9016,6 +8916,7 @@
         state.cityBuildings.Lumber.click(50);
         state.cityBuildings.Stone.click(50);
         state.cityBuildings.Slaughter.click(50);
+        state.cityBuildings.Chrysotile.click(50);
     }
     
     function autoBuild() {
@@ -9141,7 +9042,7 @@
                 // If user wants to stabilise blackhole when under minimum solar mass then do it
                 click = true;
             } else if (itemId === "tech-exotic_infusion" || itemId === "tech-infusion_check" || itemId === "tech-infusion_confirm" || itemId === "tech-stabilize_blackhole"
-                || itemId === "tech-dial_it_to_11" || itemId === "tech-limit_collider") {
+                || itemId === "tech-dial_it_to_11" || itemId === "tech-limit_collider" || itemId === "tech-demonic_infusion" || itemId == "tech-dark_bomb") {
                 // Don't click any of the whitehole / cataclysm reset options without user consent... that would be a dick move, man.
                 continue;
             }
@@ -9922,6 +9823,19 @@
         if (isHunterRace() && state.jobs.Farmer !== state.jobManager.unemployedJob) {
             state.jobs.Farmer.setJobOverride(state.jobManager.unemployedJob);
         }
+
+        // This comes from the "const towerSize = (function(){" in portal.js in the game code
+        let towerSize = 1000;
+        if (game.global.hasOwnProperty('pillars')){
+            Object.keys(game.global.pillars).forEach(function(pillar){
+                if (game.global.pillars[pillar]){
+                    towerSize -= 12;
+                }
+            });
+        }
+
+        state.spaceBuildings.PortalEastTower.gameMax = towerSize;
+        state.spaceBuildings.PortalWestTower.gameMax = towerSize;
     }
 
     function verifyGameActions() {
@@ -12276,10 +12190,11 @@
 
         // Add any pre table settings
         let preTableNode = $('#script_jobPreTable');
-        addStandardSectionSettingsToggle(preTableNode, "jobSetDefault", "Set default job", "Automatically sets the default job in order of Quarry Worker -> Lumberjack -> Scavenger -> Farmer");
-        addStandardSectionSettingsNumber(preTableNode, "jobLumberWeighting", "Final Lumberjack Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers and scavengers");
-        addStandardSectionSettingsNumber(preTableNode, "jobQuarryWeighting", "Final Quarry Worker Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers and scavengers");
-        addStandardSectionSettingsNumber(preTableNode, "jobScavengerWeighting", "Final Scavenger Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers and scavengers");
+        addStandardSectionSettingsToggle(preTableNode, "jobSetDefault", "Set default job", "Automatically sets the default job in order of Quarry Worker -> Lumberjack -> Crystal Miner -> Scavenger -> Farmer");
+        addStandardSectionSettingsNumber(preTableNode, "jobLumberWeighting", "Final Lumberjack Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers, crystal miners and scavengers");
+        addStandardSectionSettingsNumber(preTableNode, "jobQuarryWeighting", "Final Quarry Worker Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers, crystal miners and scavengers");
+        addStandardSectionSettingsNumber(preTableNode, "jobCrystalWeighting", "Final Crystal Miner Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers, crystal miners and scavengers");
+        addStandardSectionSettingsNumber(preTableNode, "jobScavengerWeighting", "Final Scavenger Weighting", "AFTER allocating breakpoints this weighting will be used to split lumberjacks, quarry workers, crystal miners and scavengers");
     }
 
     function updateJobTable() {
@@ -12366,7 +12281,7 @@
     function buildJobSettingsInput(job, breakpoint) {
         let lastSpan = breakpoint === 3 && job !== state.jobs.Farmer ? '<span class="script-lastcolumn"></span>' : "";
 
-        if (job === state.jobs.Farmer || (breakpoint === 3 && (job === state.jobs.Lumberjack || job === state.jobs.QuarryWorker || job === state.jobs.Scavenger))) {
+        if (job === state.jobs.Farmer || (breakpoint === 3 && (job === state.jobs.Lumberjack || job === state.jobs.QuarryWorker || job === state.jobs.CrystalMiner || job === state.jobs.Scavenger))) {
             let span = $('<span>Managed</span>' + lastSpan);
             return span;
         }
@@ -13483,7 +13398,7 @@
     }
 
     function isLumberRace() {
-        return !game.global.race[racialTraitKindlingKindred];
+        return !game.global.race[racialTraitKindlingKindred] && !game.global.race[racialTraitSmoldering];
     }
 
     function isIntelligentRace() {

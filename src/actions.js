@@ -1,16 +1,17 @@
 import { global, save, poppers, webWorker, keyMultiplier, clearStates, keyMap, srSpeak, sizeApproximation, p_on, moon_on, gal_on, quantum_level } from './vars.js';
 import { loc } from './locale.js';
 import { timeCheck, timeFormat, vBind, popover, clearElement, costMultiplier, darkEffect, genCivName, powerModifier, powerCostMod, calcPrestige, adjustCosts, modRes, messageQueue, buildQueue, format_emblem, calc_mastery, calcGenomeScore, getShrineBonus, getEaster, easterEgg, getHalloween, trickOrTreat } from './functions.js';
-import { unlockAchieve, unlockFeat, drawAchieve, checkAchievements } from './achieve.js';
+import { unlockAchieve, unlockFeat, challengeIcon, checkAchievements } from './achieve.js';
 import { races, traits, genus_traits, randomMinorTrait, cleanAddTrait, biomes, planetTraits, setJType } from './races.js';
 import { defineResources, galacticTrade, spatialReasoning } from './resources.js';
-import { loadFoundry } from './jobs.js';
+import { loadFoundry, defineJobs } from './jobs.js';
 import { loadIndustry } from './industry.js';
-import { defineIndustry, defineGarrison, buildGarrison, foreignGov, armyRating } from './civics.js';
+import { defineGovernment, defineIndustry, defineGarrison, buildGarrison, commisionGarrison, foreignGov, armyRating } from './civics.js';
 import { spaceTech, interstellarTech, galaxyTech, universe_affixes, renderSpace, piracy } from './space.js';
 import { renderFortress, fortressTech } from './portal.js';
 import { arpa, gainGene, gainBlood } from './arpa.js';
 import { techList } from './tech.js';
+import { loadTab } from './index.js';
 
 export const actions = {
     evolution: {
@@ -2159,7 +2160,7 @@ export const actions = {
                         global.race['no_plasmid'] = 1;
                         $(`#${$(this)[0].id}`).addClass('hl');
                     }
-                    drawAchieve();
+                    challengeIcon();
                 }
                 return false;
             },
@@ -2188,7 +2189,7 @@ export const actions = {
                         $(`#${$(this)[0].id}`).addClass('hl');
                     }
                     calc_mastery(true);
-                    drawAchieve();
+                    challengeIcon();
                 }
                 return false;
             },
@@ -2216,7 +2217,7 @@ export const actions = {
                         global.race['no_trade'] = 1;
                         $(`#${$(this)[0].id}`).addClass('hl');
                     }
-                    drawAchieve();
+                    challengeIcon();
                 }
                 return false;
             },
@@ -2244,7 +2245,7 @@ export const actions = {
                         global.race['no_craft'] = 1;
                         $(`#${$(this)[0].id}`).addClass('hl');
                     }
-                    drawAchieve();
+                    challengeIcon();
                 }
                 return false;
             },
@@ -2273,9 +2274,9 @@ export const actions = {
                             global.race['no_crispr'] = 1;
                             $(`#${$(this)[0].id}`).addClass('hl');
                         }
-                        drawAchieve();
+                        challengeIcon();
                     }
-                    drawAchieve();
+                    challengeIcon();
                 }
                 return false;
             },
@@ -2300,7 +2301,7 @@ export const actions = {
                             global.race['joyless'] = 1;
                             $(`#${$(this)[0].id}`).addClass('hl');
                         }
-                        drawAchieve();
+                        challengeIcon();
                     }
                 }
                 return false;
@@ -2328,7 +2329,7 @@ export const actions = {
                             global.race['steelen'] = 1;
                             $(`#${$(this)[0].id}`).addClass('hl');
                         }
-                        drawAchieve();
+                        challengeIcon();
                     }
                 }
                 return false;
@@ -2356,7 +2357,7 @@ export const actions = {
                             global.race['decay'] = 1;
                             $(`#${$(this)[0].id}`).addClass('hl');
                         }
-                        drawAchieve();
+                        challengeIcon();
                     }
                 }
                 return false;
@@ -2384,7 +2385,7 @@ export const actions = {
                             global.race['emfield'] = 1;
                             $(`#${$(this)[0].id}`).addClass('hl');
                         }
-                        drawAchieve();
+                        challengeIcon();
                     }
                 }
                 return false;
@@ -2729,6 +2730,53 @@ export const actions = {
                 return gain;
             }
         },
+        chrysotile: {
+            id: 'city-chrysotile',
+            title(){
+                if (global.tech['conjuring'] && global.tech['conjuring'] >= 2){
+                    return loc('city_chrysotile_conjour');
+                }
+                else {
+                    return loc(`city_gather`,[global.resource.Chrysotile.name]);
+                }                
+            },
+            desc(){
+                let gain = $(this)[0].val(false);
+                if (global.tech['conjuring'] && global.tech['conjuring'] >= 2){
+                    return loc('city_stone_conjour_desc',[gain,global.resource.Chrysotile.name]);
+                }
+                else {
+                    return loc('city_stone_desc',[gain,global.resource.Chrysotile.name]);
+                }                
+            },
+            category: 'outskirts',
+            reqs: { primitive: 2 },
+            trait: ['smoldering'],
+            not_trait: ['cataclysm'],
+            no_queue(){ return true },
+            cost: {
+                Mana(){ return global.tech['conjuring'] && global.tech['conjuring'] >= 2 ? 1 : 0; },
+            },
+            action(){
+                if (global['resource']['Chrysotile'].amount < global['resource']['Chrysotile'].max){
+                    modRes('Chrysotile',$(this)[0].val(true),true);
+                }
+                return false;
+            },
+            val(spend){
+                let gain = global.race['strong'] ? traits.strong.vars[0] : 1;
+                if (global.genes['enhance']){
+                    gain *= 2;
+                }
+                if (global.tech['conjuring'] && global.tech['conjuring'] >= 2 && global.resource.Mana.amount >= 1){
+                    gain *= 10;
+                    if (global['resource']['Chrysotile'].amount < global['resource']['Chrysotile'].max && spend){
+                        modRes('Mana',-1,true);
+                    }
+                }
+                return gain;
+            }
+        },
         slaughter: {
             id: 'city-slaughter',
             title: loc('city_evil'),
@@ -2743,14 +2791,14 @@ export const actions = {
             category: 'outskirts',
             reqs: {},
             trait: ['evil'],
-            not_trait: ['kindling_kindred','cataclysm'],
+            not_trait: ['kindling_kindred','smoldering','cataclysm'],
             no_queue(){ return true },
             action(){
                 let gain = global.race['strong'] ? traits.strong.vars[0] : 1;
                 if (global.genes['enhance']){
                     gain *= 2;
                 }
-                if (global['resource']['Lumber'].amount < global['resource']['Lumber'].max){
+                if (!global.race['smoldering'] && global['resource']['Lumber'].amount < global['resource']['Lumber'].max){
                     modRes('Lumber',gain,true);
                 }
                 if (global.race['soul_eater'] && global.tech['primitive'] && global['resource']['Food'].amount < global['resource']['Food'].max){
@@ -2864,7 +2912,7 @@ export const actions = {
                                         break;
                                 }
                             }
-                            switch (global.race['kindling_kindred'] ? Math.rand(0,4) : Math.rand(0,5)){
+                            switch (global.race['kindling_kindred'] || global.race['smoldering'] ? Math.rand(0,4) : Math.rand(0,5)){
                                 case 0:
                                     global.city.s_alter.rage += Math.rand(low,high);
                                     break;
@@ -2906,8 +2954,9 @@ export const actions = {
                         return 0;
                     }
                 },
-                Lumber(offset){ return global.race['kindling_kindred'] ? 0 : costMultiplier('basic_housing', offset, 10, 1.23); },
-                Stone(offset){ return global.race['kindling_kindred'] ? costMultiplier('basic_housing', offset, 10, 1.23) : 0; }
+                Lumber(offset){ return global.race['kindling_kindred'] || global.race['smoldering'] ? 0 : costMultiplier('basic_housing', offset, 10, 1.23); },
+                Stone(offset){ return global.race['kindling_kindred'] ? costMultiplier('basic_housing', offset, 10, 1.23) : 0; },
+                Chrysotile(offset){ return global.race['smoldering'] ? costMultiplier('basic_housing', offset, 10, 1.23) : 0; }
             },
             effect(){
                 return global.race['sappy'] ? `<div>${loc('plus_max_resource',[1,loc('citizen')])}</div><div>${loc('city_grove_effect',[2.5])}</div>` : loc('plus_max_resource',[1,loc('citizen')]);
@@ -3419,6 +3468,10 @@ export const actions = {
                     let val = sizeApproximation(+(spatialReasoning(300) * multiplier).toFixed(0),1);
                     storage = storage + `<span>${loc('plus_max_resource',[val,global.resource.Stone.name])}</span>`;
                 }
+                if (global.resource.Chrysotile.display){
+                    let val = sizeApproximation(+(spatialReasoning(300) * multiplier).toFixed(0),1);
+                    storage = storage + `<span>${loc('plus_max_resource',[val,global.resource.Chrysotile.name])}</span>`;
+                }
                 if (global.resource.Crystal.display){
                     let val = sizeApproximation(+(spatialReasoning(8) * multiplier).toFixed(0),1);
                     storage = storage + `<span>${loc('plus_max_resource',[val,global.resource.Crystal.name])}</span>`;
@@ -3757,13 +3810,15 @@ export const actions = {
             effect(){
                 let stone = spatialReasoning(100);
                 if (global.stats.achieve['blackhole']){ stone = Math.round(stone * (1 + (global.stats.achieve.blackhole.l * 0.05))) };
+                let asbestos = global.race['smoldering'] ? `<div>${loc('plus_max_resource',[stone,global.resource.Chrysotile.name])}</div>` : '';
                 if (global.tech['mine_conveyor']){
-                    return `<div>${loc('city_rock_quarry_effect1',[2])}</div><div>${loc('plus_max_resource',[stone,global.resource.Stone.name])}</div><div class="has-text-caution">${loc('city_rock_quarry_effect2',[4,$(this)[0].powered()])}</div>`;
+                    return `<div>${loc('city_rock_quarry_effect1',[2])}</div><div>${loc('plus_max_resource',[stone,global.resource.Stone.name])}</div>${asbestos}<div class="has-text-caution">${loc('city_rock_quarry_effect2',[4,$(this)[0].powered()])}</div>`;
                 }
                 else {
-                    return `<div>${loc('city_rock_quarry_effect1',[2])}</div><div>${loc('plus_max_resource',[stone,global.resource.Stone.name])}</div>`;
+                    return `<div>${loc('city_rock_quarry_effect1',[2])}</div><div>${loc('plus_max_resource',[stone,global.resource.Stone.name])}</div>${asbestos}`;
                 }
             },
+            special(){ return global.race['smoldering'] ? true : false; },
             powered(){ return powerCostMod(1); },
             power_reqs: { mine_conveyor: 1 },
             action(){
@@ -3854,7 +3909,7 @@ export const actions = {
                     global.city['foundry'].count++;
                     global.civic.craftsman.max++;
                     global.civic.craftsman.display = true;
-                    if (!global.race['kindling_kindred']){
+                    if (!global.race['kindling_kindred'] && !global.race['smoldering']){
                         global.resource.Plywood.display = true;
                     }
                     global.resource.Brick.display = true;
@@ -3934,7 +3989,7 @@ export const actions = {
             action(){
                 if (payCosts($(this)[0].cost)){
                     global.city['smelter'].count++;
-                    if (global.race['kindling_kindred']){
+                    if (global.race['kindling_kindred'] || global.race['smoldering']){
                         if (global.race['evil']) {
                             global.city['smelter'].Wood++;
                         }
@@ -5132,7 +5187,7 @@ function setScenario(scenario){
             }
         }
     }
-    drawAchieve();
+    challengeIcon();
 }
 
 export function storageMultipler(){
@@ -5163,10 +5218,10 @@ export function storageMultipler(){
 }
 
 export function checkCityRequirements(action){
-    if (global.race['kindling_kindred'] && action === 'lumber'){
+    if ((global.race['kindling_kindred'] || global.race['smoldering']) && action === 'lumber'){
         return false;
     }
-    else if (global.race['kindling_kindred'] && action === 'stone'){
+    else if ((global.race['kindling_kindred'] || global.race['smoldering']) && action === 'stone'){
         return true;
     }
     var isMet = true;
@@ -5288,6 +5343,9 @@ export function gainTech(action){
 }
 
 export function drawCity(){
+    if (!global.settings.tabLoad && (global.settings.civTabs !== 1 || global.settings.spaceTabs !== 0)){
+        return;
+    }
     let city_buildings = {};
     Object.keys(actions.city).forEach(function (city_name) {
         removeAction(actions.city[city_name].id);
@@ -5348,6 +5406,9 @@ export function drawCity(){
 }
 
 export function drawTech(){
+    if (!global.settings.tabLoad && global.settings.civTabs !== 3){
+        return;
+    }
     let techs = {};
     let old_techs = {};
     let new_techs = {};
@@ -6552,6 +6613,9 @@ function drawModal(c_action,type){
         case 'pylon':
             pylonModal(body);
             break;
+        case 'rock_quarry':
+            quarryModal(body);
+            break;
     }
 }
 
@@ -6606,6 +6670,10 @@ function grapheneModal(modal){
 
 function pylonModal(modal){
     loadIndustry('pylon',modal);
+}
+
+function quarryModal(modal){
+    loadIndustry('rock_quarry',modal);
 }
 
 export function evoProgress(){
@@ -6813,7 +6881,7 @@ function sentience(){
 
     clearElement($('#resources'));
     defineResources();
-    if (!global.race['kindling_kindred']){
+    if (!global.race['kindling_kindred'] && !global.race['smoldering']){
         global.resource.Lumber.display = true;
     }
     else {
@@ -6823,8 +6891,11 @@ function sentience(){
 
     global.city.calendar.day = 0;
 
-    var city_actions = global.race['kindling_kindred'] ? ['food','stone'] : ['food','lumber','stone'];
-    if (global.race['evil'] && !global.race['kindling_kindred']){
+    var city_actions = global.race['kindling_kindred'] || global.race['smoldering'] ? ['food','stone'] : ['food','lumber','stone'];
+    if (global.race['smoldering']){
+        city_actions.push('chrysotile');
+    }
+    if (global.race['evil'] && !global.race['kindling_kindred'] && !global.race['smoldering']){
         global.city['slaughter'] = 1;
         city_actions = ['slaughter'];
     }
@@ -6928,6 +6999,21 @@ function sentience(){
         global.tech['b_stone'] = 2;
     }
 
+    defineJobs(true);
+    commisionGarrison();
+    defineGovernment();
+
+    calc_mastery(true);
+    if (global.settings.tabLoad){
+        drawCity();
+        defineGarrison();
+        buildGarrison($('#c_garrison'),false);
+        foreignGov();
+    }
+    else {
+        loadTab('mTabCivil');
+    }
+
     if (global.race['cataclysm']){
         cataclysm();
     }
@@ -6939,12 +7025,6 @@ function sentience(){
         }
         window.location.reload();
     }
-
-    calc_mastery(true);
-    drawCity();
-    defineGarrison();
-    buildGarrison($('#c_garrison'),false);
-    foreignGov();
 }
 
 function cataclysm(){
@@ -7052,12 +7132,17 @@ function cataclysm(){
         global.resource.Crates.display = true;
         global.resource.Containers.display = true;
 
-        if (!global.race['kindling_kindred']){
+        if (!global.race['kindling_kindred'] && !global.race['smoldering']){
             global.resource.Lumber.display = true;
             global.resource.Plywood.display = true;
             global.resource.Lumber.max = 90000;
             global.resource.Lumber.amount = 90000;
             global.resource.Plywood.amount = 50000;
+        }
+        if (global.race['smoldering']){
+            global.resource.Chrysotile.display = true;
+            global.resource.Chrysotile.max = 90000;
+            global.resource.Chrysotile.amount = 90000;
         }
 
         global.resource[global.race.species].max = 8;
@@ -7270,6 +7355,9 @@ function fanaticTrait(trait){
 }
 
 export function resQueue(){
+    if (!global.settings.tabLoad && global.settings.civTabs !== 3){
+        return;
+    }
     clearResDrag();
     clearElement($('#resQueue'));
 
@@ -7305,7 +7393,7 @@ export function resQueue(){
     }
 }
 
-function clearResDrag(){
+export function clearResDrag(){
     let el = $('#resQueue .buildList')[0];
     if (el){
         let sort = Sortable.get(el);

@@ -3,6 +3,40 @@ import { clearElement } from './../functions.js';
 
 const changeList = [
     {
+        version: `1.0.24`,
+        date: `1/17/2021`,
+        changes: [
+            `Evil Smoldering races can now research bone tools.`
+        ]
+    },
+    {
+        version: `1.0.23`,
+        date: `1/16/2021`,
+        changes: [
+            `Redesigned Heat based Genus mechanics.`,
+            `Untapped Potential formula changed: now has diminishing returns for stacking unspent genes.`,
+            `Faith now has an effect on auto crafting (Craftsmen Only).`,
+            `Added new topics to Mechanics section of Wiki.`,
+            `Minor bug fixes.`
+        ]
+    },
+    {
+        version: `1.0.22`,
+        date: `1/15/2021`,
+        changes: [
+            `Fixed Cataclysm mode game start.`
+        ]
+    },
+    {
+        version: `1.0.21`,
+        date: `1/10/2021`,
+        changes: [
+            `Gain upto 8 hours of accelerated time when game is stopped/closed.`,
+            `Optimized tab content loading for performance.`,
+            `Pause game feature.`,
+        ]
+    },
+    {
         version: `1.0.20`,
         date: `12/29/2020`,
         changes: [

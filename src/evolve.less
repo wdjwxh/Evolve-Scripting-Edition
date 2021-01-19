@@ -825,6 +825,26 @@ Misc ---------> Main template
             }
         }
 
+        .sliderbar {
+            > span {
+                position: relative;
+                display: inline-block;
+                width: 5%;
+                bottom: 1.125rem;
+                margin: 0 .375rem;
+            }
+            .b-slider {
+                display: inline-block;
+                width: 80%;
+                .b-slider-track {
+                    height: 1rem;
+                }
+            }
+            .is-primary .b-slider-fill {
+                background: @has-text-success !important;
+            }
+        }
+
         // .fool
         .fool {
             .has-text-advanced {
@@ -949,6 +969,13 @@ Misc ---------> Main template
         .add,
         .sub {
             border: @primary-border solid .0625rem;
+            transition: all 200ms ease;
+        }
+
+        .add:hover,
+        .sub:hover {
+            background-color: @button-hover-background;
+            color: @link-hover;
         }
 
         .current {
@@ -960,6 +987,37 @@ Misc ---------> Main template
         .topBar,
         .promoBar {
             background-color: @bars-background;
+        }
+
+        .topBar {
+            .play {
+                display: inline-block;
+                position: relative;
+                cursor: pointer;
+                bottom: .125rem;
+                width: 0;
+                height: 0;
+                border-top: .25rem solid transparent;
+                border-left: .375rem solid @has-text-success;
+                border-bottom: .25rem solid transparent;
+                transition: all 0.3s;
+                -webkit-transition: all 0.3s;
+                -moz-transition: all 0.3s;
+            }
+            .pause {
+                display: inline-block;
+                position: relative;
+                cursor: pointer;
+                box-sizing: content-box;
+                bottom: .0625rem;
+                width: .125rem;;
+                height: .625rem;;
+                border-right: .125rem solid @has-text-danger;
+                border-left: .125rem solid @has-text-danger;
+                transition: all 0.3s;
+                -webkit-transition: all 0.3s;
+                -moz-transition: all 0.3s;
+            }
         }
 
         // .meter
@@ -1178,6 +1236,7 @@ Misc ---------> Main template
         .market-item {
             .order {
                 border: @primary-border solid .0625rem;
+                transition: all 200ms ease;
             }
 
             .order:hover {
@@ -1553,14 +1612,14 @@ html.gruvboxDark {
     }
 
     .add,
-        .sub {
-            border: @secondary-border solid .0625rem;
-        }
+    .sub {
+        border: @secondary-border solid .0625rem;
+    }
 
-        .current {
-            border-top: @secondary-border solid .0625rem;
-            border-bottom: @secondary-border solid .0625rem;
-        }
+    .current {
+        border-top: @secondary-border solid .0625rem;
+        border-bottom: @secondary-border solid .0625rem;
+    }
 }
 
 // Orange Soda theme
@@ -1777,6 +1836,10 @@ a {
 .zero {
     cursor: pointer;
     margin-left: .75rem;
+}
+
+.zero:hover {
+    text-decoration: underline;
 }
 
 .localization {
@@ -2218,6 +2281,10 @@ a {
 
         .controls {
             margin-bottom: 1px;
+
+            .sub {
+                border-right: 0;
+            }
         }
 
         .job_label {
@@ -3203,6 +3270,10 @@ body .modal>div.popper.wide {
             color: #fff;
             position: relative;
             bottom: 0.125rem;
+        }
+
+        .atime {
+            margin-left: 1rem;
         }
     }
 
