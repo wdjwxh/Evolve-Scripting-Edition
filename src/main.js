@@ -37,7 +37,11 @@ import { enableDebug, updateDebugData } from './debug.js';
     });
 }
 
-enableDebug();
+// Scripting edition always enable debug
+//if (global.settings.expose){
+    enableDebug();
+//}
+
 var quickMap = {
     showCiv: 1,
     showCivic: 2,
@@ -4938,6 +4942,7 @@ function fastLoop(){
         }
     });
 
+    // Scripting edition always enable debug
     //if (global.settings.expose){
         if (!window['evolve']){
             enableDebug();

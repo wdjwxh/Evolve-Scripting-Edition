@@ -13,7 +13,7 @@
     "wiki-dev": "npx webpack --config webpack.wiki.dev.js",
     "wiki": "npx webpack --config webpack.wiki.prod.js",
     "wiki-less": "lessc -x src/wiki/wiki.less wiki/wiki.css",
-    "babel-script":"npx babel --compact=false scripts/evolve_automation.user.js -o scripts/evolve_automation.user.js",
+    "babel-script": "npx babel --compact=false scripts/evolve_automation.user.js -o scripts/evolve_automation.user.js",
     "serve": "servehere -c"
   },
   "repository": {
