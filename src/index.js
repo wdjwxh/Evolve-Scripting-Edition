@@ -9,7 +9,7 @@ import { setPowerGrid, gridDefs, clearGrids } from './industry.js';
 import { defineGovernment, defineIndustry, defineGarrison, buildGarrison, commisionGarrison, foreignGov } from './civics.js';
 import { drawCity, drawTech, resQueue, clearResDrag } from './actions.js';
 import { renderSpace } from './space.js';
-import { renderFortress, drawMechLab } from './portal.js';
+import { renderFortress, buildFortress, drawMechLab } from './portal.js';
 import { arpa } from './arpa.js';
 import { playFabStats } from './playfab.js';
 
@@ -352,6 +352,7 @@ export function loadTab(tab){
                                     case 3:
                                         if (global.race.species !== 'protoplasm' && !global.race['start_cataclysm']){
                                             defineGarrison();
+                                            buildFortress($('#fortress'),false);
                                         }
                                         break;
                                     case 4:
@@ -383,6 +384,7 @@ export function loadTab(tab){
                 if (global.race.species !== 'protoplasm' && !global.race['start_cataclysm']){
                     defineGarrison();
                     buildGarrison($('#c_garrison'),false);
+                    buildFortress($('#fortress'),false);
                     foreignGov();
                     drawMechLab();
                 }
@@ -596,7 +598,7 @@ export function loadTab(tab){
         case 'mTabArpa':
             {
                 $(`#mTabArpa`).append(`<div id="apra" class="arpa">
-                    <b-tabs v-model="s.arpa.arpaTabs" :animated="s.animated">
+                    <b-tabs class="resTabs" v-model="s.arpa.arpaTabs" :animated="s.animated">
                         <b-tab-item id="arpaPhysics" :visible="s.arpa.physics" label="${loc('tab_arpa_projects')}"></b-tab-item>
                         <b-tab-item id="arpaGenetics" :visible="s.arpa.genetics" label="${loc('tab_arpa_genetics')}"></b-tab-item>
                         <b-tab-item id="arpaCrispr" :visible="s.arpa.crispr" label="${loc('tab_arpa_crispr')}"></b-tab-item>
@@ -831,7 +833,7 @@ export function index(){
     }
 
     // Settings Tab
-    let settings = $(`<b-tab-item class="settings">
+    let settings = $(`<b-tab-item class="settings sticky">
         <template slot="header">
             {{ 'tab_settings' | label }}
         </template>
