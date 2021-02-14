@@ -52,7 +52,7 @@ const flairData = {
 };
 
 const descData = {
-    trade: [600,50]
+    trade: [750,50]
 };
 
 export const achievements = {};
@@ -520,7 +520,7 @@ export function checkAchievements(){
         unlockAchieve('scrooge');
     }
 
-    if (global.civic.hasOwnProperty('govern') && global.galaxy.hasOwnProperty('trade') && global.city.hasOwnProperty('market') && global.galaxy.trade.cur >= 50 && global.city.market.trade >= 600 && global.civic.govern.type === 'federation'){
+    if (global.civic.hasOwnProperty('govern') && global.galaxy.hasOwnProperty('trade') && global.city.hasOwnProperty('market') && global.galaxy.trade.cur >= 50 && global.city.market.trade >= 750 && global.civic.govern.type === 'federation'){
         unlockAchieve('trade');
     }
 
@@ -858,7 +858,7 @@ export const perkList = {
             return loc("achieve_perks_blackhole",[bonus]);
         },
         active(){
-            return global.stats.achieve['blackhole'] && global.stats.achieve['blackhole'].l >= 1 ? true : false;
+            return global.stats.achieve['blackhole'] && global.stats.achieve.blackhole.l >= 1 ? true : false;
         },
         notes: [
             loc(`wiki_perks_achievement_note`,[`<span class="has-text-caution">${loc(`achieve_blackhole_name`)}</span>`]),
@@ -868,11 +868,11 @@ export const perkList = {
     trade: {
         name: loc(`achieve_trade_name`),
         desc(){
-            let bonus = global.stats.achieve['blackhole'] ? global.stats.achieve.blackhole.l : 1;
+            let bonus = global.stats.achieve['trade'] ? global.stats.achieve.trade.l : 1;
             return loc("achieve_perks_trade",[bonus * 2,bonus]);
         },
         active(){
-            return global.stats.achieve['trade'] && global.stats.achieve['trade'].l >= 1 ? true : false;
+            return global.stats.achieve['trade'] && global.stats.achieve.trade.l >= 1 ? true : false;
         },
         notes: [
             loc(`wiki_perks_achievement_note`,[`<span class="has-text-caution">${loc(`achieve_trade_name`)}</span>`])
