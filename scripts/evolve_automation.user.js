@@ -10926,7 +10926,7 @@
   }
 
   function buildImportExport() {
-    let importExportNode = $(".importExport");
+    let importExportNode = $(".importExport").last();
 
     if (importExportNode === null) {
       return;
